@@ -412,7 +412,6 @@
             background-color: #e65c00;
             transform: translateY(-3px);
         }
-        /* 备份功能按钮样式 */
         .backup-btn {
             background: #0099ff !important;
         }
@@ -502,7 +501,6 @@
                     </select>
                     <select id="delMenuSelect"></select>
                     <button class="del-menu-btn" onclick="deleteMenu()">🗑️ 删除选中菜单</button>
-                    <span class="warning-tip">⚠️ 默认菜单不可删除</span>
                 </div>
                 <hr>
                 <div class="admin-form">
@@ -523,7 +521,6 @@
                     <button onclick="addLink()">添加 网站/链接</button>
                 </div>
 
-                <!-- ===================== 备份功能区域 ===================== -->
                 <hr>
                 <h3 style="color:#0099ff;margin:10px 0;">📦 数据备份与恢复</h3>
                 <div class="admin-form">
@@ -532,7 +529,6 @@
                     <button class="clear-btn" onclick="clearAllData()">🗑️ 清空所有数据</button>
                     <input type="file" id="backupFileInput" accept=".json">
                 </div>
-                <!-- ====================================================== -->
 
                 <h3 style="color:#ff6600;margin:10px 0;">已添加全部内容</h3>
                 <div id="allLinks"></div>
@@ -549,60 +545,15 @@
         let subMenus = {};
         let resourceLinks = {};
 
-        const DEFAULT_TOP_IDS = {
-            sysImg: 'top_sysImg',
-            soft: 'top_soft',
-            web: 'top_web',
-            acc: 'top_acc'
-        };
-        const DEFAULT_SUB_MAP = {
-            [DEFAULT_TOP_IDS.sysImg]: [
-                { id: 'miniwin', name: '微系统' },
-                { id: 'winimg', name: 'Win系统镜像' }
-            ],
-            [DEFAULT_TOP_IDS.soft]: [
-                { id: 'syssoft', name: '系统工具' },
-                { id: 'game', name: '游戏合集' },
-                { id: 'player', name: '播放软件' },
-                { id: 'zip', name: '解压软件' },
-                { id: 'safe', name: '安全软件' },
-                { id: 'chat', name: '社交软件' }
-            ]
-        };
-
         function initData() {
             let storedTop = localStorage.getItem('topMenus');
-            if (storedTop) {
-                topMenus = JSON.parse(storedTop);
-            } else {
-                topMenus = {
-                    [DEFAULT_TOP_IDS.sysImg]: { name: '系统镜像', isDefault: true },
-                    [DEFAULT_TOP_IDS.soft]: { name: '必装软件', isDefault: true },
-                    [DEFAULT_TOP_IDS.web]: { name: '网站合集', isDefault: true },
-                    [DEFAULT_TOP_IDS.acc]: { name: '网络加速器', isDefault: true }
-                };
-            }
             let storedSub = localStorage.getItem('subMenus');
-            if (storedSub) {
-                subMenus = JSON.parse(storedSub);
-            } else {
-                subMenus = {};
-                for (let parentId in DEFAULT_SUB_MAP) {
-                    DEFAULT_SUB_MAP[parentId].forEach(sub => {
-                        subMenus[sub.id] = { parentId: parentId, name: sub.name, isDefault: true };
-                    });
-                }
-            }
             let storedLinks = localStorage.getItem('resourceLinks');
-            if (storedLinks) {
-                resourceLinks = JSON.parse(storedLinks);
-            } else {
-                resourceLinks = {};
-                const allMenuIds = [...Object.keys(topMenus), ...Object.keys(subMenus)];
-                for (let id of allMenuIds) {
-                    if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
-                }
-            }
+
+            topMenus = storedTop ? JSON.parse(storedTop) : {};
+            subMenus = storedSub ? JSON.parse(storedSub) : {};
+            resourceLinks = storedLinks ? JSON.parse(storedLinks) : {};
+
             saveToLocalStorage();
         }
 
@@ -612,15 +563,9 @@
             localStorage.setItem('resourceLinks', JSON.stringify(resourceLinks));
         }
 
-        // ===================== 备份功能核心代码 =====================
-        // 导出备份
         function exportBackup() {
             if (!isLogin) return;
-            const backupData = {
-                topMenus,
-                subMenus,
-                resourceLinks
-            };
+            const backupData = { topMenus, subMenus, resourceLinks };
             const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -631,7 +576,6 @@
             alert("✅ 备份文件导出成功！");
         }
 
-        // 导入备份
         document.getElementById('backupFileInput').addEventListener('change', function(e) {
             if (!isLogin) return;
             const file = e.target.files[0];
@@ -658,28 +602,27 @@
             reader.readAsText(file);
         });
 
-        // 清空所有数据（恢复默认）
         function clearAllData() {
             if (!isLogin) return;
-            if (!confirm("⚠️ 确定清空所有数据？将恢复到初始默认状态！")) return;
+            if (!confirm("⚠️ 确定清空所有数据？")) return;
             
             localStorage.removeItem('topMenus');
             localStorage.removeItem('subMenus');
             localStorage.removeItem('resourceLinks');
-            initData();
+            topMenus = {};
+            subMenus = {};
+            resourceLinks = {};
+            saveToLocalStorage();
             rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
             showPage('首页', 'home');
-            alert("✅ 已清空所有数据，恢复默认！");
+            alert("✅ 已清空所有数据！");
         }
-        // ============================================================
 
         function getAllMenuItems() {
             let items = [];
-            for (let id in topMenus) {
-                items.push({ id, name: topMenus[id].name, type: 'top' });
-            }
+            for (let id in topMenus) items.push({ id, name: topMenus[id].name, type: 'top' });
             for (let id in subMenus) {
                 let parent = topMenus[subMenus[id].parentId];
                 let parentName = parent ? parent.name : '未知';
@@ -690,27 +633,19 @@
 
         function getTopMenusForSelect() {
             let arr = [];
-            for (let id in topMenus) {
-                arr.push({ id, name: topMenus[id].name });
-            }
+            for (let id in topMenus) arr.push({ id, name: topMenus[id].name });
             return arr;
         }
 
         function getDeletableMenus(type) {
             let list = [];
             if (type === 'top') {
-                for (let id in topMenus) {
-                    if (!topMenus[id].isDefault) {
-                        list.push({ id, name: topMenus[id].name });
-                    }
-                }
+                for (let id in topMenus) list.push({ id, name: topMenus[id].name });
             } else {
                 for (let id in subMenus) {
-                    if (!subMenus[id].isDefault) {
-                        let parent = topMenus[subMenus[id].parentId];
-                        let parentName = parent ? parent.name : '?';
-                        list.push({ id, name: `${parentName} / ${subMenus[id].name}` });
-                    }
+                    let parent = topMenus[subMenus[id].parentId];
+                    let parentName = parent ? parent.name : '?';
+                    list.push({ id, name: `${parentName} / ${subMenus[id].name}` });
                 }
             }
             return list;
@@ -935,7 +870,7 @@
             let name = document.getElementById('newCate').value.trim();
             if (!name) return alert("请输入菜单名称！");
             let id = 'top_' + Date.now();
-            topMenus[id] = { name: name, isDefault: false };
+            topMenus[id] = { name: name };
             resourceLinks[id] = { 1: [] };
             saveToLocalStorage();
             document.getElementById('newCate').value = '';
@@ -951,14 +886,14 @@
             let name = document.getElementById('subCateName').value.trim();
             if (!name) return alert("请输入子菜单名称！");
             let id = 'sub_' + Date.now();
-            subMenus[id] = { parentId: parentId, name: name, isDefault: false };
+            subMenus[id] = { parentId: parentId, name: name };
             resourceLinks[id] = { 1: [] };
             saveToLocalStorage();
             document.getElementById('subCateName').value = '';
             rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
-            alert(`子菜单“${name}”已添加至“${topMenus[parentId].name}”下`);
+            alert(`子菜单“${name}”已添加`);
         }
 
         function deleteMenu() {
@@ -970,8 +905,7 @@
                 return;
             }
             let menuId = select.value;
-            let confirmMsg = type === 'top' ? '顶级菜单' : '子菜单';
-            if (!confirm(`⚠️ 确认删除该${confirmMsg}及其所有链接吗？`)) return;
+            if (!confirm(`⚠️ 确认删除？`)) return;
             if (type === 'top') {
                 let children = Object.keys(subMenus).filter(id => subMenus[id].parentId === menuId);
                 children.forEach(childId => {
@@ -992,9 +926,7 @@
             renderAllSelects();
             renderAdminList();
             let activeId = document.querySelector('.page.active')?.id;
-            if (activeId === menuId || (type === 'top' && children && children.includes(activeId))) {
-                showPage('首页', 'home');
-            }
+            if (activeId === menuId) showPage('首页', 'home');
             alert("删除成功");
         }
 
@@ -1007,9 +939,7 @@
             saveToLocalStorage();
             renderAllSelects();
             renderAdminList();
-            if (document.querySelector('.page.active')?.id === menuId) {
-                renderPagination(menuId);
-            }
+            if (document.querySelector('.page.active')?.id === menuId) renderPagination(menuId);
             alert(`添加第${newPage}页成功`);
         }
 
@@ -1019,7 +949,7 @@
             let page = document.getElementById('delPageNum').value;
             let pages = Object.keys(resourceLinks[menuId] || {});
             if (pages.length <= 1) return alert("至少保留一页");
-            if (!confirm(`删除第${page}页，该页所有链接将丢失`)) return;
+            if (!confirm(`删除第${page}页？`)) return;
             delete resourceLinks[menuId][page];
             saveToLocalStorage();
             renderAllSelects();
@@ -1046,7 +976,6 @@
             document.getElementById('linkUrl').value = '';
             renderAdminList();
 
-            // 修复：添加后立刻刷新页面显示
             let activePage = document.querySelector('.page.active');
             if (activePage && activePage.id === menuId) {
                 loadLinks(menuId, page);
@@ -1107,7 +1036,6 @@
             });
         }
 
-        // 时钟
         function updateClock() {
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
