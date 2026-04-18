@@ -18,15 +18,23 @@
             min-height: 100vh;
             padding: 20px;
         }
-        .avatar {
+        /* 右上角头像 + 点击触发后台 */
+        .avatar-box {
             position: absolute;
             top: 20px;
             right: 30px;
+            cursor: pointer;
+        }
+        .avatar {
             width: 90px;
             height: 90px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #fff;
+            transition: 0.2s;
+        }
+        .avatar:hover {
+            box-shadow: 0 0 15px #ff6600;
         }
         .title-box {
             text-align: center;
@@ -212,10 +220,24 @@
             display: block;
         }
 
-        /* 管理后台样式 */
-        .admin-box { width: 100%; }
+        /* 管理后台弹窗样式 */
+        .admin-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            background: rgba(0,0,0,0.95);
+            padding: 30px;
+            border-radius: 12px;
+            display: none;
+            z-index: 9999;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
         .admin-title { color: #ff6600; font-size: 28px; margin-bottom: 20px; text-align: center; }
-        .login-box { text-align: center; margin: 50px 0; }
+        .login-box { text-align: center; margin: 20px 0; }
         .login-box input {
             padding: 12px;
             font-size: 18px;
@@ -276,11 +298,19 @@
             border-radius: 3px;
             cursor: pointer;
         }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+        }
         .footer-text {
             text-align: center;
             margin: 40px 0;
             font-size: 17px;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0, 0.6);
             padding: 12px 25px;
             border-radius: 8px;
             display: inline-block;
@@ -289,7 +319,10 @@
     </style>
 </head>
 <body>
-    <img src="https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg" alt="头像" class="avatar">
+    <!-- 右上角头像（管理后台唯一入口） -->
+    <div class="avatar-box" onclick="openAdminModal()">
+        <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
+    </div>
 
     <div class="title-box">
         <h1 class="website-name">虎天寿资源整理网站</h1>
@@ -297,7 +330,7 @@
 
     <div class="current-menu" id="title">当前位置：首页</div>
 
-    <!-- 导航栏 -->
+    <!-- 导航栏（已移除管理后台按钮，对外完全隐藏） -->
     <div class="nav">
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
@@ -326,7 +359,6 @@
             </li>
             <li><a onclick="showPage('网站合集','web')">网站</a></li>
             <li><a onclick="showPage('网络加速器','acc')">加速器</a></li>
-            <li><a onclick="showPage('管理后台','admin')">管理后台</a></li>
         </ul>
     </div>
 
@@ -351,7 +383,6 @@
         </div>
     </div>
 
-    <!-- 所有页面容器 -->
     <div class="blank-box" id="area">
         <div class="page active" id="home">
             <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2>
@@ -372,39 +403,38 @@
         <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件】</h2><div id="list-chat" class="link-list"></div></div>
         <div class="page" id="web"><h2 style="color:#ff6600">【优质网站】</h2><div id="list-web" class="link-list"></div></div>
         <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div></div>
+    </div>
 
-        <!-- 带密码登录的管理后台 -->
-        <div class="page" id="admin">
-            <div class="admin-box">
-                <h2 class="admin-title">下载链接管理面板</h2>
-                <!-- 密码登录框 -->
-                <div class="login-box" id="loginBox">
-                    <input type="password" id="pwd" placeholder="请输入管理员密码">
-                    <button onclick="adminLogin()">登录</button>
-                </div>
+    <!-- 隐藏式管理后台弹窗 -->
+    <div class="admin-modal" id="adminModal">
+        <span class="close-btn" onclick="closeAdminModal()">×</span>
+        <div class="admin-box">
+            <h2 class="admin-title">下载链接管理面板</h2>
+            <div class="login-box" id="loginBox">
+                <input type="password" id="pwd" placeholder="请输入管理员密码">
+                <button onclick="adminLogin()">登录</button>
+            </div>
 
-                <!-- 登录后才显示的管理面板（别人看不到） -->
-                <div id="adminPanel" style="display:none;">
-                    <div class="admin-form">
-                        <select id="cate">
-                            <option value="miniwin">微系统</option>
-                            <option value="winimg">Win系统镜像</option>
-                            <option value="syssoft">系统工具</option>
-                            <option value="game">游戏合集</option>
-                            <option value="player">播放软件</option>
-                            <option value="zip">解压软件</option>
-                            <option value="safe">安全软件</option>
-                            <option value="chat">社交软件</option>
-                            <option value="web">优质网站</option>
-                            <option value="acc">网络加速器</option>
-                        </select>
-                        <input type="text" id="linkName" placeholder="链接名称">
-                        <input type="url" id="linkUrl" placeholder="下载链接地址">
-                        <button onclick="addLink()">添加链接</button>
-                    </div>
-                    <h3 style="color:#ff6600;margin:10px 0;">已添加全部链接</h3>
-                    <div id="allLinks"></div>
+            <div id="adminPanel" style="display:none;">
+                <div class="admin-form">
+                    <select id="cate">
+                        <option value="miniwin">微系统</option>
+                        <option value="winimg">Win系统镜像</option>
+                        <option value="syssoft">系统工具</option>
+                        <option value="game">游戏合集</option>
+                        <option value="player">播放软件</option>
+                        <option value="zip">解压软件</option>
+                        <option value="safe">安全软件</option>
+                        <option value="chat">社交软件</option>
+                        <option value="web">优质网站</option>
+                        <option value="acc">网络加速器</option>
+                    </select>
+                    <input type="text" id="linkName" placeholder="链接名称">
+                    <input type="url" id="linkUrl" placeholder="下载链接地址">
+                    <button onclick="addLink()">添加链接</button>
                 </div>
+                <h3 style="color:#ff6600;margin:10px 0;">已添加全部链接</h3>
+                <div id="allLinks"></div>
             </div>
         </div>
     </div>
@@ -429,7 +459,7 @@
         setInterval(digitalClock, 1000);
         digitalClock();
 
-        // 菜单点击展开/收起，鼠标移开不关闭
+        // 菜单点击展开/收起
         function toggleMenu(ele){
             const next = ele.nextElementSibling;
             if(next.style.display === 'flex'){
@@ -439,7 +469,7 @@
             }
         }
 
-        // 页面切换
+        // 页面切换加载链接
         function showPage(name, id){
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -448,7 +478,16 @@
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
 
-        // 管理员密码登录验证
+        // 打开管理后台弹窗
+        function openAdminModal(){
+            document.getElementById('adminModal').style.display = 'block';
+        }
+        // 关闭弹窗
+        function closeAdminModal(){
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        // 密码登录验证
         function adminLogin(){
             const inputPwd = document.getElementById('pwd').value;
             if(inputPwd === ADMIN_PASSWORD){
@@ -462,7 +501,7 @@
             }
         }
 
-        // 本地存储链接数据
+        // 本地存储链接
         function getLinks(){
             return JSON.parse(localStorage.getItem('resourceLinks') || '{}');
         }
@@ -470,7 +509,7 @@
             localStorage.setItem('resourceLinks', JSON.stringify(data));
         }
 
-        // 添加链接（仅登录后可用）
+        // 添加链接
         function addLink(){
             if(!isLogin) return alert("请先登录管理员账号！");
             let cate = document.getElementById('cate').value;
@@ -489,7 +528,7 @@
             loadLinks(cate);
         }
 
-        // 删除链接（仅登录后可用）
+        // 删除链接
         function delLink(cate, index){
             if(!isLogin) return;
             let data = getLinks();
@@ -499,7 +538,7 @@
             loadLinks(cate);
         }
 
-        // 加载各分类公开链接（所有人都能看）
+        // 前台公开显示链接
         function loadLinks(cate){
             let data = getLinks();
             let list = data[cate] || [];
