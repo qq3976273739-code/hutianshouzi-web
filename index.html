@@ -457,7 +457,7 @@
             </div>
         </div>
 
-        <!-- 默认分类页面容器（动态生成的也会追加在此） -->
+        <!-- 其他页面容器会由JS动态创建，但为了确保默认分类存在，初始化时就会创建 -->
     </div>
 
     <!-- 后台管理弹窗 -->
@@ -555,7 +555,7 @@
             return { ...DEFAULT_CATES, ...custom };
         }
 
-        // 动态创建页面容器（如果不存在）
+        // 创建页面容器（如果不存在）
         function ensurePageContainer(cateId, cateName) {
             let container = document.getElementById(cateId);
             if (!container) {
@@ -578,18 +578,26 @@
             if (container) container.remove();
         }
 
-        // 重建整个导航菜单（基于当前所有分类）
+        // 预先创建所有默认分类的页面容器（确保导航菜单能正常跳转）
+        function initAllPageContainers() {
+            for (let [id, name] of Object.entries(DEFAULT_CATES)) {
+                ensurePageContainer(id, name);
+            }
+        }
+
+        // 重建整个导航菜单
         function rebuildNavMenu() {
             const allCates = getAllCates();
             const navUl = document.getElementById('navMenuList');
             if (!navUl) return;
-            // 清空现有菜单（保留首页）
             navUl.innerHTML = '';
+
             // 首页
             let homeLi = document.createElement('li');
             homeLi.innerHTML = '<a onclick="showPage(\'首页\',\'home\')">首页</a>';
             navUl.appendChild(homeLi);
-            // 系统镜像固定分组
+
+            // 系统镜像分组
             let sysImgLi = document.createElement('li');
             sysImgLi.innerHTML = `<a onclick="toggleMenu(this)">系统镜像</a>
                 <ul class="sub-menu">
@@ -597,6 +605,7 @@
                     <li><a onclick="showPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
                 </ul>`;
             navUl.appendChild(sysImgLi);
+
             // 必装软件分组
             let softLi = document.createElement('li');
             softLi.innerHTML = `<a onclick="toggleMenu(this)">必装软件</a>
@@ -614,6 +623,7 @@
                     </li>
                 </ul>`;
             navUl.appendChild(softLi);
+
             // 网站和加速器
             let webLi = document.createElement('li');
             webLi.innerHTML = '<a onclick="showPage(\'网站合集\',\'web\')">网站</a>';
@@ -621,17 +631,14 @@
             let accLi = document.createElement('li');
             accLi.innerHTML = '<a onclick="showPage(\'网络加速器\',\'acc\')">加速器</a>';
             navUl.appendChild(accLi);
+
             // 动态添加自定义菜单（直接作为一级菜单）
             for (let [id, name] of Object.entries(allCates)) {
-                if (DEFAULT_CATES[id]) continue; // 默认已处理，跳过
+                if (DEFAULT_CATES[id]) continue;
                 let customLi = document.createElement('li');
                 customLi.innerHTML = `<a onclick="showPage('${name}','${id}')">${name}</a>`;
                 navUl.appendChild(customLi);
                 // 确保页面容器存在
-                ensurePageContainer(id, name);
-            }
-            // 确保所有默认分类的页面容器存在
-            for (let [id, name] of Object.entries(DEFAULT_CATES)) {
                 ensurePageContainer(id, name);
             }
         }
@@ -666,7 +673,15 @@
             renderPagination(cate);
         }
 
+        // 显示页面（带容错，自动创建缺失的页面容器）
         function showPage(name, id) {
+            // 确保目标页面容器存在（对于默认分类，应该已存在；自定义菜单也会在添加时创建）
+            if (id !== 'home' && !document.getElementById(id)) {
+                // 尝试从分类映射中获取名称
+                const allCates = getAllCates();
+                let cateName = allCates[id] || name.replace(/^.*?-/, '').trim() || '资源';
+                ensurePageContainer(id, cateName);
+            }
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             let targetPage = document.getElementById(id);
@@ -678,11 +693,23 @@
                     renderPagination(id);
                 }
             } else {
-                // 如果页面不存在（极少情况），回首页
+                // 极端情况：回首页
                 document.getElementById('home').classList.add('active');
+                alert('页面加载失败，已返回首页');
             }
+            // 关闭所有展开的子菜单
             document.querySelectorAll('.sub-menu, .sub-child').forEach(item => item.classList.remove('show'));
             document.getElementById('area').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 菜单展开/收起
+        function toggleMenu(ele) {
+            const sub = ele.nextElementSibling;
+            const parent = ele.parentElement.parentElement;
+            parent.querySelectorAll('.sub-menu, .sub-child').forEach(item => {
+                if (item !== sub) item.classList.remove('show');
+            });
+            sub.classList.toggle('show');
         }
 
         // 后台相关函数
@@ -795,8 +822,8 @@
             setStorage('resourceLinks', data);
             document.getElementById('newCate').value = '';
             // 动态更新界面
-            rebuildNavMenu();          // 重建导航
-            ensurePageContainer(id, name); // 确保页面容器
+            ensurePageContainer(id, name);
+            rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
             alert(`自定义菜单“${name}”已添加，可在导航栏查看。`);
@@ -827,9 +854,7 @@
             if (activePage && activePage.id === cateId) {
                 showPage('首页', 'home');
             }
-            // 移除页面容器
             removePageContainer(cateId);
-            // 重建导航
             rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
@@ -846,7 +871,6 @@
             setStorage('resourceLinks', data);
             renderAllSelects();
             renderAdminList();
-            // 如果当前正在查看该分类，刷新分页
             let activeId = document.querySelector('.page.active')?.id;
             if (activeId === cate) {
                 renderPagination(cate);
@@ -934,9 +958,9 @@
             if (kw.trim()) window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(kw), '_self');
         }
 
-        // 页面启动时构建导航
+        // 页面启动：创建所有默认分类的页面容器，然后构建导航，最后显示首页
+        initAllPageContainers();
         rebuildNavMenu();
-        // 显示首页
         showPage('首页', 'home');
     </script>
 </body>
