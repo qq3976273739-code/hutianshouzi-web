@@ -146,23 +146,6 @@
             background: #e65c00;
         }
 
-        /* ========== 空白内容跳转区域（点击菜单滑到这里） ========== */
-        #blankArea {
-            width: 80%;
-            margin: 100px auto;
-            padding: 40px;
-            background-color: rgba(0, 0, 0, 0.75);
-            border-radius: 15px;
-            min-height: 350px;
-            scroll-margin-top: 50px;
-        }
-        .content-item {
-            display: none;
-        }
-        .content-item.active {
-            display: block;
-        }
-
         /* 圆形表盘时钟 */
         .clock {
             width: 280px;
@@ -310,32 +293,32 @@
     <!-- 导航菜单 -->
     <div class="nav">
         <ul>
-            <li><a onclick="switchPage('首页','home')">首页</a></li>
+            <li><a onclick="openBlankSite('首页','home.html')">首页</a></li>
             <li>
-                <a onclick="switchPage('系统镜像','sysimg')">系统镜像</a>
+                <a onclick="openBlankSite('系统镜像','sysimg.html')">系统镜像</a>
                 <ul class="sub-menu">
-                    <li><a onclick="switchPage('系统镜像 - 微系统','miniwin')">微系统</a></li>
-                    <li><a onclick="switchPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
+                    <li><a onclick="openBlankSite('系统镜像 - 微系统','miniwin.html')">微系统</a></li>
+                    <li><a onclick="openBlankSite('系统镜像 - Win系统镜像','winimg.html')">Win系统镜像</a></li>
                 </ul>
             </li>
             <li>
-                <a onclick="switchPage('必装软件','soft')">必装软件</a>
+                <a onclick="openBlankSite('必装软件','soft.html')">必装软件</a>
                 <ul class="sub-menu">
-                    <li><a onclick="switchPage('必装软件 - 系统工具','syssoft')">系统</a></li>
-                    <li><a onclick="switchPage('必装软件 - 游戏合集','game')">游戏</a></li>
+                    <li><a onclick="openBlankSite('必装软件 - 系统工具','syssoft.html')">系统</a></li>
+                    <li><a onclick="openBlankSite('必装软件 - 游戏合集','game.html')">游戏</a></li>
                     <li>
-                        <a onclick="switchPage('必装软件 - 日常软件','daily')">日常</a>
+                        <a onclick="openBlankSite('必装软件 - 日常软件','daily.html')">日常</a>
                         <ul class="sub-child">
-                            <li><a onclick="switchPage('日常 - 播放软件','player')">播放</a></li>
-                            <li><a onclick="switchPage('日常 - 解压缩软件','zip')">解压缩</a></li>
-                            <li><a onclick="switchPage('日常 - 安全防护','safe')">安全</a></li>
-                            <li><a onclick="switchPage('日常 - 社交软件','chat')">社交</a></li>
+                            <li><a onclick="openBlankSite('日常 - 播放软件','player.html')">播放</a></li>
+                            <li><a onclick="openBlankSite('日常 - 解压缩软件','zip.html')">解压缩</a></li>
+                            <li><a onclick="openBlankSite('日常 - 安全防护','safe.html')">安全</a></li>
+                            <li><a onclick="openBlankSite('日常 - 社交软件','chat.html')">社交</a></li>
                         </ul>
                     </li>
                 </ul>
             </li>
-            <li><a onclick="switchPage('网站合集','websites')">网站</a></li>
-            <li><a onclick="switchPage('网络加速器','accelerator')">加速器</a></li>
+            <li><a onclick="openBlankSite('网站合集','websites.html')">网站</a></li>
+            <li><a onclick="openBlankSite('网络加速器','accelerator.html')">加速器</a></li>
         </ul>
     </div>
 
@@ -343,73 +326,6 @@
     <div class="search-box">
         <input type="text" class="search-input" placeholder="请输入要搜索的资源关键词...">
         <button class="search-btn" onclick="searchResource()">搜索资源</button>
-    </div>
-
-    <!-- ====================== 点击跳转的空白内容区域 ====================== -->
-    <div id="blankArea">
-        <!-- 所有分类专属空白面板 -->
-        <div class="content-item active" id="home">
-            <h2 style="text-align:center;color:#ff6600;">欢迎来到虎天寿资源整理网站</h2>
-            <br>
-            <p style="font-size:18px;line-height:1.8;text-align:center;">
-                本站整理各类系统镜像、必备软件、实用网站、网络加速器等资源<br>
-                点击上方导航菜单，查看对应分类资源
-            </p>
-        </div>
-
-        <div class="content-item" id="sysimg">
-            <h2 style="color:#ff6600;">系统镜像资源</h2>
-            <br>
-            <p>请在子菜单选择：微系统 / Win原版系统镜像</p>
-        </div>
-        <!-- 微系统空白专区 -->
-        <div class="content-item" id="miniwin">
-            <h2 style="color:#ff6600;">【微系统资源专区】</h2>
-            <br>
-            <p>此处空白，后续添加下载链接、网盘资源、文件地址</p>
-        </div>
-        <!-- Win系统镜像空白专区 -->
-        <div class="content-item" id="winimg">
-            <h2 style="color:#ff6600;">【Win系统镜像专区】</h2>
-            <br>
-            <p>此处空白，后续存放Windows系统镜像资源</p>
-        </div>
-
-        <div class="content-item" id="soft">
-            <h2 style="color:#ff6600;">必备软件合集</h2>
-            <br>
-            <p>请在子菜单选择：系统工具 / 游戏合集 / 日常软件</p>
-        </div>
-        <div class="content-item" id="syssoft">
-            <h2 style="color:#ff6600;">【系统工具专区】</h2>
-        </div>
-        <div class="content-item" id="game">
-            <h2 style="color:#ff6600;">【游戏合集专区】</h2>
-        </div>
-        <div class="content-item" id="daily">
-            <h2 style="color:#ff6600;">【日常软件专区】</h2>
-        </div>
-
-        <div class="content-item" id="player">
-            <h2 style="color:#ff6600;">【播放软件专区】</h2>
-        </div>
-        <div class="content-item" id="zip">
-            <h2 style="color:#ff6600;">【解压缩软件专区】</h2>
-        </div>
-        <div class="content-item" id="safe">
-            <h2 style="color:#ff6600;">【安全防护软件专区】</h2>
-        </div>
-        <div class="content-item" id="chat">
-            <h2 style="color:#ff6600;">【社交软件专区】</h2>
-        </div>
-
-        <div class="content-item" id="websites">
-            <h2 style="color:#ff6600;">【优质网站合集】</h2>
-        </div>
-
-        <div class="content-item" id="accelerator">
-            <h2 style="color:#ff6600;">【网络加速器专区】</h2>
-        </div>
     </div>
 
     <!-- 左侧圆形表盘时钟 -->
@@ -423,9 +339,9 @@
         <div class="num num6">6</div>
         <div class="num num7">7</div>
         <div class="num num8">8</div>
-        <div class="num9">9</div>
-        <div class="num10">10</div>
-        <div class="num11">11</div>
+        <div class="num num9">9</div>
+        <div class="num num10">10</div>
+        <div class="num num11">11</div>
         <div class="clock-center"></div>
         <div class="hour" id="hour"></div>
         <div class="minute" id="minute"></div>
@@ -452,42 +368,46 @@
     </div>
 
     <script>
-        // 菜单切换 + 显示名称 + 平滑跳转到下方空白区域
-        function switchPage(title, id) {
-            // 更新顶部位置文字
-            document.getElementById('currentMenu').innerText = '当前位置：' + title;
-            // 隐藏所有内容
-            document.querySelectorAll('.content-item').forEach(div=>{
-                div.classList.remove('active');
-            });
-            // 显示对应分类内容
-            document.getElementById(id).classList.add('active');
-            // ========== 平滑滚动跳转到空白区域 ==========
-            document.getElementById('blankArea').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-
-        // 圆形时钟
+        // 修复时钟指针计算错误
         const hourHand = document.getElementById('hour');
         const minuteHand = document.getElementById('minute');
         const secondHand = document.getElementById('second');
+        
         function runClock() {
             let date = new Date();
             let hours = date.getHours() % 12;
             let minutes = date.getMinutes();
             let seconds = date.getSeconds();
-            let hRotation = 30 * hours + 0.5 * minutes;
-            let mRotation = 6 * minutes;
-            let sRotation = 6 * seconds;
+            
+            // 正确的角度计算公式（添加180度使指针从12点开始）
+            let hRotation = 30 * hours + 0.5 * minutes + 180;
+            let mRotation = 6 * minutes + 0.1 * seconds + 180;
+            let sRotation = 6 * seconds + 180;
+            
             hourHand.style.transform = `translate(-50%) rotate(${hRotation}deg)`;
             minuteHand.style.transform = `translate(-50%) rotate(${mRotation}deg)`;
             secondHand.style.transform = `translate(-50%) rotate(${sRotation}deg)`;
         }
+        
         setInterval(runClock, 1000);
-        runClock();
+        runClock(); // 初始化运行
 
-        // 百度搜索（本页跳转）
+        // 打开空白网站页面（在当前网站内）
+        function openBlankSite(title, filename) {
+            // 更新顶部位置显示
+            document.getElementById('currentMenu').innerText = '当前位置：' + title;
+            
+            // 方案1：在新标签页打开空白网站（推荐）
+            window.open(filename, '_blank');
+            
+            // 方案2：在当前窗口打开（覆盖当前页面）
+            // window.location.href = filename;
+            
+            // 方案3：在iframe中打开（不离开当前页面，内嵌显示）
+            // 如需此方案，请告诉我，我会提供完整代码
+        }
+
+        // 百度搜索
         function searchResource() {
             let keyword = document.querySelector('.search-input').value;
             if(keyword.trim() !== ''){
