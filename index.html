@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>虎天寿资源整理网站 - 安全版</title>
+    <title>虎天寿资源整理网站 - 最终版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; padding: 20px; }
@@ -33,7 +33,7 @@
         .author-info a { color: #0066ff; text-decoration: none; margin-left: 15px; }
         .link-list { margin-top: 20px; }
         .link-item { padding: 10px; background: rgba(255,255,255,0.1); margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .link-item a { color: #fff; text-decoration: none; }
+        .link-item a { color: #fff; text-decoration: none; flex: 1; }
         .pagination { text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 10px; }
         .page-btn { padding: 8px 15px; background: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.95); padding: 30px; border-radius: 12px; display: none; z-index: 9999; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
@@ -42,10 +42,22 @@
         .admin-form input, .admin-form select { padding: 10px; font-size: 16px; border-radius: 5px; border: none; outline: none; }
         .admin-form button { padding: 10px 20px; background: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .del-btn { background: #ff3333; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .report-btn { background: #ffaa00; color: #000; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 10px; }
         .go-top { position: fixed; bottom: 50px; right: 30px; width: 50px; height: 50px; background: #ff6600; color: #fff; border-radius: 50%; text-align: center; line-height: 50px; font-size: 28px; cursor: pointer; opacity: 0; visibility: hidden; transition: 0.3s; }
         .go-top.show { opacity: 1; visibility: visible; }
         hr { margin: 20px 0; border-color: #ff6600; }
         .warning-tip { font-size: 12px; color: #ffaa66; }
+        .search-link-box { margin-bottom: 20px; display: flex; gap: 10px; }
+        .search-link-input { flex: 1; padding: 10px; border-radius: 6px; border: none; outline: none; }
+        .update-log { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .update-log h3 { color: #ff6600; margin-bottom: 10px; }
+        .update-log ul { margin-left: 20px; }
+        .update-log li { margin: 5px 0; }
+        .hot-rank { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .hot-rank h3 { color: #ff6600; margin-bottom: 10px; }
+        .hot-rank ol { margin-left: 20px; }
+        .hot-rank li { margin: 5px 0; }
+        .hot-rank a { color: #fff; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -54,21 +66,98 @@
     <div class="current-menu" id="title">当前位置：首页</div>
     <div class="nav"><ul id="navMenuList"></ul></div>
     <div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="输入搜索内容"><button class="search-btn" onclick="baiduSearch()">百度搜索</button></div>
-    <div class="blank-box" id="area"><div class="page active" id="home"><h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2><br><p style="text-align:center">本站整理系统镜像、软件、实用网站、加速器各类资源<br>点击上方导航菜单查看对应分类</p><div class="author-info">QQ：3608504926<br><a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a></div><div class="home-row"><div class="digital-clock" id="clock"></div><div class="donate"><div class="donate-title" style="color:#ff6600;font-size:22px;margin-bottom:12px">捐献一点吧</div><a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"><img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"></a><div style="margin-top:10px">整理资源耗费大量精力，感谢您的理解与支持</div></div></div></div></div>
+    <div class="blank-box" id="area">
+        <div class="page active" id="home">
+            <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2><br>
+            <p style="text-align:center">本站整理系统镜像、软件、实用网站、加速器各类资源<br>点击上方导航菜单查看对应分类</p>
+            <div class="author-info">QQ：3608504926<br><a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a></div>
+            <div class="home-row">
+                <div class="digital-clock" id="clock"></div>
+                <div class="donate">
+                    <div class="donate-title" style="color:#ff6600;font-size:22px;margin-bottom:12px">捐献一点吧</div>
+                    <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"><img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"></a>
+                    <div style="margin-top:10px">整理资源耗费大量精力，感谢您的理解与支持</div>
+                </div>
+            </div>
+            <div class="update-log">
+                <h3>📢 最近更新</h3>
+                <ul id="updateList"></ul>
+            </div>
+            <div class="hot-rank" id="hotRank">
+                <h3>🔥 热门点击排行</h3>
+                <ol id="rankList"></ol>
+            </div>
+        </div>
+    </div>
     <div class="go-top" id="goTopBtn">↑</div>
-    <div class="admin-modal" id="adminModal"><span class="close-btn" onclick="closeAdminModal()">×</span><h2 style="color:#ff6600;text-align:center;margin-bottom:20px">管理面板</h2><div id="loginBox" class="admin-form" style="justify-content:center"><input type="password" id="adminPwd" placeholder="管理员密码"><button onclick="adminLogin()">登录</button></div><div id="adminPanel" style="display:none"><div class="admin-form"><button onclick="exportBackup()">导出备份</button><button onclick="importBackup()">导入备份</button><button onclick="resetToDefault()">重置默认</button><button onclick="logout()">退出登录</button></div><hr><div class="admin-form"><input type="text" id="newTopMenu" placeholder="顶级菜单名称"><button onclick="addTopMenu()">添加顶级菜单</button></div><div class="admin-form"><select id="parentSelect"></select><input type="text" id="newSubMenu" placeholder="子菜单名称"><button onclick="addSubMenu()">添加子菜单</button></div><div class="admin-form"><select id="delType"><option value="top">删除顶级菜单</option><option value="sub">删除子菜单</option></select><select id="delSelect"></select><button onclick="deleteMenu()">删除</button><span class="warning-tip">仅可删除自定义菜单</span></div><hr><div class="admin-form"><select id="pageCate"></select><button onclick="addPage()">添加新页</button></div><div class="admin-form"><select id="delPageCate"></select><select id="delPageNum"></select><button onclick="deletePage()">删除页</button></div><div class="admin-form"><select id="linkCate"></select><select id="linkPage"></select><input type="text" id="linkName" placeholder="链接名称"><input type="url" id="linkUrl" placeholder="链接地址"><button onclick="addLink()">添加链接</button></div><h3>所有链接</h3><div id="allLinks"></div></div></div>
+    <div class="admin-modal" id="adminModal">
+        <span class="close-btn" onclick="closeAdminModal()">×</span>
+        <h2 style="color:#ff6600;text-align:center;margin-bottom:20px">管理面板</h2>
+        <div id="loginBox" class="admin-form" style="justify-content:center">
+            <input type="password" id="adminPwd" placeholder="管理员密码">
+            <button onclick="adminLogin()">登录</button>
+        </div>
+        <div id="adminPanel" style="display:none">
+            <div class="admin-form">
+                <button onclick="exportBackup()">导出备份</button>
+                <button onclick="importBackup()">导入备份</button>
+                <button onclick="resetToDefault()">重置默认</button>
+                <button onclick="logout()">退出登录</button>
+            </div>
+            <hr>
+            <div class="admin-form">
+                <input type="text" id="newTopMenu" placeholder="顶级菜单名称">
+                <button onclick="addTopMenu()">添加顶级菜单</button>
+            </div>
+            <div class="admin-form">
+                <select id="parentSelect"></select>
+                <input type="text" id="newSubMenu" placeholder="子菜单名称">
+                <button onclick="addSubMenu()">添加子菜单</button>
+            </div>
+            <div class="admin-form">
+                <select id="delType"><option value="top">删除顶级菜单</option><option value="sub">删除子菜单</option></select>
+                <select id="delSelect"></select>
+                <button onclick="deleteMenu()">删除</button>
+                <span class="warning-tip">仅可删除自定义菜单</span>
+            </div>
+            <hr>
+            <div class="admin-form">
+                <select id="pageCate"></select>
+                <button onclick="addPage()">添加新页</button>
+            </div>
+            <div class="admin-form">
+                <select id="delPageCate"></select>
+                <select id="delPageNum"></select>
+                <button onclick="deletePage()">删除页</button>
+            </div>
+            <div class="admin-form">
+                <select id="linkCate"></select>
+                <select id="linkPage"></select>
+                <input type="text" id="linkName" placeholder="链接名称">
+                <input type="url" id="linkUrl" placeholder="链接地址">
+                <button onclick="addLink()">添加链接</button>
+            </div>
+            <div class="admin-form">
+                <input type="text" id="updateContent" placeholder="更新内容">
+                <button onclick="addUpdateLog()">添加更新日志</button>
+            </div>
+            <h3>所有链接</h3>
+            <div id="allLinks"></div>
+        </div>
+    </div>
+
     <script>
-        // 数据存储结构
+        // 数据存储
         let appData = {
             topMenus: {},
             subMenus: {},
-            resources: {}
+            resources: {},
+            updates: [],
+            linkClicks: {}
         };
         
         let isAdmin = false;
         let currentPageMap = {};
-        
-        // 明文密码验证（简单粗暴）
         const ADMIN_PASSWORD = "wangyiming87";
         
         // XSS过滤
@@ -82,7 +171,7 @@
             });
         }
         
-        // 初始化默认数据
+        // 初始化
         function initDefault() {
             appData = {
                 topMenus: {
@@ -101,17 +190,21 @@
                     safe: { parentId: 'soft', name: '安全软件', isDefault: true },
                     chat: { parentId: 'soft', name: '社交软件', isDefault: true }
                 },
-                resources: {}
+                resources: {},
+                updates: [
+                    { date: '2026-04-18', content: '网站上线，欢迎使用' },
+                    { date: '2026-04-18', content: '新增链接有效性检测功能' },
+                    { date: '2026-04-18', content: '新增热门点击排行' }
+                ],
+                linkClicks: {}
             };
             
-            // 初始化资源容器
             ['home', ...Object.keys(appData.topMenus), ...Object.keys(appData.subMenus)].forEach(id => {
                 if (!appData.resources[id]) appData.resources[id] = { 1: [] };
             });
             saveData();
         }
         
-        // 保存到localStorage
         function saveData() {
             try {
                 const jsonStr = JSON.stringify(appData);
@@ -119,7 +212,6 @@
             } catch(e) { console.error('保存失败', e); }
         }
         
-        // 加载数据
         function loadData() {
             try {
                 const encoded = localStorage.getItem('siteData');
@@ -128,6 +220,8 @@
                     const data = JSON.parse(jsonStr);
                     if (data.topMenus && data.subMenus && data.resources) {
                         appData = data;
+                        if (!appData.updates) appData.updates = [];
+                        if (!appData.linkClicks) appData.linkClicks = {};
                         return;
                     }
                 }
@@ -135,7 +229,86 @@
             initDefault();
         }
         
-        // 安全渲染链接列表
+        // 记录点击
+        function recordClick(linkId, url, name) {
+            let key = `${url}|${name}`;
+            appData.linkClicks[key] = (appData.linkClicks[key] || 0) + 1;
+            saveData();
+            renderHotRank();
+        }
+        
+        // 渲染热门排行
+        function renderHotRank() {
+            const rankDiv = document.getElementById('rankList');
+            if (!rankDiv) return;
+            
+            let items = Object.entries(appData.linkClicks).map(([key, count]) => {
+                let [url, name] = key.split('|');
+                return { url, name, count };
+            });
+            items.sort((a, b) => b.count - a.count);
+            items = items.slice(0, 10);
+            
+            if (items.length === 0) {
+                rankDiv.innerHTML = '<li>暂无数据</li>';
+                return;
+            }
+            
+            rankDiv.innerHTML = items.map(item => 
+                `<li><a href="${escapeHtml(item.url)}" target="_blank" onclick="recordClick('', '${escapeHtml(item.url)}', '${escapeHtml(item.name)}')">${escapeHtml(item.name)}</a> (点击${item.count}次)</li>`
+            ).join('');
+        }
+        
+        // 渲染更新日志
+        function renderUpdates() {
+            const updateDiv = document.getElementById('updateList');
+            if (!updateDiv) return;
+            
+            if (!appData.updates || appData.updates.length === 0) {
+                updateDiv.innerHTML = '<li>暂无更新</li>';
+                return;
+            }
+            
+            let updates = [...appData.updates].reverse().slice(0, 5);
+            updateDiv.innerHTML = updates.map(u => `<li>${escapeHtml(u.date)} - ${escapeHtml(u.content)}</li>`).join('');
+        }
+        
+        // 添加更新日志
+        function addUpdateLog() {
+            if (!isAdmin) return;
+            const content = document.getElementById('updateContent').value.trim();
+            if (!content) return alert('请输入更新内容');
+            
+            const date = new Date().toISOString().slice(0, 10);
+            if (!appData.updates) appData.updates = [];
+            appData.updates.push({ date, content });
+            saveData();
+            renderUpdates();
+            document.getElementById('updateContent').value = '';
+            alert('添加成功');
+        }
+        
+        // 链接有效性检测
+        async function checkLink(url, element) {
+            try {
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 5000);
+                await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signaler });
+                element.style.backgroundColor = 'rgba(0,255,0,0.2)';
+            } catch(e) {
+                element.style.backgroundColor = 'rgba(255,0,0,0.3)';
+                let statusSpan = element.querySelector('.link-status');
+                if (!statusSpan) {
+                    statusSpan = document.createElement('span');
+                    statusSpan.className = 'link-status';
+                    statusSpan.style.marginLeft = '10px';
+                    statusSpan.style.fontSize = '12px';
+                    statusSpan.innerText = '⚠️ 可能失效';
+                    element.appendChild(statusSpan);
+                }
+            }
+        }
+        
         function renderLinks(containerId, categoryId, pageNum) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -146,14 +319,36 @@
                 return;
             }
             
-            container.innerHTML = links.map(link => `
-                <div class="link-item">
-                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.name)}</a>
+            container.innerHTML = links.map((link, idx) => `
+                <div class="link-item" data-url="${escapeHtml(link.url)}" data-name="${escapeHtml(link.name)}">
+                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer" onclick="recordClick('${escapeHtml(link.url)}', '${escapeHtml(link.url)}', '${escapeHtml(link.name)}')">${escapeHtml(link.name)}</a>
+                    <button class="report-btn" onclick="reportDeadLink('${escapeHtml(link.url)}', '${escapeHtml(link.name)}')">🚨 失效</button>
                 </div>
             `).join('');
+            
+            // 异步检测链接
+            setTimeout(() => {
+                document.querySelectorAll(`#${containerId} .link-item`).forEach(item => {
+                    let url = item.getAttribute('data-url');
+                    if (url && url.startsWith('http')) {
+                        checkLink(url, item);
+                    }
+                });
+            }, 100);
         }
         
-        // 渲染分页
+        // 报告失效
+        function reportDeadLink(url, name) {
+            let reports = JSON.parse(localStorage.getItem('deadReports') || '[]');
+            if (!reports.some(r => r.url === url)) {
+                reports.push({ url, name, date: new Date().toISOString() });
+                localStorage.setItem('deadReports', JSON.stringify(reports));
+                alert(`已记录"${name}"失效，站长会尽快处理`);
+            } else {
+                alert('该链接已被标记');
+            }
+        }
+        
         function renderPagination(categoryId) {
             const container = document.getElementById(`page-${categoryId}`);
             if (!container) return;
@@ -170,14 +365,12 @@
             `).join('');
         }
         
-        // 切换页面
         function switchPage(categoryId, pageNum) {
             currentPageMap[categoryId] = pageNum;
             renderLinks(`list-${categoryId}`, categoryId, pageNum);
             renderPagination(categoryId);
         }
         
-        // 显示页面
         function showPage(name, categoryId) {
             document.getElementById('title').innerText = '当前位置：' + escapeHtml(name);
             
@@ -189,6 +382,9 @@
                 targetPage.className = 'page';
                 targetPage.id = categoryId;
                 targetPage.innerHTML = `
+                    <div class="search-link-box">
+                        <input type="text" class="search-link-input" id="searchLink_${categoryId}" placeholder="🔍 搜索当前分类链接..." onkeyup="filterLinks('${categoryId}', this.value)">
+                    </div>
                     <h2 style="color:#ff6600">【${escapeHtml(name)}】</h2>
                     <div id="list-${categoryId}" class="link-list"></div>
                     <div id="page-${categoryId}" class="pagination"></div>
@@ -202,10 +398,21 @@
                 if (!currentPageMap[categoryId]) currentPageMap[categoryId] = 1;
                 renderLinks(`list-${categoryId}`, categoryId, currentPageMap[categoryId]);
                 renderPagination(categoryId);
+            } else {
+                renderUpdates();
+                renderHotRank();
             }
         }
         
-        // 构建导航菜单
+        // 站内搜索过滤
+        function filterLinks(categoryId, keyword) {
+            const items = document.querySelectorAll(`#list-${categoryId} .link-item`);
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(keyword.toLowerCase()) ? 'flex' : 'none';
+            });
+        }
+        
         function buildNavigation() {
             const navUl = document.getElementById('navMenuList');
             navUl.innerHTML = '<li><a onclick="showPage(\'首页\',\'home\')">首页</a></li>';
@@ -437,8 +644,11 @@
             saveData();
             updateAdminSelects();
             
-            if (document.querySelector('.page.active')?.id === catId && currentPageMap[catId] == pageNum) {
-                renderLinks(`list-${catId}`, catId, pageNum);
+            // 强制刷新当前显示的页面
+            const activeId = document.querySelector('.page.active')?.id;
+            if (activeId === catId) {
+                renderLinks(`list-${catId}`, catId, currentPageMap[catId] || pageNum);
+                renderPagination(catId);
             }
             
             document.getElementById('linkName').value = '';
@@ -484,6 +694,8 @@
                         const data = JSON.parse(ev.target.result);
                         if (data.topMenus && data.subMenus && data.resources) {
                             appData = data;
+                            if (!appData.updates) appData.updates = [];
+                            if (!appData.linkClicks) appData.linkClicks = {};
                             saveData();
                             buildNavigation();
                             updateAdminSelects();
@@ -512,7 +724,6 @@
             alert('已重置为默认数据');
         }
         
-        // 登录 - 明文比对
         function adminLogin() {
             const pwd = document.getElementById('adminPwd').value;
             if (pwd === ADMIN_PASSWORD) {
