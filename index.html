@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 自定义标签栏图标 -->
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站</title>
+    <title>虎天寿资源整理网站 - 接入DeepSeek AI</title>
     <style>
         * {
             margin: 0;
@@ -73,7 +73,6 @@
             justify-content: center;
             gap: 30px;
         }
-        /* 导航栏上的头像 */
         .nav-avatar {
             width: 60px;
             height: 60px;
@@ -105,7 +104,6 @@
             color: #ff6600;
             background-color: rgba(0,0,0,0.8);
         }
-        /* 菜单动画 */
         .nav .sub-menu {
             display: none;
             position: absolute;
@@ -150,14 +148,15 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* 搜索框 */
-        .search-box {
+        /* 搜索框区域 */
+        .search-section {
             width: 60%;
-            margin: 0 auto 40px;
-            text-align: center;
+            margin: 0 auto 30px;
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
             border-radius: 12px;
+            padding: 20px;
+        }
+        .search-box {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -193,10 +192,107 @@
         .search-btn:hover {
             background: #e65c00;
         }
+        /* DeepSeek AI 助手卡片 */
+        .ai-assistant {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 12px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255, 102, 0, 0.5);
+            transition: all 0.2s;
+        }
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ff6600;
+            padding-bottom: 8px;
+        }
+        .ai-header span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6600;
+        }
+        .ai-header small {
+            font-size: 12px;
+            color: #ccc;
+            margin-left: auto;
+        }
+        .ai-input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .ai-input-group input {
+            flex: 1;
+            height: 45px;
+            padding: 0 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            background: rgba(255,255,255,0.9);
+            color: #000;
+        }
+        .ai-input-group button {
+            background: #ff6600;
+            border: none;
+            padding: 0 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .ai-input-group button:hover {
+            background: #e65c00;
+        }
+        .ai-input-group button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .ai-response {
+            background: rgba(0,0,0,0.6);
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 100px;
+            max-height: 280px;
+            overflow-y: auto;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #f0f0f0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .ai-response p {
+            margin: 0;
+        }
+        .loading-dots {
+            display: inline-block;
+        }
+        .loading-dots::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        .ai-tip {
+            font-size: 12px;
+            color: #ffaa66;
+            margin-top: 8px;
+            text-align: right;
+        }
         /* 内容区域 */
         .blank-box {
             width: 80%;
-            margin: 80px auto;
+            margin: 40px auto 80px;
             padding: 40px;
             background-color: rgba(0,0,0,0.75);
             border-radius: 15px;
@@ -209,7 +305,6 @@
         .page.active {
             display: block;
         }
-        /* 主页跳转按钮 */
         .home-top-btn {
             text-align: center;
             margin-bottom: 30px;
@@ -226,7 +321,6 @@
         .home-top-btn button:hover {
             background: #e65c00;
         }
-        /* 首页布局：左时间 右收款码 */
         .home-row {
             display: flex;
             align-items: center;
@@ -235,7 +329,6 @@
             margin-top: 30px;
             flex-wrap: wrap;
         }
-        /* 电子时钟 */
         .digital-clock {
             background-color: rgba(0,0,0,0.75);
             padding: 25px 35px;
@@ -246,7 +339,6 @@
             letter-spacing: 5px;
             text-align: center;
         }
-        /* 收款码 */
         .donate-group {
             text-align: center;
         }
@@ -265,7 +357,6 @@
             width: 180px;
             border-radius: 8px;
         }
-        /* 收款码下方文字 */
         .footer-text {
             text-align: center;
             margin-top: 15px;
@@ -289,7 +380,6 @@
         .author-info a:hover {
             color: #ff6600;
         }
-        /* 分页按钮样式（用户端） */
         .pagination {
             text-align: center;
             margin-top: 30px;
@@ -314,7 +404,6 @@
         .page-btn:hover {
             background: #e65c00;
         }
-        /* 管理后台弹窗 */
         .admin-modal {
             position: fixed;
             top: 50%;
@@ -350,7 +439,6 @@
             cursor: pointer;
             font-size: 16px;
         }
-        /* 后台表单 */
         .admin-form {
             display: flex;
             gap: 10px;
@@ -374,7 +462,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        /* 删除按钮特殊样式 */
         .del-page-btn {
             background: #ff3333;
         }
@@ -409,10 +496,13 @@
             font-size: 22px;
             cursor: pointer;
         }
+        @media (max-width: 768px) {
+            .search-section, .blank-box { width: 95%; }
+            .ai-input-group { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
-    <!-- 右上角头像（后台入口） -->
     <div class="avatar-box" onclick="openAdminModal()">
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
     </div>
@@ -422,9 +512,7 @@
     </div>
     <div class="current-menu" id="title">当前位置：首页</div>
 
-    <!-- 导航栏（集成头像） -->
     <div class="nav">
-        <!-- 导航栏左侧头像 -->
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="个人头像" class="nav-avatar">
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
@@ -456,16 +544,32 @@
         </ul>
     </div>
 
-    <!-- 搜索框：搜索引擎占位文字已按要求改为“输入搜索内容” -->
-    <div class="search-box">
-        <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
-        <input type="text" class="search-input" placeholder="输入搜索内容">
-        <button class="search-btn" onclick="search()">搜索资源</button>
+    <!-- 搜索区域 + DeepSeek AI 集成 -->
+    <div class="search-section">
+        <div class="search-box">
+            <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
+            <input type="text" class="search-input" id="baiduSearchInput" placeholder="输入搜索内容">
+            <button class="search-btn" onclick="baiduSearch()">百度搜索</button>
+        </div>
+
+        <!-- DeepSeek AI 助手区块 -->
+        <div class="ai-assistant">
+            <div class="ai-header">
+                <span>🤖 DeepSeek AI 智能助手</span>
+                <small>由 deepseek-chat 驱动</small>
+            </div>
+            <div class="ai-input-group">
+                <input type="text" id="aiQuestion" placeholder="输入你的问题，例如：如何优化Windows系统？" autocomplete="off">
+                <button id="askAiBtn" onclick="askDeepSeek()">💬 提问 AI</button>
+            </div>
+            <div class="ai-response" id="aiResponse">
+                ✨ 你好！我是 DeepSeek AI，可以回答技术问题、提供资源建议或日常闲聊。试试问我吧~
+            </div>
+            <div class="ai-tip">⚡ 基于DeepSeek大模型，答案仅供参考。API Key 仅限本演示使用。</div>
+        </div>
     </div>
 
-    <!-- 内容区域 -->
     <div class="blank-box" id="area">
-        <!-- 首页 -->
         <div class="page active" id="home">
             <div class="home-top-btn">
                 <button onclick="showPage('首页','home')">🏠 返回主页</button>
@@ -477,7 +581,6 @@
                 QQ：3608504926<br>
                 <a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a>
             </div>
-            <!-- 左时间 右收款码 -->
             <div class="home-row">
                 <div class="digital-clock" id="clock"></div>
                 <div class="donate-group">
@@ -492,7 +595,6 @@
             </div>
         </div>
 
-        <!-- 资源分类页面（带分页容器） -->
         <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统】</h2><div id="list-miniwin" class="link-list"></div><div id="page-miniwin" class="pagination"></div></div>
         <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像】</h2><div id="list-winimg" class="link-list"></div><div id="page-winimg" class="pagination"></div></div>
         <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具】</h2><div id="list-syssoft" class="link-list"></div><div id="page-syssoft" class="pagination"></div></div>
@@ -505,7 +607,6 @@
         <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div><div id="page-acc" class="pagination"></div></div>
     </div>
 
-    <!-- 管理后台弹窗 -->
     <div class="admin-modal" id="adminModal">
         <span class="close-btn" onclick="closeAdminModal()">×</span>
         <div class="admin-box">
@@ -514,25 +615,20 @@
                 <input type="password" id="pwd" placeholder="请输入管理员密码">
                 <button onclick="adminLogin()">登录</button>
             </div>
-
             <div id="adminPanel" style="display:none;">
-                <!-- 1. 自定义菜单 -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="自定义菜单名称(如:软件合集)">
                     <button onclick="addCate()">添加自定义菜单</button>
                 </div>
-                <!-- 2. 分页管理 - 添加页数 -->
                 <div class="admin-form">
                     <select id="pageCate"></select>
                     <button onclick="addPage()">添加新页数（+1页）</button>
                 </div>
-                <!-- 3. 分页管理 - 删除页数（新增核心功能） -->
                 <div class="admin-form">
                     <select id="delPageCate"></select>
                     <select id="delPageNum"></select>
                     <button class="del-page-btn" onclick="deletePage()">删除选中页数</button>
                 </div>
-                <!-- 4. 链接添加 -->
                 <div class="admin-form">
                     <select id="cate"></select>
                     <select id="pageNum"></select>
@@ -547,12 +643,11 @@
     </div>
 
     <script>
-        // 管理员密码
+        // ---------- 原有逻辑 ----------
         const ADMIN_PASSWORD = "wangyiming87";
         let isLogin = false;
-        let currentPage = {}; // 记录当前分类选中的页码
+        let currentPage = {};
 
-        // 电子时钟
         function digitalClock() {
             let now = new Date();
             let h = now.getHours().toString().padStart(2, '0');
@@ -563,7 +658,6 @@
         setInterval(digitalClock, 1000);
         digitalClock();
 
-        // 菜单展开/收起
         function toggleMenu(ele){
             const sub = ele.nextElementSibling;
             const parent = ele.parentElement.parentElement;
@@ -573,7 +667,6 @@
             sub.classList.toggle('show');
         }
 
-        // 本地存储工具
         function getStorage(key){
             return JSON.parse(localStorage.getItem(key) || '{}');
         }
@@ -581,7 +674,6 @@
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        // 初始化默认分页（所有分类默认1页）
         function initDefaultPages(){
             let data = getStorage('resourceLinks');
             let defaultCates = ['miniwin','winimg','syssoft','game','player','zip','safe','chat','web','acc'];
@@ -592,39 +684,35 @@
         }
         initDefaultPages();
 
-        // 页面切换 + 加载分页
         function showPage(name, id){
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            currentPage[id] = 1; // 默认选中第1页
+            currentPage[id] = 1;
             loadLinks(id, currentPage[id]);
             renderPagination(id);
             document.querySelectorAll('.sub-menu, .sub-child').forEach(item => item.classList.remove('show'));
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
 
-        // 渲染前端分页按钮
         function renderPagination(cate){
             let data = getStorage('resourceLinks');
             let pageDom = document.getElementById(`page-${cate}`);
             if(!pageDom) return;
             pageDom.innerHTML = '';
             let pages = Object.keys(data[cate] || {});
-            if(pages.length <= 1) return; // 只有1页不显示分页
+            if(pages.length <= 1) return;
             pages.forEach(page => {
                 pageDom.innerHTML += `<button class="page-btn ${page==currentPage[cate]?'active':''}" onclick="switchPage('${cate}',${page})">第${page}页</button>`;
             });
         }
 
-        // 切换分页
         function switchPage(cate, page){
             currentPage[cate] = page;
             loadLinks(cate, page);
             renderPagination(cate);
         }
 
-        // 加载对应分类+页码的链接
         function loadLinks(cate, page){
             let data = getStorage('resourceLinks');
             let list = data[cate]?.[page] || [];
@@ -636,19 +724,17 @@
             });
         }
 
-        // 后台弹窗
         function openAdminModal(){
             document.getElementById('adminModal').style.display = 'block';
             document.getElementById('pwd').value = '';
             renderCateSelect();
             renderPageSelect();
-            renderDelPageSelect(); // 初始化删除页数的下拉框
+            renderDelPageSelect();
         }
         function closeAdminModal(){
             document.getElementById('adminModal').style.display = 'none';
         }
 
-        // 管理员登录
         function adminLogin(){
             const inputPwd = document.getElementById('pwd').value;
             if(inputPwd === ADMIN_PASSWORD){
@@ -665,7 +751,6 @@
             }
         }
 
-        // 渲染分类下拉框（通用）
         function renderCateSelect(){
             let select = document.getElementById('cate');
             let pageSelect = document.getElementById('pageCate');
@@ -673,23 +758,19 @@
             select.innerHTML = ''; 
             pageSelect.innerHTML = '';
             delPageCate.innerHTML = '';
-            
             let defaultCates = {miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'};
             let customCates = getStorage('customCates');
             let allCates = {...defaultCates, ...customCates};
-            
             for(let id in allCates){
                 let opt = document.createElement('option'); 
                 opt.value = id; 
                 opt.innerText = allCates[id];
-                
                 select.appendChild(opt); 
                 pageSelect.appendChild(opt.cloneNode(true));
                 delPageCate.appendChild(opt.cloneNode(true));
             }
         }
 
-        // 渲染添加链接的页码下拉框
         function renderPageSelect(){
             let pageSelect = document.getElementById('pageNum');
             let cate = document.getElementById('cate').value;
@@ -704,7 +785,6 @@
             });
         }
 
-        // 渲染删除页数的页码下拉框（新增）
         function renderDelPageSelect(){
             let delPageNum = document.getElementById('delPageNum');
             let cate = document.getElementById('delPageCate').value;
@@ -719,7 +799,6 @@
             });
         }
 
-        // 添加自定义菜单
         function addCate(){
             if(!isLogin) return;
             let name = document.getElementById('newCate').value.trim();
@@ -728,7 +807,7 @@
             let data = getStorage('resourceLinks');
             let id = 'cate_'+Date.now();
             cates[id] = name;
-            data[id] = {1: []}; // 新菜单默认1页
+            data[id] = {1: []};
             setStorage('customCates', cates);
             setStorage('resourceLinks', data);
             document.getElementById('newCate').value = '';
@@ -738,7 +817,6 @@
             alert("自定义菜单添加成功！");
         }
 
-        // 添加新页数
         function addPage(){
             if(!isLogin) return;
             let cate = document.getElementById('pageCate').value;
@@ -753,45 +831,31 @@
             alert(`成功添加【第${newPage}页】！`);
         }
 
-        // 删除页数（核心新增功能）
         function deletePage(){
             if(!isLogin) return alert("请先登录！");
-            
             let cate = document.getElementById('delPageCate').value;
             let page = document.getElementById('delPageNum').value;
             let data = getStorage('resourceLinks');
-            
-            // 安全校验1：获取当前分类的总页数
             let totalPages = Object.keys(data[cate] || {}).length;
             if(totalPages <= 1){
                 alert("⚠️ 无法删除最后1页！每个分类至少保留1页");
                 return;
             }
-            
-            // 安全校验2：确认删除
             let confirmDel = confirm(`⚠️ 确认删除【${document.getElementById('delPageCate').options[document.getElementById('delPageCate').selectedIndex].text} - 第${page}页】吗？该页所有链接也会被删除！`);
             if(!confirmDel) return;
-            
-            // 执行删除
             delete data[cate][page];
             setStorage('resourceLinks', data);
-            
-            // 刷新所有相关组件
             renderDelPageSelect();
             renderPageSelect();
             renderAdminList();
-            
-            // 同步刷新前端分页按钮（若当前用户正在查看该分类，需重新加载到第1页避免空白）
             if(currentPage[cate] && currentPage[cate] == page) {
                 currentPage[cate] = 1;
                 loadLinks(cate, 1);
             }
             renderPagination(cate);
-            
             alert(`✅ 成功删除【第${page}页】！`);
         }
 
-        // 添加链接（指定页码）
         function addLink(){
             if(!isLogin) return alert("请先登录！");
             let cate = document.getElementById('cate').value;
@@ -799,11 +863,9 @@
             let name = document.getElementById('linkName').value.trim();
             let url = document.getElementById('linkUrl').value.trim();
             if(!name || !url) return alert('请填写完整信息！');
-            
             let data = getStorage('resourceLinks');
             data[cate][page].push({name, url});
             setStorage('resourceLinks', data);
-            
             document.getElementById('linkName').value = '';
             document.getElementById('linkUrl').value = '';
             renderAdminList();
@@ -811,7 +873,6 @@
             renderPagination(cate);
         }
 
-        // 删除链接
         function delLink(cate, page, index){
             if(!isLogin) return;
             let data = getStorage('resourceLinks');
@@ -821,13 +882,11 @@
             loadLinks(cate, page);
         }
 
-        // 渲染后台所有链接
         function renderAdminList(){
             let data = getStorage('resourceLinks');
             let cates = {...{miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'},...getStorage('customCates')};
             let dom = document.getElementById('allLinks');
             dom.innerHTML = '';
-            
             for(let cate in data){
                 let cateName = cates[cate] || cate;
                 for(let page in data[cate]){
@@ -841,15 +900,79 @@
             }
         }
 
-        // 分类切换时同步刷新页码
         document.getElementById('cate').addEventListener('change', renderPageSelect);
         document.getElementById('delPageCate').addEventListener('change', renderDelPageSelect);
 
-        // 百度搜索：搜索引擎文字已改为“输入搜索内容”，搜索功能不变
-        function search(){
-            let kw = document.querySelector('.search-input').value;
-            if(kw.trim()) window.open('https://www.baidu.com/s?wd='+kw,'_self');
+        function baiduSearch(){
+            let kw = document.getElementById('baiduSearchInput').value;
+            if(kw.trim()) window.open('https://www.baidu.com/s?wd='+encodeURIComponent(kw),'_self');
         }
+
+        // ---------- DeepSeek AI 核心接入 ----------
+        const DEEPSEEK_API_KEY = "sk-479f5adb7f634d75b48787a551239c10";
+        const API_URL = "https://api.deepseek.com/v1/chat/completions";
+
+        async function askDeepSeek() {
+            const questionInput = document.getElementById('aiQuestion');
+            const question = questionInput.value.trim();
+            if (!question) {
+                alert("请输入一个问题～");
+                return;
+            }
+            const responseDiv = document.getElementById('aiResponse');
+            const askBtn = document.getElementById('askAiBtn');
+            // 显示loading
+            responseDiv.innerHTML = '<span class="loading-dots">🤔 AI 思考中，请稍后</span>';
+            askBtn.disabled = true;
+            askBtn.textContent = '⏳ 请求中...';
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-chat",
+                        messages: [
+                            { role: "system", content: "你是一个乐于助人的智能助手，回答简洁专业，擅长技术、软件和资源推荐。" },
+                            { role: "user", content: question }
+                        ],
+                        stream: false,
+                        temperature: 0.7
+                    })
+                });
+
+                if (!res.ok) {
+                    let errMsg = `API 请求失败 (${res.status})`;
+                    try {
+                        const errData = await res.json();
+                        errMsg = errData.error?.message || errMsg;
+                    } catch(e) {}
+                    throw new Error(errMsg);
+                }
+
+                const data = await res.json();
+                const answer = data.choices[0]?.message?.content || "抱歉，没有获取到有效回答。";
+                responseDiv.innerHTML = answer.replace(/\n/g, '<br>');
+            } catch (error) {
+                console.error("DeepSeek API 错误:", error);
+                responseDiv.innerHTML = `❌ 调用出错: ${error.message}<br>请检查网络或API Key有效性（演示key仅限本地测试）。`;
+            } finally {
+                askBtn.disabled = false;
+                askBtn.textContent = '💬 提问 AI';
+                questionInput.value = '';
+            }
+        }
+
+        // 回车快捷提问
+        document.getElementById('aiQuestion').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                askDeepSeek();
+            }
+        });
     </script>
 </body>
 </html>
