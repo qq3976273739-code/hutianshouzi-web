@@ -18,7 +18,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        /* 右上角头像 + 点击触发后台 */
+        /* 右上角头像（后台唯一入口） */
         .avatar-box {
             position: absolute;
             top: 20px;
@@ -220,7 +220,7 @@
             display: block;
         }
 
-        /* 管理后台弹窗样式 */
+        /* 管理后台弹窗（纯净空白密码框） */
         .admin-modal {
             position: fixed;
             top: 50%;
@@ -237,6 +237,7 @@
             overflow-y: auto;
         }
         .admin-title { color: #ff6600; font-size: 28px; margin-bottom: 20px; text-align: center; }
+        /* 纯空白密码输入框，无任何默认内容 */
         .login-box { text-align: center; margin: 20px 0; }
         .login-box input {
             padding: 12px;
@@ -310,7 +311,7 @@
             text-align: center;
             margin: 40px 0;
             font-size: 17px;
-            background-color: rgba(0, 0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 12px 25px;
             border-radius: 8px;
             display: inline-block;
@@ -319,7 +320,7 @@
     </style>
 </head>
 <body>
-    <!-- 右上角头像（管理后台唯一入口） -->
+    <!-- 右上角头像入口 -->
     <div class="avatar-box" onclick="openAdminModal()">
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
     </div>
@@ -330,7 +331,7 @@
 
     <div class="current-menu" id="title">当前位置：首页</div>
 
-    <!-- 导航栏（已移除管理后台按钮，对外完全隐藏） -->
+    <!-- 导航栏（无后台按钮） -->
     <div class="nav">
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
@@ -352,7 +353,7 @@
                             <li><a onclick="showPage('日常 - 播放软件','player')">播放</a></li>
                             <li><a onclick="showPage('日常 - 解压缩软件','zip')">解压缩</a></li>
                             <li><a onclick="showPage('日常 - 安全防护','safe')">安全</a></li>
-                            <li><a onclick="showPage('日常 - 社交软件','chat')">社交</a></li>
+                            <li><a onclick="showPage('日常 - 社交软件','chat')">社交软件</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -405,16 +406,18 @@
         <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div></div>
     </div>
 
-    <!-- 隐藏式管理后台弹窗 -->
+    <!-- 后台弹窗 -->
     <div class="admin-modal" id="adminModal">
         <span class="close-btn" onclick="closeAdminModal()">×</span>
         <div class="admin-box">
             <h2 class="admin-title">下载链接管理面板</h2>
+            <!-- 纯空白密码框，无任何默认文字、无预填密码 -->
             <div class="login-box" id="loginBox">
                 <input type="password" id="pwd" placeholder="请输入管理员密码">
                 <button onclick="adminLogin()">登录</button>
             </div>
 
+            <!-- 登录成功才显示管理面板 -->
             <div id="adminPanel" style="display:none;">
                 <div class="admin-form">
                     <select id="cate">
@@ -444,7 +447,7 @@
     </div>
 
     <script>
-        // 你的专属管理员密码
+        // 你的管理员密码固定：wangyiming87
         const ADMIN_PASSWORD = "wangyiming87";
         let isLogin = false;
 
@@ -469,7 +472,7 @@
             }
         }
 
-        // 页面切换加载链接
+        // 页面切换+加载对应链接
         function showPage(name, id){
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -478,9 +481,11 @@
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
 
-        // 打开管理后台弹窗
+        // 点击头像弹出后台弹窗
         function openAdminModal(){
             document.getElementById('adminModal').style.display = 'block';
+            // 每次打开弹窗，清空密码框，永远空白，不残留任何字符
+            document.getElementById('pwd').value = '';
         }
         // 关闭弹窗
         function closeAdminModal(){
@@ -495,13 +500,13 @@
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 renderAdminList();
-                alert("登录成功！已进入管理后台");
+                alert("登录成功！");
             }else{
-                alert("密码错误，无权访问管理后台！");
+                alert("密码错误，无权访问！");
             }
         }
 
-        // 本地存储链接
+        // 本地存储链接数据
         function getLinks(){
             return JSON.parse(localStorage.getItem('resourceLinks') || '{}');
         }
@@ -511,11 +516,11 @@
 
         // 添加链接
         function addLink(){
-            if(!isLogin) return alert("请先登录管理员账号！");
+            if(!isLogin) return alert("请先登录管理员！");
             let cate = document.getElementById('cate').value;
             let name = document.getElementById('linkName').value.trim();
             let url = document.getElementById('linkUrl').value.trim();
-            if(!name || !url) return alert('请填写完整链接名称和地址！');
+            if(!name || !url) return alert('请填写完整名称与链接！');
             
             let data = getLinks();
             if(!data[cate]) data[cate] = [];
@@ -538,14 +543,14 @@
             loadLinks(cate);
         }
 
-        // 前台公开显示链接
+        // 前台公开展示链接
         function loadLinks(cate){
             let data = getLinks();
             let list = data[cate] || [];
             let dom = document.getElementById(`list-${cate}`);
             if(!dom) return;
             dom.innerHTML = '';
-            list.forEach((item, i) => {
+            list.forEach((item) => {
                 dom.innerHTML += `
                 <div class="link-item">
                     <a href="${item.url}" target="_blank">${item.name}</a>
@@ -553,7 +558,7 @@
             });
         }
 
-        // 渲染管理面板全部链接
+        // 管理面板渲染全部链接
         function renderAdminList(){
             let data = getLinks();
             let dom = document.getElementById('allLinks');
