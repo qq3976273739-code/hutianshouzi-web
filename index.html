@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 稳定版</title>
+    <title>虎天寿资源整理网站 - 全能版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
@@ -16,51 +16,57 @@
         .current-menu { text-align: center; margin: 0 auto 30px; background-color: rgba(0,0,0,0.7); padding: 15px 30px; border-radius: 10px; font-size: 22px; color: #ff6600; font-weight: bold; width: 60%; }
         .nav { width: 85%; margin: 30px auto; background-color: rgba(0, 0, 0, 0.7); border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: center; gap: 30px; }
         .nav-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #ff6600; object-fit: cover; }
-        .nav ul { list-style: none; display: flex; justify-content: center; gap: 45px; }
+        .nav ul { list-style: none; display: flex; justify-content: center; gap: 45px; flex-wrap: wrap; }
         .nav li { position: relative; padding: 8px 0; }
         .nav a { color: #fff; text-decoration: none; font-size: 19px; padding: 8px 12px; border-radius: 5px; background-color: rgba(0,0,0,0.5); cursor: pointer; display: block; }
         .nav a:hover { color: #ff6600; background-color: rgba(0,0,0,0.8); }
         .nav .sub-menu { display: none; position: absolute; top: 100%; left: 0; background-color: rgba(0,0,0,0.9); border-radius: 8px; padding: 12px; width: 160px; flex-direction: column; gap: 10px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .nav .sub-menu.show { display: flex; opacity: 1; transform: translateY(0); }
-        .search-box { width: 60%; margin: 0 auto 40px; text-align: center; background-color: rgba(0, 0, 0, 0.7); padding: 20px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .search-ai-container { width: 60%; margin: 0 auto 30px; display: flex; flex-direction: column; gap: 20px; }
+        .search-box, .ai-assistant { background-color: rgba(0, 0, 0, 0.7); border-radius: 12px; padding: 20px; }
+        .search-box { display: flex; align-items: center; justify-content: center; gap: 8px; }
         .baidu-icon { width: 28px; height: 28px; border-radius: 4px; }
-        .search-input { width: 70%; height: 45px; padding: 0 15px; font-size: 16px; font-weight: 500; border: none; border-radius: 6px 0 0 6px; outline: none; background: rgba(255,255,255,0.9); }
+        .search-input { width: 70%; height: 45px; padding: 0 15px; font-size: 16px; border-radius: 6px 0 0 6px; outline: none; background: rgba(255,255,255,0.9); color: #000; }
         .search-btn { height: 45px; padding: 0 25px; font-size: 16px; font-weight: bold; border: none; border-radius: 0 6px 6px 0; background: #ff6600; color: #fff; cursor: pointer; }
         .search-btn:hover { background: #e65c00; }
-        .blank-box { width: 80%; margin: 80px auto; padding: 40px; background-color: rgba(0,0,0,0.75); border-radius: 15px; min-height: 400px; scroll-margin-top: 30px; }
+        .ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; border-bottom: 1px solid #ff6600; padding-bottom: 8px; }
+        .ai-header span { font-size: 20px; font-weight: bold; color: #ff6600; }
+        .ai-header small { font-size: 12px; color: #ccc; margin-left: auto; cursor: pointer; }
+        .ai-input-group { display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; }
+        .ai-input-group input { flex: 1; height: 45px; padding: 0 15px; font-size: 16px; border-radius: 8px; border: none; outline: none; background: rgba(255,255,255,0.9); color: #000; }
+        .ai-input-group button { background: #ff6600; border: none; padding: 0 24px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .ai-input-group button:disabled { background: #666; cursor: not-allowed; }
+        .ai-response { background: rgba(0,0,0,0.6); border-radius: 10px; padding: 15px; min-height: 100px; max-height: 250px; overflow-y: auto; font-size: 15px; line-height: 1.5; color: #f0f0f0; white-space: pre-wrap; }
+        .ai-tip { font-size: 12px; color: #ffaa66; margin-top: 8px; text-align: right; }
+        .blank-box { width: 80%; margin: 40px auto; padding: 40px; background-color: rgba(0,0,0,0.75); border-radius: 15px; min-height: 400px; }
         .page { display: none; }
         .page.active { display: block; }
         .home-top-btn { text-align: center; margin-bottom: 30px; }
         .home-top-btn button { padding: 10px 25px; font-size: 18px; background: #ff6600; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-        .home-top-btn button:hover { background: #e65c00; }
         .home-row { display: flex; align-items: center; justify-content: center; gap: 60px; margin-top: 30px; flex-wrap: wrap; }
-        .digital-clock { background-color: rgba(0,0,0,0.75); padding: 25px 35px; border-radius: 15px; font-size: 45px; font-weight: bold; color: #fff; letter-spacing: 5px; text-align: center; }
+        .digital-clock { background-color: rgba(0,0,0,0.75); padding: 25px 35px; border-radius: 15px; font-size: 45px; font-weight: bold; text-align: center; }
         .donate-group { text-align: center; }
         .donate { background-color: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; }
         .donate-title { font-size: 22px; color: #ff6600; font-weight: bold; margin-bottom: 12px; }
         .donate img { width: 180px; border-radius: 8px; }
-        .footer-text { text-align: center; margin-top: 15px; font-size: 16px; color: #fff; }
+        .footer-text { text-align: center; margin-top: 15px; font-size: 16px; }
         .author-info { background-color: rgba(0, 0, 0, 0.6); padding: 15px 25px; border-radius: 8px; font-size: 18px; text-align: center; margin-bottom: 20px; }
         .author-info a { color: #0066ff; text-decoration: none; margin-left: 15px; font-weight: bold; }
         .author-info a:hover { color: #ff6600; }
         .pagination { text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .page-btn { padding: 8px 15px; background: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .page-btn { padding: 8px 15px; background: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .page-btn.active { background: #e65c00; font-weight: bold; }
-        .page-btn:hover { background: #e65c00; }
         .admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.95); padding: 30px; border-radius: 12px; display: none; z-index: 9999; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
         .admin-title { color: #ff6600; font-size: 28px; margin-bottom: 20px; text-align: center; }
         .login-box { text-align: center; margin: 20px 0; }
-        .login-box input { padding: 12px; font-size: 18px; width: 300px; border: none; border-radius: 6px; outline: none; }
-        .login-box button { padding: 12px 30px; margin-left: 10px; background: #ff6600; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        .login-box input { padding: 12px; font-size: 18px; width: 300px; border-radius: 6px; border: none; outline: none; }
+        .login-box button { padding: 12px 30px; margin-left: 10px; background: #ff6600; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
         .admin-form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
         .admin-form select, .admin-form input { padding: 10px; font-size: 16px; border-radius: 5px; border: none; outline: none; }
         .admin-form button { padding: 10px 20px; background: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .del-page-btn { background: #ff3333; }
-        .del-page-btn:hover { background: #cc0000; }
         .del-menu-btn { background: #aa2e2e; }
-        .del-menu-btn:hover { background: #7a1f1f; }
         .backup-btn { background: #2c7da0; }
-        .backup-btn:hover { background: #1f5e7a; }
         .link-list { margin-top: 20px; min-height: 100px; }
         .link-item { padding: 10px; background: rgba(255,255,255,0.1); margin: 5px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
         .link-item a { color: #fff; text-decoration: none; }
@@ -68,159 +74,96 @@
         .del-btn { background: #ff3333; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 22px; cursor: pointer; }
         .warning-tip { font-size: 12px; color: #ffaa66; margin-left: 10px; }
-        hr { margin: 20px 0; border-color: #ff6600; }
-        .go-top { position: fixed; bottom: 50px; right: 30px; width: 50px; height: 50px; background-color: #ff6600; color: #fff; border-radius: 50%; text-align: center; line-height: 50px; font-size: 28px; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .go-top { position: fixed; bottom: 50px; right: 30px; width: 50px; height: 50px; background-color: #ff6600; color: #fff; border-radius: 50%; text-align: center; line-height: 50px; font-size: 28px; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 1000; }
         .go-top.show { opacity: 1; visibility: visible; }
         .go-top:hover { background-color: #e65c00; transform: translateY(-3px); }
-        .backup-section { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .backup-section h4 { color: #ffaa66; margin-bottom: 12px; }
         .empty-tip { text-align: center; padding: 40px; color: #aaa; font-style: italic; }
+        hr { margin: 20px 0; border-color: #ff6600; }
     </style>
 </head>
 <body>
-    <div class="avatar-box" onclick="openAdminModal()">
-        <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
-    </div>
+    <div class="avatar-box" onclick="openAdminModal()"><img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar"></div>
     <div class="title-box"><h1 class="website-name">虎天寿资源整理网站</h1></div>
     <div class="current-menu" id="title">当前位置：首页</div>
-    <div class="nav" id="navContainer">
-        <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="个人头像" class="nav-avatar">
-        <ul id="navMenuList"></ul>
+    <div class="nav"><img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="nav-avatar"><ul id="navMenuList"></ul></div>
+
+    <div class="search-ai-container">
+        <div class="search-box"><img src="https://www.baidu.com/favicon.ico" class="baidu-icon"><input type="text" class="search-input" id="baiduSearchInput" placeholder="输入搜索内容"><button class="search-btn" onclick="baiduSearch()">百度搜索</button></div>
+        <div class="ai-assistant" id="aiAssistant"><div class="ai-header"><span>🤖 DeepSeek AI 智能助手</span><small id="aiConfigBtn" onclick="showAiConfig()">⚙️ 配置</small></div><div class="ai-input-group"><input type="text" id="aiQuestion" placeholder="输入你的问题，例如：如何优化Windows系统？"><button id="askAiBtn" onclick="askDeepSeek()">💬 提问 AI</button></div><div class="ai-response" id="aiResponse">✨ 你好！我是 AI 助手，可以回答技术问题、提供资源建议。请先点击右上角“配置”设置 API Key 和代理地址。</div><div class="ai-tip">⚡ 需自备 DeepSeek API Key 或使用代理，详见配置说明。</div></div>
     </div>
-    <div class="search-box">
-        <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
-        <input type="text" class="search-input" id="baiduSearchInput" placeholder="输入搜索内容">
-        <button class="search-btn" onclick="baiduSearch()">百度搜索</button>
-    </div>
-    <div class="blank-box" id="area">
-        <div class="page active" id="home">
-            <div class="home-top-btn"><button onclick="showPage('首页','home')">🏠 返回主页</button></div>
-            <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2><br>
-            <p style="font-size:18px;text-align:center">本站整理系统镜像、软件、实用网站、加速器各类资源<br>点击上方导航菜单查看对应分类</p>
-            <div class="author-info">QQ：3608504926<br><a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a></div>
-            <div class="home-row">
-                <div class="digital-clock" id="clock"></div>
-                <div class="donate-group">
-                    <div class="donate"><div class="donate-title">捐献一点吧</div><a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"><img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"></a></div>
-                    <div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="go-top" id="goTopBtn" title="回到顶部">↑</div>
-    <div class="admin-modal" id="adminModal">
-        <span class="close-btn" onclick="closeAdminModal()">×</span>
-        <div class="admin-box">
-            <h2 class="admin-title">下载链接管理面板</h2>
-            <div class="login-box" id="loginBox"><input type="password" id="pwd" placeholder="请输入管理员密码"><button onclick="adminLogin()">登录</button></div>
-            <div id="adminPanel" style="display:none;">
-                <div class="backup-section"><h4>💾 备份与恢复（防止数据丢失）</h4>
-                    <div class="admin-form">
-                        <button class="backup-btn" onclick="exportBackup()">📥 导出备份文件</button>
-                        <label for="importFileInput" class="backup-btn" style="background:#2c7da0; padding:10px 20px; border-radius:5px; cursor:pointer;">📂 选择备份文件导入</label>
-                        <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importBackup(this)">
-                        <button class="del-page-btn" onclick="resetToDefault()" style="background:#aa2e2e;">⚠️ 重置为默认数据</button>
-                    </div>
-                    <div class="warning-tip">✨ 建议定期导出备份，更换设备或清除缓存后可通过导入恢复所有数据。</div>
-                </div><hr>
-                <div class="admin-form"><input type="text" id="newCate" placeholder="顶级菜单名称"><button onclick="addTopCate()">添加顶级菜单</button></div>
-                <div class="admin-form"><select id="parentCateSelect"></select><input type="text" id="subCateName" placeholder="子菜单名称"><button onclick="addSubCate()">➕ 添加子菜单（分支）</button></div>
-                <div class="admin-form"><select id="delMenuType"><option value="top">删除顶级菜单</option><option value="sub">删除子菜单</option></select><select id="delMenuSelect"></select><button class="del-menu-btn" onclick="deleteMenu()">🗑️ 删除选中菜单</button><span class="warning-tip">⚠️ 默认菜单不可删除</span></div><hr>
-                <div class="admin-form"><select id="pageCate"></select><button onclick="addPage()">添加新页数（+1页）</button></div>
-                <div class="admin-form"><select id="delPageCate"></select><select id="delPageNum"></select><button class="del-page-btn" onclick="deletePage()">删除选中页数</button></div>
-                <div class="admin-form"><select id="cate"></select><select id="pageNum"></select><input type="text" id="linkName" placeholder="链接名称"><input type="url" id="linkUrl" placeholder="下载链接地址"><button onclick="addLink()">添加链接</button></div>
-                <h3 style="color:#ff6600;margin:10px 0;">已添加全部链接</h3>
-                <div id="allLinks"></div>
-            </div>
-        </div>
-    </div>
+
+    <div class="blank-box" id="area"><div class="page active" id="home"><div class="home-top-btn"><button onclick="showPage('首页','home')">🏠 返回主页</button></div><h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2><br><p style="font-size:18px;text-align:center">本站整理系统镜像、软件、实用网站、加速器各类资源<br>点击上方导航菜单查看对应分类</p><div class="author-info">QQ：3608504926<br><a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a></div><div class="home-row"><div class="digital-clock" id="clock"></div><div class="donate-group"><div class="donate"><div class="donate-title">捐献一点吧</div><a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"><img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png"></a></div><div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div></div></div></div></div>
+
+    <div class="go-top" id="goTopBtn">↑</div>
+    <div class="admin-modal" id="adminModal"><span class="close-btn" onclick="closeAdminModal()">×</span><div class="admin-box"><h2 class="admin-title">管理面板</h2><div class="login-box" id="loginBox"><input type="password" id="pwd" placeholder="管理员密码"><button onclick="adminLogin()">登录</button></div><div id="adminPanel" style="display:none;"><div class="backup-section"><h4>💾 备份与恢复</h4><div class="admin-form"><button class="backup-btn" onclick="exportBackup()">📥 导出备份</button><label for="importFileInput" class="backup-btn" style="background:#2c7da0;padding:10px 20px;border-radius:5px;cursor:pointer;">📂 导入备份</label><input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importBackup(this)"><button class="del-page-btn" onclick="resetToDefault()">⚠️ 重置默认</button></div></div><hr><div class="admin-form"><input type="text" id="newCate" placeholder="顶级菜单名称"><button onclick="addTopCate()">添加顶级菜单</button></div><div class="admin-form"><select id="parentCateSelect"></select><input type="text" id="subCateName" placeholder="子菜单名称"><button onclick="addSubCate()">➕ 添加子菜单</button></div><div class="admin-form"><select id="delMenuType"><option value="top">删除顶级菜单</option><option value="sub">删除子菜单</option></select><select id="delMenuSelect"></select><button class="del-menu-btn" onclick="deleteMenu()">🗑️ 删除</button><span class="warning-tip">仅可删除自定义菜单</span></div><hr><div class="admin-form"><select id="pageCate"></select><button onclick="addPage()">添加新页数</button></div><div class="admin-form"><select id="delPageCate"></select><select id="delPageNum"></select><button class="del-page-btn" onclick="deletePage()">删除页数</button></div><div class="admin-form"><select id="cate"></select><select id="pageNum"></select><input type="text" id="linkName" placeholder="链接名称"><input type="url" id="linkUrl" placeholder="链接地址"><button onclick="addLink()">添加链接</button></div><h3>全部链接</h3><div id="allLinks"></div></div></div></div>
+
     <script>
-        const ADMIN_PASSWORD = "wangyiming87";
-        let isLogin = false;
-        let currentPage = {};
+        // ---------- 核心数据 ----------
         let topMenus = {}, subMenus = {}, resourceLinks = {};
+        let currentPage = {};
+        let isLogin = false;
+        const ADMIN_PASSWORD = "wangyiming87";
         const DEFAULT_TOP_IDS = { sysImg: 'top_sysImg', soft: 'top_soft', web: 'top_web', acc: 'top_acc' };
         const DEFAULT_SUB_MAP = {
             [DEFAULT_TOP_IDS.sysImg]: [{ id: 'miniwin', name: '微系统' }, { id: 'winimg', name: 'Win系统镜像' }],
             [DEFAULT_TOP_IDS.soft]: [{ id: 'syssoft', name: '系统工具' }, { id: 'game', name: '游戏合集' }, { id: 'player', name: '播放软件' }, { id: 'zip', name: '解压软件' }, { id: 'safe', name: '安全软件' }, { id: 'chat', name: '社交软件' }]
         };
 
-        function digitalClock() { let now = new Date(); document.getElementById('clock').innerText = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`; }
-        setInterval(digitalClock,1000); digitalClock();
-
-        function initDefaultData() {
-            topMenus = { [DEFAULT_TOP_IDS.sysImg]: { name: '系统镜像', isDefault: true }, [DEFAULT_TOP_IDS.soft]: { name: '必装软件', isDefault: true }, [DEFAULT_TOP_IDS.web]: { name: '网站合集', isDefault: true }, [DEFAULT_TOP_IDS.acc]: { name: '网络加速器', isDefault: true } };
+        function initDefault() {
+            topMenus = {
+                [DEFAULT_TOP_IDS.sysImg]: { name: '系统镜像', isDefault: true },
+                [DEFAULT_TOP_IDS.soft]: { name: '必装软件', isDefault: true },
+                [DEFAULT_TOP_IDS.web]: { name: '网站合集', isDefault: true },
+                [DEFAULT_TOP_IDS.acc]: { name: '网络加速器', isDefault: true }
+            };
             subMenus = {};
-            for (let parentId in DEFAULT_SUB_MAP) DEFAULT_SUB_MAP[parentId].forEach(sub => { subMenus[sub.id] = { parentId: parentId, name: sub.name, isDefault: true }; });
+            for (let p in DEFAULT_SUB_MAP) DEFAULT_SUB_MAP[p].forEach(s => { subMenus[s.id] = { parentId: p, name: s.name, isDefault: true }; });
             resourceLinks = {};
             [...Object.keys(topMenus), ...Object.keys(subMenus)].forEach(id => { resourceLinks[id] = { 1: [] }; });
-            saveToLocalStorage();
+            save();
         }
         function loadData() {
-            let storedTop = localStorage.getItem('topMenus'), storedSub = localStorage.getItem('subMenus'), storedLinks = localStorage.getItem('resourceLinks');
-            if (storedTop && storedSub && storedLinks) {
-                topMenus = JSON.parse(storedTop); subMenus = JSON.parse(storedSub); resourceLinks = JSON.parse(storedLinks);
+            let t = localStorage.getItem('topMenus'), s = localStorage.getItem('subMenus'), r = localStorage.getItem('resourceLinks');
+            if (t && s && r) { topMenus = JSON.parse(t); subMenus = JSON.parse(s); resourceLinks = JSON.parse(r);
                 for (let id in topMenus) if (Object.values(DEFAULT_TOP_IDS).includes(id)) topMenus[id].isDefault = true;
                 for (let id in subMenus) if (['miniwin','winimg','syssoft','game','player','zip','safe','chat'].includes(id)) subMenus[id].isDefault = true;
-            } else initDefaultData();
+            } else initDefault();
         }
-        function saveToLocalStorage() { localStorage.setItem('topMenus', JSON.stringify(topMenus)); localStorage.setItem('subMenus', JSON.stringify(subMenus)); localStorage.setItem('resourceLinks', JSON.stringify(resourceLinks)); }
+        function save() { localStorage.setItem('topMenus', JSON.stringify(topMenus)); localStorage.setItem('subMenus', JSON.stringify(subMenus)); localStorage.setItem('resourceLinks', JSON.stringify(resourceLinks)); }
 
-        function getAllMenuItems() {
-            let items = [];
-            for (let id in topMenus) items.push({ id, name: topMenus[id].name, type: 'top' });
-            for (let id in subMenus) { let parent = topMenus[subMenus[id].parentId]; items.push({ id, name: `${parent ? parent.name : '未知'} / ${subMenus[id].name}`, type: 'sub' }); }
-            return items;
-        }
-        function getTopMenusForSelect() { return Object.entries(topMenus).map(([id,val]) => ({ id, name: val.name })); }
-        function getDeletableMenus(type) {
-            let list = [];
-            if (type === 'top') for (let id in topMenus) if (!topMenus[id].isDefault) list.push({ id, name: topMenus[id].name });
-            else for (let id in subMenus) if (!subMenus[id].isDefault) { let parent = topMenus[subMenus[id].parentId]; list.push({ id, name: `${parent ? parent.name : '?'} / ${subMenus[id].name}` }); }
-            return list;
-        }
-        function ensurePageContainer(menuId, displayName) {
-            let container = document.getElementById(menuId);
-            if (container) {
-                // 更新标题（名称可能变更）
-                let titleH2 = container.querySelector('h2');
-                if (titleH2) titleH2.innerHTML = `【${displayName}】`;
-                return;
-            }
+        // 页面容器管理
+        function ensureContainer(id, name) {
+            if (document.getElementById(id)) return;
             let area = document.getElementById('area');
-            let div = document.createElement('div'); div.className = 'page'; div.id = menuId;
-            div.innerHTML = `<h2 style="color:#ff6600">【${displayName}】</h2><div id="list-${menuId}" class="link-list"></div><div id="page-${menuId}" class="pagination"></div>`;
+            let div = document.createElement('div'); div.className = 'page'; div.id = id;
+            div.innerHTML = `<h2 style="color:#ff6600">【${name}】</h2><div id="list-${id}" class="link-list"></div><div id="page-${id}" class="pagination"></div>`;
             area.appendChild(div);
         }
-        function removePageContainer(menuId) { let el = document.getElementById(menuId); if (el) el.remove(); }
+        function removeContainer(id) { let el = document.getElementById(id); if (el) el.remove(); }
 
-        function rebuildNavMenu() {
-            const navUl = document.getElementById('navMenuList'); if (!navUl) return;
+        // 导航重建（关键：确保新菜单立即出现并可点击）
+        function rebuildNav() {
+            let navUl = document.getElementById('navMenuList'); if (!navUl) return;
             navUl.innerHTML = '<li><a onclick="showPage(\'首页\',\'home\')">首页</a></li>';
-            for (let topId in topMenus) {
-                const top = topMenus[topId];
-                const children = Object.values(subMenus).filter(sub => sub.parentId === topId);
-                const li = document.createElement('li');
+            for (let tid in topMenus) {
+                let top = topMenus[tid];
+                let children = Object.values(subMenus).filter(c => c.parentId === tid);
+                let li = document.createElement('li');
                 if (children.length) {
                     li.innerHTML = `<a onclick="toggleMenu(this)">${top.name}</a><ul class="sub-menu"></ul>`;
-                    const subUl = li.querySelector('.sub-menu');
-                    children.forEach(child => { let subLi = document.createElement('li'); subLi.innerHTML = `<a onclick="showPage('${child.name}','${child.id}')">${child.name}</a>`; subUl.appendChild(subLi); });
-                } else li.innerHTML = `<a onclick="showPage('${top.name}','${topId}')">${top.name}</a>`;
+                    let subUl = li.querySelector('.sub-menu');
+                    children.forEach(c => { let subLi = document.createElement('li'); subLi.innerHTML = `<a onclick="showPage('${c.name}','${c.id}')">${c.name}</a>`; subUl.appendChild(subLi); });
+                } else li.innerHTML = `<a onclick="showPage('${top.name}','${tid}')">${top.name}</a>`;
                 navUl.appendChild(li);
-                ensurePageContainer(topId, top.name);
+                ensureContainer(tid, top.name);
             }
-            for (let subId in subMenus) ensurePageContainer(subId, subMenus[subId].name);
+            for (let sid in subMenus) ensureContainer(sid, subMenus[sid].name);
         }
 
         function loadLinks(menuId, page) {
             let list = resourceLinks[menuId]?.[page] || [];
             let dom = document.getElementById(`list-${menuId}`);
-            if (!dom) return;
-            if (list.length === 0) {
-                dom.innerHTML = '<div class="empty-tip">📭 暂无链接，请通过后台管理添加</div>';
-                return;
-            }
-            dom.innerHTML = list.map(item => `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`).join('');
+            if (dom) dom.innerHTML = list.length ? list.map(item => `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`).join('') : '<div class="empty-tip">📭 暂无链接，请通过后台管理添加</div>';
         }
         function renderPagination(menuId) {
             let pageDom = document.getElementById(`page-${menuId}`);
@@ -235,194 +178,107 @@
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             let target = document.getElementById(menuId);
-            if (!target) {
-                let displayName = subMenus[menuId]?.name || topMenus[menuId]?.name || name;
-                ensurePageContainer(menuId, displayName);
-                target = document.getElementById(menuId);
-            }
-            if (target) {
-                target.classList.add('active');
-                if (menuId !== 'home') {
-                    if (!currentPage[menuId]) currentPage[menuId] = 1;
-                    loadLinks(menuId, currentPage[menuId]);
-                    renderPagination(menuId);
-                }
-            } else {
-                document.getElementById('home').classList.add('active');
-            }
+            if (!target) { let display = subMenus[menuId]?.name || topMenus[menuId]?.name || name; ensureContainer(menuId, display); target = document.getElementById(menuId); }
+            if (target) { target.classList.add('active'); if (menuId !== 'home') { if (!currentPage[menuId]) currentPage[menuId] = 1; loadLinks(menuId, currentPage[menuId]); renderPagination(menuId); } }
+            else document.getElementById('home').classList.add('active');
             document.querySelectorAll('.sub-menu').forEach(m => m.classList.remove('show'));
             document.getElementById('area').scrollIntoView({ behavior: 'smooth' });
         }
-        function toggleMenu(ele) { const sub = ele.nextElementSibling; const parentLi = ele.parentElement; const parentUl = parentLi.parentElement; parentUl.querySelectorAll('.sub-menu').forEach(m => { if (m !== sub) m.classList.remove('show'); }); sub.classList.toggle('show'); }
+        function toggleMenu(ele) { let sub = ele.nextElementSibling; let parentLi = ele.parentElement; let parentUl = parentLi.parentElement; parentUl.querySelectorAll('.sub-menu').forEach(m => { if (m !== sub) m.classList.remove('show'); }); sub.classList.toggle('show'); }
 
-        function openAdminModal() { document.getElementById('adminModal').style.display = 'block'; document.getElementById('pwd').value = ''; renderAllSelects(); }
-        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
-        function adminLogin() {
-            let pwd = document.getElementById('pwd').value;
-            if (pwd === ADMIN_PASSWORD) { isLogin = true; document.getElementById('loginBox').style.display = 'none'; document.getElementById('adminPanel').style.display = 'block'; renderAllSelects(); renderAdminList(); alert("登录成功！"); }
-            else alert("密码错误！");
-        }
-        function renderAllSelects() { renderParentSelect(); renderDelMenuSelect(); renderCateSelects(); }
-        function renderParentSelect() { let select = document.getElementById('parentCateSelect'); select.innerHTML = ''; getTopMenusForSelect().forEach(t => { let opt = document.createElement('option'); opt.value = t.id; opt.innerText = t.name; select.appendChild(opt); }); }
-        function renderDelMenuSelect() { let type = document.getElementById('delMenuType').value; let select = document.getElementById('delMenuSelect'); select.innerHTML = ''; let menus = getDeletableMenus(type); if (menus.length===0) { let opt = document.createElement('option'); opt.text = '无可删除的菜单'; opt.disabled = true; select.appendChild(opt); } else menus.forEach(m => { let opt = document.createElement('option'); opt.value = m.id; opt.innerText = m.name; select.appendChild(opt); }); }
-        function renderCateSelects() { let cateSelect = document.getElementById('cate'), pageCate = document.getElementById('pageCate'), delPageCate = document.getElementById('delPageCate'); cateSelect.innerHTML = ''; pageCate.innerHTML = ''; delPageCate.innerHTML = ''; getAllMenuItems().forEach(menu => { let opt = document.createElement('option'); opt.value = menu.id; opt.innerText = menu.name; cateSelect.appendChild(opt); pageCate.appendChild(opt.cloneNode(true)); delPageCate.appendChild(opt.cloneNode(true)); }); renderPageNumSelect(); renderDelPageNumSelect(); }
-        function renderPageNumSelect() { let menuId = document.getElementById('cate').value; let pageSelect = document.getElementById('pageNum'); pageSelect.innerHTML = ''; let pages = Object.keys(resourceLinks[menuId] || {}); pages.forEach(p => { let opt = document.createElement('option'); opt.value = p; opt.innerText = `第${p}页`; pageSelect.appendChild(opt); }); }
-        function renderDelPageNumSelect() { let menuId = document.getElementById('delPageCate').value; let pageSelect = document.getElementById('delPageNum'); pageSelect.innerHTML = ''; let pages = Object.keys(resourceLinks[menuId] || {}); pages.forEach(p => { let opt = document.createElement('option'); opt.value = p; opt.innerText = `第${p}页`; pageSelect.appendChild(opt); }); }
-
+        // 后台操作（添加后强制重建并刷新当前页面）
         function addTopCate() {
             if (!isLogin) return;
             let name = document.getElementById('newCate').value.trim();
-            if (!name) return alert("请输入菜单名称！");
+            if (!name) return alert("请输入名称");
             let id = 'top_' + Date.now();
             topMenus[id] = { name: name, isDefault: false };
             resourceLinks[id] = { 1: [] };
-            saveToLocalStorage();
+            save();
             document.getElementById('newCate').value = '';
-            rebuildNavMenu();
+            rebuildNav();  // 立即重建导航
             renderAllSelects();
             renderAdminList();
-            // 如果当前显示的是刚添加的菜单，刷新内容
-            if (document.querySelector('.page.active')?.id === id) {
-                loadLinks(id, 1);
-                renderPagination(id);
-            }
             alert(`顶级菜单“${name}”已添加`);
         }
         function addSubCate() {
             if (!isLogin) return;
             let parentId = document.getElementById('parentCateSelect').value;
             let name = document.getElementById('subCateName').value.trim();
-            if (!name) return alert("请输入子菜单名称！");
+            if (!name) return alert("请输入子菜单名称");
             let id = 'sub_' + Date.now();
             subMenus[id] = { parentId: parentId, name: name, isDefault: false };
             resourceLinks[id] = { 1: [] };
-            saveToLocalStorage();
+            save();
             document.getElementById('subCateName').value = '';
-            rebuildNavMenu();
+            rebuildNav();
             renderAllSelects();
             renderAdminList();
-            if (document.querySelector('.page.active')?.id === id) {
-                loadLinks(id, 1);
-                renderPagination(id);
+            alert(`子菜单“${name}”已添加`);
+        }
+        function deleteMenu() { /* 省略实现同前，保留功能 */ if (!isLogin) return; let type=document.getElementById('delMenuType').value; let select=document.getElementById('delMenuSelect'); if(!select.selectedOptions.length||select.options[0].disabled) return alert("无菜单可删"); let id=select.value; if(!confirm("确认删除？")) return; if(type==='top'){ let children=Object.keys(subMenus).filter(k=>subMenus[k].parentId===id); children.forEach(c=>{delete subMenus[c]; delete resourceLinks[c]; removeContainer(c);}); delete topMenus[id]; delete resourceLinks[id]; removeContainer(id);} else { delete subMenus[id]; delete resourceLinks[id]; removeContainer(id);} save(); rebuildNav(); renderAllSelects(); renderAdminList(); if(document.querySelector('.page.active')?.id===id) showPage('首页','home'); alert("已删除"); }
+        function addPage() { if(!isLogin) return; let mid=document.getElementById('pageCate').value; let pages=Object.keys(resourceLinks[mid]||{}).map(Number); let np=Math.max(...pages)+1; resourceLinks[mid][np]=[]; save(); renderAllSelects(); renderAdminList(); if(document.querySelector('.page.active')?.id===mid) renderPagination(mid); alert(`添加第${np}页`); }
+        function deletePage() { if(!isLogin) return; let mid=document.getElementById('delPageCate').value; let page=document.getElementById('delPageNum').value; if(Object.keys(resourceLinks[mid]||{}).length<=1) return alert("至少保留一页"); if(!confirm("删除页？")) return; delete resourceLinks[mid][page]; save(); renderAllSelects(); renderAdminList(); if(document.querySelector('.page.active')?.id===mid){ if(currentPage[mid]==page) currentPage[mid]=1; loadLinks(mid,currentPage[mid]); renderPagination(mid);} alert("已删除"); }
+        function addLink() { if(!isLogin) return; let mid=document.getElementById('cate').value; let page=document.getElementById('pageNum').value; let name=document.getElementById('linkName').value.trim(); let url=document.getElementById('linkUrl').value.trim(); if(!name||!url) return alert("完整填写"); resourceLinks[mid][page].push({name,url}); save(); document.getElementById('linkName').value=''; document.getElementById('linkUrl').value=''; renderAdminList(); if(document.querySelector('.page.active')?.id===mid){ loadLinks(mid,page); renderPagination(mid);} alert("添加成功"); }
+        function delLink(mid,page,idx){ if(!isLogin) return; resourceLinks[mid][page].splice(idx,1); save(); renderAdminList(); if(document.querySelector('.page.active')?.id===mid) loadLinks(mid,page); }
+        function exportBackup() { let data={version:"1.0",exportTime:new Date().toISOString(),topMenus,subMenus,resourceLinks}; let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})); a.download=`backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); alert("已导出"); }
+        function importBackup(input) { if(!isLogin) return alert("请登录"); let file=input.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=e=>{ try{ let d=JSON.parse(e.target.result); if(d.topMenus&&d.subMenus&&d.resourceLinks){ topMenus=d.topMenus; subMenus=d.subMenus; resourceLinks=d.resourceLinks; save(); rebuildNav(); renderAllSelects(); renderAdminList(); showPage('首页','home'); alert("导入成功"); } else alert("格式错误"); }catch(err){ alert("解析失败"); } input.value=''; }; reader.readAsText(file); }
+        function resetToDefault() { if(!isLogin) return; if(confirm("重置会丢失所有自定义数据！")){ initDefault(); save(); rebuildNav(); renderAllSelects(); renderAdminList(); showPage('首页','home'); alert("已重置"); } }
+        function renderAllSelects() { /* 简化：重新填充下拉框 */ let pSel=document.getElementById('parentCateSelect'); pSel.innerHTML=''; for(let id in topMenus) pSel.appendChild(new Option(topMenus[id].name,id)); let delType=document.getElementById('delMenuType').value; let delSel=document.getElementById('delMenuSelect'); delSel.innerHTML=''; let delList=delType==='top'?Object.keys(topMenus).filter(k=>!topMenus[k].isDefault).map(k=>({id:k,name:topMenus[k].name})):Object.keys(subMenus).filter(k=>!subMenus[k].isDefault).map(k=>({id:k,name:subMenus[k].name})); if(delList.length) delList.forEach(item=>delSel.appendChild(new Option(item.name,item.id))); else delSel.appendChild(new Option("无可删除菜单","",true,true)); let cateSel=document.getElementById('cate'); let pageCate=document.getElementById('pageCate'); let delPageCate=document.getElementById('delPageCate'); cateSel.innerHTML=''; pageCate.innerHTML=''; delPageCate.innerHTML=''; let allItems=[...Object.keys(topMenus).map(id=>({id,name:topMenus[id].name})),...Object.keys(subMenus).map(id=>({id,name:subMenus[id].name}))]; allItems.forEach(item=>{ let opt=new Option(item.name,item.id); cateSel.appendChild(opt.cloneNode(true)); pageCate.appendChild(opt.cloneNode(true)); delPageCate.appendChild(opt.cloneNode(true)); }); let mid=cateSel.value; let pageNumSel=document.getElementById('pageNum'); pageNumSel.innerHTML=''; let pages=Object.keys(resourceLinks[mid]||{}); pages.forEach(p=>pageNumSel.appendChild(new Option(`第${p}页`,p))); let delMid=delPageCate.value; let delPageNum=document.getElementById('delPageNum'); delPageNum.innerHTML=''; let dpages=Object.keys(resourceLinks[delMid]||{}); dpages.forEach(p=>delPageNum.appendChild(new Option(`第${p}页`,p))); }
+        function renderAdminList() { let dom=document.getElementById('allLinks'); dom.innerHTML=''; let all=[...Object.keys(topMenus).map(id=>({id,name:topMenus[id].name})),...Object.keys(subMenus).map(id=>({id,name:subMenus[id].name}))]; for(let m of all){ let links=resourceLinks[m.id]; if(!links) continue; for(let page in links){ if(links[page].length){ dom.innerHTML+=`<h4>${m.name} - 第${page}页</h4>`; links[page].forEach((item,i)=>{ dom.innerHTML+=`<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a><button class="del-btn" onclick="delLink('${m.id}',${page},${i})">删除</button></div>`; }); } } } }
+        function openAdminModal() { document.getElementById('adminModal').style.display='block'; document.getElementById('pwd').value=''; renderAllSelects(); }
+        function closeAdminModal() { document.getElementById('adminModal').style.display='none'; }
+        function adminLogin() { let pwd=document.getElementById('pwd').value; if(pwd===ADMIN_PASSWORD){ isLogin=true; document.getElementById('loginBox').style.display='none'; document.getElementById('adminPanel').style.display='block'; renderAllSelects(); renderAdminList(); alert("登录成功"); } else alert("密码错误"); }
+        document.getElementById('cate').addEventListener('change',()=>{ let mid=document.getElementById('cate').value; let pageNum=document.getElementById('pageNum'); pageNum.innerHTML=''; let pages=Object.keys(resourceLinks[mid]||{}); pages.forEach(p=>pageNum.appendChild(new Option(`第${p}页`,p))); });
+        document.getElementById('delPageCate').addEventListener('change',()=>{ let mid=document.getElementById('delPageCate').value; let pageNum=document.getElementById('delPageNum'); pageNum.innerHTML=''; let pages=Object.keys(resourceLinks[mid]||{}); pages.forEach(p=>pageNum.appendChild(new Option(`第${p}页`,p))); });
+        document.getElementById('delMenuType').addEventListener('change',renderAllSelects);
+        function baiduSearch() { let kw=document.getElementById('baiduSearchInput').value; if(kw.trim()) window.open('https://www.baidu.com/s?wd='+encodeURIComponent(kw),'_self'); }
+        function initGoTop() { let btn=document.getElementById('goTopBtn'); window.addEventListener('scroll',()=>{ if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); }); btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); }
+
+        // AI 配置与请求（使用用户提供的 API Key，支持代理）
+        let aiApiKey = localStorage.getItem('deepseek_api_key') || '';
+        let aiProxyUrl = localStorage.getItem('deepseek_proxy') || '';
+        function showAiConfig() {
+            let key = prompt("请输入 DeepSeek API Key（从 platform.deepseek.com 获取）:", aiApiKey);
+            if (key !== null) { aiApiKey = key; localStorage.setItem('deepseek_api_key', key); }
+            let proxy = prompt("可选：设置代理地址（如 https://your-proxy.com/v1/chat/completions，直接调用 API 会跨域，建议使用代理）", aiProxyUrl);
+            if (proxy !== null) { aiProxyUrl = proxy; localStorage.setItem('deepseek_proxy', proxy); }
+            alert("配置已保存，可以开始提问");
+        }
+        async function askDeepSeek() {
+            let question = document.getElementById('aiQuestion').value.trim();
+            if (!question) return alert("请输入问题");
+            if (!aiApiKey) { alert("请先点击⚙️配置 API Key"); return; }
+            let apiUrl = aiProxyUrl || "https://api.deepseek.com/v1/chat/completions";
+            let btn = document.getElementById('askAiBtn');
+            let respDiv = document.getElementById('aiResponse');
+            respDiv.innerHTML = '<span class="loading-dots">🤔 AI 思考中...</span>';
+            btn.disabled = true;
+            try {
+                let res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${aiApiKey}` },
+                    body: JSON.stringify({ model: "deepseek-chat", messages: [{ role: "user", content: question }], stream: false })
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                let data = await res.json();
+                let answer = data.choices?.[0]?.message?.content || "无有效回复";
+                respDiv.innerHTML = answer.replace(/\n/g, '<br>');
+            } catch (err) {
+                respDiv.innerHTML = `❌ 请求失败：${err.message}<br>可能是跨域问题，请配置代理地址或使用支持CORS的服务。`;
+            } finally {
+                btn.disabled = false;
+                document.getElementById('aiQuestion').value = '';
             }
-            alert(`子菜单“${name}”已添加至“${topMenus[parentId].name}”下`);
         }
-        function deleteMenu() {
-            if (!isLogin) return;
-            let type = document.getElementById('delMenuType').value;
-            let select = document.getElementById('delMenuSelect');
-            if (!select.selectedOptions.length || select.options[0].disabled) return alert("没有可删除的菜单");
-            let menuId = select.value;
-            if (!confirm(`⚠️ 确认删除该${type === 'top' ? '顶级菜单' : '子菜单'}及其所有链接吗？`)) return;
-            if (type === 'top') {
-                let children = Object.keys(subMenus).filter(id => subMenus[id].parentId === menuId);
-                children.forEach(childId => { delete subMenus[childId]; delete resourceLinks[childId]; removePageContainer(childId); });
-                delete topMenus[menuId]; delete resourceLinks[menuId]; removePageContainer(menuId);
-            } else { delete subMenus[menuId]; delete resourceLinks[menuId]; removePageContainer(menuId); }
-            saveToLocalStorage();
-            rebuildNavMenu();
-            renderAllSelects();
-            renderAdminList();
-            let activeId = document.querySelector('.page.active')?.id;
-            if (activeId === menuId || (type === 'top' && children && children.includes(activeId))) showPage('首页', 'home');
-            alert("删除成功");
-        }
-        function addPage() {
-            if (!isLogin) return;
-            let menuId = document.getElementById('pageCate').value;
-            let pages = Object.keys(resourceLinks[menuId] || {}).map(Number);
-            let newPage = Math.max(...pages) + 1;
-            resourceLinks[menuId][newPage] = [];
-            saveToLocalStorage();
-            renderAllSelects();
-            renderAdminList();
-            if (document.querySelector('.page.active')?.id === menuId) renderPagination(menuId);
-            alert(`添加第${newPage}页成功`);
-        }
-        function deletePage() {
-            if (!isLogin) return;
-            let menuId = document.getElementById('delPageCate').value;
-            let page = document.getElementById('delPageNum').value;
-            let pages = Object.keys(resourceLinks[menuId] || {});
-            if (pages.length <= 1) return alert("至少保留一页");
-            if (!confirm(`删除第${page}页，该页所有链接将丢失`)) return;
-            delete resourceLinks[menuId][page];
-            saveToLocalStorage();
-            renderAllSelects();
-            renderAdminList();
-            if (document.querySelector('.page.active')?.id === menuId) {
-                if (currentPage[menuId] == page) currentPage[menuId] = 1;
-                loadLinks(menuId, currentPage[menuId]); renderPagination(menuId);
-            }
-            alert("删除成功");
-        }
-        function addLink() {
-            if (!isLogin) return;
-            let menuId = document.getElementById('cate').value;
-            let page = document.getElementById('pageNum').value;
-            let name = document.getElementById('linkName').value.trim();
-            let url = document.getElementById('linkUrl').value.trim();
-            if (!name || !url) return alert("填写完整");
-            resourceLinks[menuId][page].push({ name, url });
-            saveToLocalStorage();
-            document.getElementById('linkName').value = ''; document.getElementById('linkUrl').value = '';
-            renderAdminList();
-            if (document.querySelector('.page.active')?.id === menuId) { loadLinks(menuId, page); renderPagination(menuId); }
-        }
-        function delLink(menuId, page, idx) {
-            if (!isLogin) return;
-            resourceLinks[menuId][page].splice(idx, 1);
-            saveToLocalStorage();
-            renderAdminList();
-            if (document.querySelector('.page.active')?.id === menuId) loadLinks(menuId, page);
-        }
-        function renderAdminList() {
-            let dom = document.getElementById('allLinks'); dom.innerHTML = '';
-            getAllMenuItems().forEach(menu => {
-                let links = resourceLinks[menu.id];
-                if (!links) return;
-                for (let page in links) {
-                    let list = links[page];
-                    if (list.length === 0) continue;
-                    dom.innerHTML += `<h4 style="color:#fff;margin:15px 0 5px;">${menu.name} - 第${page}页</h4>`;
-                    list.forEach((item, i) => { dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a><button class="del-btn" onclick="delLink('${menu.id}',${page},${i})">删除</button></div>`; });
-                }
-            });
-        }
-        function exportBackup() {
-            const backupData = { version: "1.0", exportTime: new Date().toISOString(), topMenus, subMenus, resourceLinks };
-            const blob = new Blob([JSON.stringify(backupData, null, 2)], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `resource_backup_${new Date().toISOString().slice(0,19)}.json`; a.click(); URL.revokeObjectURL(a.href);
-            alert("备份文件已导出");
-        }
-        function importBackup(fileInput) {
-            if (!isLogin) return alert("请先登录");
-            const file = fileInput.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.topMenus && data.subMenus && data.resourceLinks) {
-                        topMenus = data.topMenus; subMenus = data.subMenus; resourceLinks = data.resourceLinks;
-                        saveToLocalStorage();
-                        rebuildNavMenu(); renderAllSelects(); renderAdminList();
-                        showPage('首页', 'home');
-                        alert("导入成功！");
-                    } else alert("备份文件格式不正确");
-                } catch(err) { alert("解析失败："+err.message); }
-                fileInput.value = '';
-            }; reader.readAsText(file);
-        }
-        function resetToDefault() {
-            if (!isLogin) return alert("请先登录");
-            if (confirm("⚠️ 重置将丢失所有自定义数据，确定吗？")) { initDefaultData(); rebuildNavMenu(); renderAllSelects(); renderAdminList(); showPage('首页', 'home'); alert("已重置为默认数据"); }
-        }
-        document.getElementById('cate').addEventListener('change', renderPageNumSelect);
-        document.getElementById('delPageCate').addEventListener('change', renderDelPageNumSelect);
-        document.getElementById('delMenuType').addEventListener('change', renderDelMenuSelect);
-        function baiduSearch() { let kw = document.getElementById('baiduSearchInput').value; if (kw.trim()) window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(kw), '_self'); }
-        function initGoTop() { let btn = document.getElementById('goTopBtn'); window.addEventListener('scroll', () => { if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); }); btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' })); }
-        loadData(); rebuildNavMenu(); showPage('首页', 'home'); initGoTop();
+
+        // 初始化
+        loadData();
+        rebuildNav();
+        showPage('首页', 'home');
+        initGoTop();
+        digitalClock();
+        function digitalClock() { let now=new Date(); document.getElementById('clock').innerText=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`; setTimeout(digitalClock,1000); }
     </script>
 </body>
 </html>
