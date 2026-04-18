@@ -486,7 +486,6 @@
                     <button onclick="addSubCate()">➕ 添加分支（子菜单）</button>
                 </div>
 
-                <!-- ========== 【删除分支】功能 已添加 ========== -->
                 <div class="admin-form">
                     <select id="delBranchSelect"></select>
                     <button class="del-page-btn" onclick="deleteBranch()">🗑️ 删除选中分支</button>
@@ -630,7 +629,6 @@
             return arr;
         }
 
-        // 获取所有分支（子菜单）用于删除
         function getAllBranches() {
             let list = [];
             for (let id in subMenus) {
@@ -656,19 +654,24 @@
             if (el) el.remove();
         }
 
+        // 核心修复：重建导航菜单
         function rebuildNavMenu() {
             const navUl = document.getElementById('navMenuList');
-            if (!navUl) return;
             navUl.innerHTML = '';
+            
+            // 添加首页
             let homeLi = document.createElement('li');
             homeLi.innerHTML = '<a onclick="showPage(\'首页\',\'home\')">首页</a>';
             navUl.appendChild(homeLi);
 
+            // 循环添加所有顶级菜单
             for (let topId in topMenus) {
                 const top = topMenus[topId];
                 const children = Object.values(subMenus).filter(sub => sub.parentId === topId);
                 const li = document.createElement('li');
+                
                 if (children.length > 0) {
+                    // 有子菜单
                     li.innerHTML = `<a onclick="toggleMenu(this)">${top.name}</a><ul class="sub-menu"></ul>`;
                     const subUl = li.querySelector('.sub-menu');
                     children.forEach(child => {
@@ -677,11 +680,15 @@
                         subUl.appendChild(subLi);
                     });
                 } else {
+                    // 无子菜单
                     li.innerHTML = `<a onclick="showPage('${top.name}','${topId}')">${top.name}</a>`;
                 }
+                
                 navUl.appendChild(li);
                 ensurePageContainer(topId, top.name);
             }
+
+            // 确保子菜单页面存在
             for (let subId in subMenus) {
                 ensurePageContainer(subId, subMenus[subId].name);
             }
@@ -789,7 +796,6 @@
             });
         }
 
-        // 渲染分支下拉框
         function renderBranchSelect() {
             let sel = document.getElementById('delBranchSelect');
             sel.innerHTML = '';
@@ -864,29 +870,32 @@
             resourceLinks[id] = { 1: [] };
             saveToLocalStorage();
             document.getElementById('newCate').value = '';
-            rebuildNavMenu();
+            rebuildNavMenu(); // 刷新导航
             renderAllSelects();
             renderAdminList();
             alert(`顶级菜单“${name}”已添加`);
         }
 
+        // 修复：添加分支后强制刷新导航
         function addSubCate() {
             if (!isLogin) return;
             let parentId = document.getElementById('parentCateSelect').value;
             let name = document.getElementById('subCateName').value.trim();
+            if (!parentId) return alert("请先选择顶级菜单！");
             if (!name) return alert("请输入子菜单名称！");
+            
             let id = 'sub_' + Date.now();
             subMenus[id] = { parentId: parentId, name: name };
             resourceLinks[id] = { 1: [] };
+            
             saveToLocalStorage();
             document.getElementById('subCateName').value = '';
-            rebuildNavMenu();
+            rebuildNavMenu(); // 强制刷新导航栏
             renderAllSelects();
             renderAdminList();
-            alert(`分支“${name}”已添加`);
+            alert(`分支“${name}”已添加 → 导航栏已显示！`);
         }
 
-        // ========== 删除分支功能 ==========
         function deleteBranch() {
             if (!isLogin) return;
             let sel = document.getElementById('delBranchSelect');
@@ -1023,6 +1032,7 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // 初始化
         initData();
         rebuildNavMenu();
         showPage('首页', 'home');
