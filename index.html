@@ -80,16 +80,17 @@
             border-radius: 5px;
             background-color: rgba(0,0,0,0.5);
             cursor: pointer;
+            display: block;
         }
         .nav a:hover {
             color: #ff6600;
             background-color: rgba(0,0,0,0.8);
         }
-        /* 二级下拉菜单 */
+        /* 二级菜单 */
         .nav .sub-menu {
             display: none;
             position: absolute;
-            top: 45px;
+            top: 100%;
             left: 0;
             background-color: rgba(0,0,0,0.9);
             border-radius: 8px;
@@ -99,24 +100,21 @@
             gap: 10px;
             z-index: 999;
         }
-        .nav li:hover .sub-menu {
-            display: flex;
+        /* 日常三级菜单位置完美修正 */
+        .sub-menu li {
+            position: relative;
         }
-        /* 三级下拉菜单 */
         .sub-menu .sub-child {
             display: none;
             position: absolute;
-            left: 160px;
-            top: 75px;
+            left: 100%;
+            top: 0;
             background-color: rgba(0,0,0,0.9);
             border-radius: 8px;
             padding: 12px;
             width: 130px;
             flex-direction: column;
             gap: 10px;
-        }
-        .sub-menu li:hover .sub-child {
-            display: flex;
         }
         /* 搜索框 */
         .search-box {
@@ -152,7 +150,63 @@
             background: #e65c00;
         }
 
-        /* ========== 专属空白内容区（放网站、链接、资源） ========== */
+        /* ========== 电子时钟 + 右侧资助主页布局 ========== */
+        .side-wrap {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin: 80px 50px;
+        }
+        /* 电子数字时钟 */
+        .digital-clock {
+            background-color: rgba(0,0,0,0.75);
+            padding: 30px 40px;
+            border-radius: 15px;
+            font-size: 55px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 5px;
+        }
+        /* 右侧：作者信息 + 捐献 整体 */
+        .right-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        /* QQ+B站主页 */
+        .author-info {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+        .author-info a {
+            color: #0066ff;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+        .author-info a:hover {
+            color: #ff6600;
+        }
+        /* 捐献模块 */
+        .donate {
+            background-color: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .donate-title {
+            font-size: 22px;
+            color: #ff6600;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .donate img {
+            width: 200px;
+            border-radius: 8px;
+        }
+
+        /* 空白内容分区 */
         .blank-box {
             width: 80%;
             margin: 80px auto;
@@ -169,96 +223,6 @@
             display: block;
         }
 
-        /* ========== 完美修复 圆形真实时钟 ========== */
-        .clock {
-            width: 280px;
-            height: 280px;
-            margin: 80px 50px;
-            background-color: rgba(0, 0, 0, 0.75);
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.7);
-            border: 8px solid #fff;
-        }
-        /* 时钟1-12数字刻度 */
-        .clock .num{
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-        }
-        .num12{padding-top:10px;}
-        .num3{padding-right:15px;line-height:270px;}
-        .num6{padding-bottom:10px;}
-        .num9{padding-left:15px;line-height:270px;}
-        /* 时钟中心点 */
-        .dot{
-            width: 16px;
-            height: 16px;
-            background:#ff6600;
-            border-radius:50%;
-            position:absolute;
-            top:50%;left:50%;
-            transform:translate(-50%,-50%);
-            z-index:99;
-        }
-        /* 时分秒针 原生正确写法，12点朝上，永不错乱 */
-        .hour,.min,.sec{
-            position:absolute;
-            bottom:50%;left:50%;
-            transform-origin:bottom center;
-            border-radius:10px;
-            background:#fff;
-        }
-        .hour{width:8px;height:75px;}
-        .min{width:5px;height:105px;}
-        .sec{width:2px;height:125px;background:#ff6600;}
-
-        /* 作者信息 QQ+B站 */
-        .author-info {
-            text-align: center;
-            margin: 30px 0;
-            font-size: 18px;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 25px;
-            border-radius: 8px;
-            display: inline-block;
-            position: relative;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .author-info a {
-            color: #0066ff;
-            text-decoration: none;
-            margin-left: 15px;
-            font-weight: bold;
-        }
-        .author-info a:hover {
-            color: #ff6600;
-        }
-        /* 捐献模块 */
-        .donate {
-            text-align: center;
-            margin: 20px 0 60px;
-        }
-        .donate-title {
-            font-size: 26px;
-            color: #ff6600;
-            font-weight: bold;
-            background-color: rgba(0,0,0,0.7);
-            padding: 10px 25px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
-        .donate img {
-            width: 220px;
-            border-radius: 8px;
-            border: 2px solid rgba(0,0,0,0.7);
-        }
         /* 底部文案 */
         .footer-text {
             text-align: center;
@@ -289,19 +253,19 @@
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
             <li>
-                <a onclick="showPage('系统镜像','sysimg')">系统镜像</a>
+                <a onclick="toggleMenu(this, '系统镜像','sysimg')">系统镜像</a>
                 <ul class="sub-menu">
                     <li><a onclick="showPage('系统镜像 - 微系统','miniwin')">微系统</a></li>
                     <li><a onclick="showPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
                 </ul>
             </li>
             <li>
-                <a onclick="showPage('必装软件','soft')">必装软件</a>
+                <a onclick="toggleMenu(this, '必装软件','soft')">必装软件</a>
                 <ul class="sub-menu">
                     <li><a onclick="showPage('必装软件 - 系统工具','syssoft')">系统</a></li>
                     <li><a onclick="showPage('必装软件 - 游戏合集','game')">游戏</a></li>
                     <li>
-                        <a onclick="showPage('必装软件 - 日常软件','daily')">日常</a>
+                        <a onclick="toggleMenu(this, '必装软件 - 日常软件','daily')">日常</a>
                         <ul class="sub-child">
                             <li><a onclick="showPage('日常 - 播放软件','player')">播放</a></li>
                             <li><a onclick="showPage('日常 - 解压缩软件','zip')">解压缩</a></li>
@@ -322,7 +286,27 @@
         <button class="search-btn" onclick="search()">搜索资源</button>
     </div>
 
-    <!-- ========== 所有分类空白面板（全部内置，不用新建网页！永不404） ========== -->
+    <!-- 左侧电子时钟 + 右侧QQ/主页/捐献 -->
+    <div class="side-wrap">
+        <!-- 电子数字时钟 -->
+        <div class="digital-clock" id="clock"></div>
+
+        <!-- 右侧区域 -->
+        <div class="right-info">
+            <div class="author-info">
+                QQ：3608504926
+                <a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a>
+            </div>
+            <div class="donate">
+                <div class="donate-title">捐献一点吧</div>
+                <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
+                    <img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内置空白分区（永不404） -->
     <div class="blank-box" id="area">
         <div class="page active" id="home">
             <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2>
@@ -344,34 +328,8 @@
         <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件空白区】</h2></div>
         <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件空白区】</h2></div>
 
-        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站合集空白区】<br><br>这里放你收集的各类网站地址</h2></div>
-        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器空白区】<br><br>此处放置加速器相关网站链接</h2></div>
-    </div>
-
-    <!-- 完美修复圆形时钟 -->
-    <div class="clock">
-        <div class="num num12">12</div>
-        <div class="num num3">3</div>
-        <div class="num num6">6</div>
-        <div class="num num9">9</div>
-        <div class="dot"></div>
-        <div class="hour" id="h"></div>
-        <div class="min" id="m"></div>
-        <div class="sec" id="s"></div>
-    </div>
-
-    <!-- QQ + B站蓝色链接 -->
-    <div class="author-info">
-        QQ：3608504926
-        <a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a>
-    </div>
-
-    <!-- 捐献 -->
-    <div class="donate">
-        <div class="donate-title">捐献一点吧</div>
-        <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
-            <img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
-        </a>
+        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站合集空白区】</h2></div>
+        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器空白区】</h2></div>
     </div>
 
     <!-- 底部文案 -->
@@ -380,41 +338,42 @@
     </div>
 
     <script>
-        // ===================== 菜单切换 + 平滑跳转空白区 =====================
+        // ========== 电子数字时钟 ==========
+        function digitalClock() {
+            let now = new Date();
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            let s = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${h}:${m}:${s}`;
+        }
+        setInterval(digitalClock, 1000);
+        digitalClock();
+
+        // ========== 菜单点击展开/收起（点击才显示，再点才隐藏，鼠标离开不消失） ==========
+        let activeMenu = null;
+        function toggleMenu(ele, title, id) {
+            const sub = ele.nextElementSibling;
+            if(activeMenu && activeMenu !== sub){
+                activeMenu.style.display = 'none';
+            }
+            if(sub.style.display === 'flex'){
+                sub.style.display = 'none';
+                activeMenu = null;
+            }else{
+                sub.style.display = 'flex';
+                activeMenu = sub;
+            }
+        }
+
+        // ========== 分类切换 + 平滑跳转空白区 ==========
         function showPage(name, id){
-            // 更新顶部位置文字
             document.getElementById('title').innerText = '当前位置：' + name;
-            // 隐藏所有面板
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-            // 显示当前分类面板
             document.getElementById(id).classList.add('active');
-            // 平滑下滑到空白内容区
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
 
-        // ===================== 完美原生时钟代码（12点朝上，完全不乱） =====================
-        const h = document.getElementById('h');
-        const m = document.getElementById('m');
-        const s = document.getElementById('s');
-
-        function clock(){
-            let now = new Date();
-            let hour = now.getHours()%12;
-            let min = now.getMinutes();
-            let sec = now.getSeconds();
-
-            let hDeg = hour*30 + min*0.5;
-            let mDeg = min*6;
-            let sDeg = sec*6;
-
-            h.style.transform = `translate(-50%) rotate(${hDeg}deg)`;
-            m.style.transform = `translate(-50%) rotate(${mDeg}deg)`;
-            s.style.transform = `translate(-50%) rotate(${sDeg}deg)`;
-        }
-        setInterval(clock,1000);
-        clock();
-
-        // ===================== 百度搜索 =====================
+        // ========== 百度搜索 ==========
         function search(){
             let kw = document.querySelector('.search-input').value;
             if(kw.trim()) window.open('https://www.baidu.com/s?wd='+kw,'_self');
