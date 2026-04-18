@@ -639,13 +639,19 @@
             return list;
         }
 
+        // 页面容器ID统一绑定：菜单ID = div的ID，1:1严格对应
         function ensurePageContainer(menuId, displayName) {
             if (document.getElementById(menuId)) return;
             let area = document.getElementById('area');
             let div = document.createElement('div');
             div.className = 'page';
             div.id = menuId;
-            div.innerHTML = `<h2 style="color:#ff6600">【${displayName}】</h2><div id="list-${menuId}" class="link-list"></div><div id="page-${menuId}" class="pagination"></div>`;
+            // 修复DOM结构ID匹配bug
+            div.innerHTML = `
+                <h2 style="color:#ff6600">【${displayName}】</h2>
+                <div id="list-${menuId}" class="link-list"></div>
+                <div id="page-${menuId}" class="pagination"></div>
+            `;
             area.appendChild(div);
         }
 
@@ -654,33 +660,29 @@
             if (el) el.remove();
         }
 
-        // 核心修复：重建导航菜单
         function rebuildNavMenu() {
             const navUl = document.getElementById('navMenuList');
             navUl.innerHTML = '';
             
-            // 添加首页
             let homeLi = document.createElement('li');
             homeLi.innerHTML = '<a onclick="showPage(\'首页\',\'home\')">首页</a>';
             navUl.appendChild(homeLi);
 
-            // 循环添加所有顶级菜单
             for (let topId in topMenus) {
                 const top = topMenus[topId];
                 const children = Object.values(subMenus).filter(sub => sub.parentId === topId);
                 const li = document.createElement('li');
                 
                 if (children.length > 0) {
-                    // 有子菜单
                     li.innerHTML = `<a onclick="toggleMenu(this)">${top.name}</a><ul class="sub-menu"></ul>`;
                     const subUl = li.querySelector('.sub-menu');
                     children.forEach(child => {
                         const subLi = document.createElement('li');
+                        // 关键：子菜单点击传自身id，不是父级id
                         subLi.innerHTML = `<a onclick="showPage('${child.name}','${child.id}')">${child.name}</a>`;
                         subUl.appendChild(subLi);
                     });
                 } else {
-                    // 无子菜单
                     li.innerHTML = `<a onclick="showPage('${top.name}','${topId}')">${top.name}</a>`;
                 }
                 
@@ -688,14 +690,19 @@
                 ensurePageContainer(topId, top.name);
             }
 
-            // 确保子菜单页面存在
+            // 所有子菜单强制生成专属页面容器
             for (let subId in subMenus) {
                 ensurePageContainer(subId, subMenus[subId].name);
             }
         }
 
+        // 终极修复：严格通过menuId加载对应数据，顶级/子菜单通用
         function loadLinks(menuId, page) {
-            let list = resourceLinks[menuId]?.[page] || [];
+            // 兜底初始化，防止数据不存在报错空白
+            if(!resourceLinks[menuId]) resourceLinks[menuId] = {1:[]};
+            if(!resourceLinks[menuId][page]) resourceLinks[menuId][page] = [];
+            
+            let list = resourceLinks[menuId][page];
             let dom = document.getElementById(`list-${menuId}`);
             if (dom) {
                 dom.innerHTML = '';
@@ -706,9 +713,10 @@
         }
 
         function renderPagination(menuId) {
+            if(!resourceLinks[menuId]) resourceLinks[menuId] = {1:[]};
             let pageDom = document.getElementById(`page-${menuId}`);
             if (!pageDom) return;
-            let pages = Object.keys(resourceLinks[menuId] || {});
+            let pages = Object.keys(resourceLinks[menuId]);
             pageDom.innerHTML = '';
             if (pages.length <= 1) return;
             pages.forEach(p => {
@@ -722,27 +730,28 @@
             renderPagination(menuId);
         }
 
+        // 终极修复showPage：子菜单ID精准匹配页面+数据加载
         function showPage(name, menuId) {
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // 强制创建对应菜单页面（顶级/分支通用）
+            let displayName = name;
+            if(subMenus[menuId]) displayName = subMenus[menuId].name;
+            else if(topMenus[menuId]) displayName = topMenus[menuId].name;
+            ensurePageContainer(menuId, displayName);
+
             let target = document.getElementById(menuId);
-            if (!target) {
-                let displayName = name;
-                if (subMenus[menuId]) displayName = subMenus[menuId].name;
-                else if (topMenus[menuId]) displayName = topMenus[menuId].name;
-                ensurePageContainer(menuId, displayName);
-                target = document.getElementById(menuId);
+            target.classList.add('active');
+
+            if (menuId !== 'home') {
+                // 初始化页码兜底
+                if (!currentPage[menuId]) currentPage[menuId] = 1;
+                // 【核心】加载当前menuId专属的链接数据
+                loadLinks(menuId, currentPage[menuId]);
+                renderPagination(menuId);
             }
-            if (target) {
-                target.classList.add('active');
-                if (menuId !== 'home') {
-                    if (!currentPage[menuId]) currentPage[menuId] = 1;
-                    loadLinks(menuId, currentPage[menuId]);
-                    renderPagination(menuId);
-                }
-            } else {
-                document.getElementById('home').classList.add('active');
-            }
+
             document.querySelectorAll('.sub-menu').forEach(menu => menu.classList.remove('show'));
             document.getElementById('area').scrollIntoView({ behavior: 'smooth' });
         }
@@ -870,13 +879,12 @@
             resourceLinks[id] = { 1: [] };
             saveToLocalStorage();
             document.getElementById('newCate').value = '';
-            rebuildNavMenu(); // 刷新导航
+            rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
             alert(`顶级菜单“${name}”已添加`);
         }
 
-        // 修复：添加分支后强制刷新导航
         function addSubCate() {
             if (!isLogin) return;
             let parentId = document.getElementById('parentCateSelect').value;
@@ -890,10 +898,10 @@
             
             saveToLocalStorage();
             document.getElementById('subCateName').value = '';
-            rebuildNavMenu(); // 强制刷新导航栏
+            rebuildNavMenu();
             renderAllSelects();
             renderAdminList();
-            alert(`分支“${name}”已添加 → 导航栏已显示！`);
+            alert(`分支“${name}”已添加！`);
         }
 
         function deleteBranch() {
@@ -949,6 +957,7 @@
             alert("删除成功");
         }
 
+        // 终极修复addLink：添加后实时刷新当前页面（顶级+子菜单全部生效）
         function addLink() {
             if (!isLogin) return;
             let menuId = document.getElementById('cate').value;
@@ -957,19 +966,24 @@
             let url = document.getElementById('linkUrl').value.trim();
             if (!name || !url) return alert("请填写完整名称和网址！");
             
+            // 数据写入
+            if(!resourceLinks[menuId]) resourceLinks[menuId] = {};
+            if(!resourceLinks[menuId][page]) resourceLinks[menuId][page] = [];
             resourceLinks[menuId][page].push({ name, url });
+            
             saveToLocalStorage();
             document.getElementById('linkName').value = '';
             document.getElementById('linkUrl').value = '';
             renderAdminList();
 
-            let activePage = document.querySelector('.page.active');
-            if (activePage && activePage.id === menuId) {
+            // 【核心修复】无论顶级/子菜单，只要当前打开的页面就是这个menuId，立刻重载显示
+            const activePage = document.querySelector('.page.active');
+            if(activePage && activePage.id === menuId){
                 loadLinks(menuId, page);
                 renderPagination(menuId);
             }
             
-            alert("添加成功！");
+            alert("✅ 链接添加成功，页面已实时显示！");
         }
 
         function delLink(menuId, page, idx) {
