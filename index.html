@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 自定义标签栏图标（替换成你的图标链接，不想改可以删掉这行） -->
+    <!-- 自定义标签栏图标 -->
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
     <title>虎天寿资源整理网站</title>
     <style>
@@ -73,7 +73,7 @@
             justify-content: center;
             gap: 30px;
         }
-        /* 导航栏上的头像（复用右上角的图片链接） */
+        /* 导航栏上的头像 */
         .nav-avatar {
             width: 60px;
             height: 60px;
@@ -374,6 +374,13 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        /* 删除按钮特殊样式 */
+        .del-page-btn {
+            background: #ff3333;
+        }
+        .del-page-btn:hover {
+            background: #cc0000;
+        }
         .link-list { margin-top: 20px; }
         .link-item {
             padding: 10px;
@@ -417,7 +424,7 @@
 
     <!-- 导航栏（集成头像） -->
     <div class="nav">
-        <!-- 导航栏左侧头像（复用右上角的图片链接） -->
+        <!-- 导航栏左侧头像 -->
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="个人头像" class="nav-avatar">
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
@@ -514,12 +521,18 @@
                     <input type="text" id="newCate" placeholder="自定义菜单名称(如:软件合集)">
                     <button onclick="addCate()">添加自定义菜单</button>
                 </div>
-                <!-- 2. 分页管理 -->
+                <!-- 2. 分页管理 - 添加页数 -->
                 <div class="admin-form">
                     <select id="pageCate"></select>
                     <button onclick="addPage()">添加新页数（+1页）</button>
                 </div>
-                <!-- 3. 链接添加 -->
+                <!-- 3. 分页管理 - 删除页数（新增核心功能） -->
+                <div class="admin-form">
+                    <select id="delPageCate"></select>
+                    <select id="delPageNum"></select>
+                    <button class="del-page-btn" onclick="deletePage()">删除选中页数</button>
+                </div>
+                <!-- 4. 链接添加 -->
                 <div class="admin-form">
                     <select id="cate"></select>
                     <select id="pageNum"></select>
@@ -629,6 +642,7 @@
             document.getElementById('pwd').value = '';
             renderCateSelect();
             renderPageSelect();
+            renderDelPageSelect(); // 初始化删除页数的下拉框
         }
         function closeAdminModal(){
             document.getElementById('adminModal').style.display = 'none';
@@ -644,27 +658,38 @@
                 renderAdminList();
                 renderCateSelect();
                 renderPageSelect();
+                renderDelPageSelect();
                 alert("登录成功！");
             }else{
                 alert("密码错误，无权访问！");
             }
         }
 
-        // 渲染分类下拉框
+        // 渲染分类下拉框（通用）
         function renderCateSelect(){
             let select = document.getElementById('cate');
             let pageSelect = document.getElementById('pageCate');
-            select.innerHTML = ''; pageSelect.innerHTML = '';
+            let delPageCate = document.getElementById('delPageCate');
+            select.innerHTML = ''; 
+            pageSelect.innerHTML = '';
+            delPageCate.innerHTML = '';
+            
             let defaultCates = {miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'};
             let customCates = getStorage('customCates');
             let allCates = {...defaultCates, ...customCates};
+            
             for(let id in allCates){
-                let opt = document.createElement('option'); opt.value = id; opt.innerText = allCates[id];
-                select.appendChild(opt); pageSelect.appendChild(opt.cloneNode(true));
+                let opt = document.createElement('option'); 
+                opt.value = id; 
+                opt.innerText = allCates[id];
+                
+                select.appendChild(opt); 
+                pageSelect.appendChild(opt.cloneNode(true));
+                delPageCate.appendChild(opt.cloneNode(true));
             }
         }
 
-        // 渲染页码下拉框
+        // 渲染添加链接的页码下拉框
         function renderPageSelect(){
             let pageSelect = document.getElementById('pageNum');
             let cate = document.getElementById('cate').value;
@@ -672,8 +697,25 @@
             let pages = Object.keys(data[cate] || {});
             pageSelect.innerHTML = '';
             pages.forEach(page => {
-                let opt = document.createElement('option'); opt.value = page; opt.innerText = `第${page}页`;
+                let opt = document.createElement('option'); 
+                opt.value = page; 
+                opt.innerText = `第${page}页`;
                 pageSelect.appendChild(opt);
+            });
+        }
+
+        // 渲染删除页数的页码下拉框（新增）
+        function renderDelPageSelect(){
+            let delPageNum = document.getElementById('delPageNum');
+            let cate = document.getElementById('delPageCate').value;
+            let data = getStorage('resourceLinks');
+            let pages = Object.keys(data[cate] || {});
+            delPageNum.innerHTML = '';
+            pages.forEach(page => {
+                let opt = document.createElement('option'); 
+                opt.value = page; 
+                opt.innerText = `第${page}页`;
+                delPageNum.appendChild(opt);
             });
         }
 
@@ -692,6 +734,7 @@
             document.getElementById('newCate').value = '';
             renderCateSelect();
             renderPageSelect();
+            renderDelPageSelect();
             alert("自定义菜单添加成功！");
         }
 
@@ -705,8 +748,43 @@
             data[cate][newPage] = [];
             setStorage('resourceLinks', data);
             renderPageSelect();
+            renderDelPageSelect();
             renderAdminList();
             alert(`成功添加【第${newPage}页】！`);
+        }
+
+        // 删除页数（核心新增功能）
+        function deletePage(){
+            if(!isLogin) return alert("请先登录！");
+            
+            let cate = document.getElementById('delPageCate').value;
+            let page = document.getElementById('delPageNum').value;
+            let data = getStorage('resourceLinks');
+            
+            // 安全校验1：获取当前分类的总页数
+            let totalPages = Object.keys(data[cate] || {}).length;
+            if(totalPages <= 1){
+                alert("⚠️ 无法删除最后1页！每个分类至少保留1页");
+                return;
+            }
+            
+            // 安全校验2：确认删除
+            let confirmDel = confirm(`⚠️ 确认删除【${document.getElementById('delPageCate').options[document.getElementById('delPageCate').selectedIndex].text} - 第${page}页】吗？该页所有链接也会被删除！`);
+            if(!confirmDel) return;
+            
+            // 执行删除
+            delete data[cate][page];
+            setStorage('resourceLinks', data);
+            
+            // 刷新所有相关组件
+            renderDelPageSelect();
+            renderPageSelect();
+            renderAdminList();
+            
+            // 同步刷新前端分页按钮
+            renderPagination(cate);
+            
+            alert(`✅ 成功删除【第${page}页】！`);
         }
 
         // 添加链接（指定页码）
@@ -761,6 +839,7 @@
 
         // 分类切换时同步刷新页码
         document.getElementById('cate').addEventListener('change', renderPageSelect);
+        document.getElementById('delPageCate').addEventListener('change', renderDelPageSelect);
 
         // 百度搜索
         function search(){
