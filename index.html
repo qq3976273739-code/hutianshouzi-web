@@ -18,7 +18,6 @@
             min-height: 100vh;
             padding: 20px;
         }
-        /* 右上角圆形头像 */
         .avatar {
             position: absolute;
             top: 20px;
@@ -29,7 +28,6 @@
             object-fit: cover;
             border: 3px solid #fff;
         }
-        /* 网站标题 */
         .title-box {
             text-align: center;
             margin: 40px 0;
@@ -42,7 +40,6 @@
             border-radius: 10px;
             display: inline-block;
         }
-        /* 当前分类位置显示 */
         .current-menu {
             text-align: center;
             margin: 0 auto 30px;
@@ -54,7 +51,6 @@
             font-weight: bold;
             width: 60%;
         }
-        /* 导航栏 */
         .nav {
             width: 85%;
             margin: 30px auto;
@@ -86,7 +82,6 @@
             color: #ff6600;
             background-color: rgba(0,0,0,0.8);
         }
-        /* 二级菜单 */
         .nav .sub-menu {
             display: none;
             position: absolute;
@@ -100,7 +95,6 @@
             gap: 10px;
             z-index: 999;
         }
-        /* 日常三级菜单位置完美修正 */
         .sub-menu li {
             position: relative;
         }
@@ -116,7 +110,6 @@
             flex-direction: column;
             gap: 10px;
         }
-        /* 搜索框 */
         .search-box {
             width: 60%;
             margin: 0 auto 40px;
@@ -150,14 +143,13 @@
             background: #e65c00;
         }
 
-        /* ========== 电子时钟 + 右侧资助主页布局 ========== */
+        /* 电子时钟 + 右侧布局 */
         .side-wrap {
             display: flex;
             align-items: center;
             gap: 50px;
             margin: 80px 50px;
         }
-        /* 电子数字时钟 */
         .digital-clock {
             background-color: rgba(0,0,0,0.75);
             padding: 30px 40px;
@@ -167,13 +159,11 @@
             color: #fff;
             letter-spacing: 5px;
         }
-        /* 右侧：作者信息 + 捐献 整体 */
         .right-info {
             display: flex;
             flex-direction: column;
             gap: 25px;
         }
-        /* QQ+B站主页 */
         .author-info {
             background-color: rgba(0, 0, 0, 0.6);
             padding: 15px 25px;
@@ -189,7 +179,6 @@
         .author-info a:hover {
             color: #ff6600;
         }
-        /* 捐献模块 */
         .donate {
             background-color: rgba(0,0,0,0.7);
             padding: 15px;
@@ -206,7 +195,7 @@
             border-radius: 8px;
         }
 
-        /* 空白内容分区 */
+        /* 内容区域 */
         .blank-box {
             width: 80%;
             margin: 80px auto;
@@ -223,7 +212,70 @@
             display: block;
         }
 
-        /* 底部文案 */
+        /* 管理后台样式 */
+        .admin-box { width: 100%; }
+        .admin-title { color: #ff6600; font-size: 28px; margin-bottom: 20px; text-align: center; }
+        .login-box { text-align: center; margin: 50px 0; }
+        .login-box input {
+            padding: 12px;
+            font-size: 18px;
+            width: 300px;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+        }
+        .login-box button {
+            padding: 12px 30px;
+            margin-left: 10px;
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .admin-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .admin-form select,
+        .admin-form input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+        .admin-form button {
+            padding: 10px 20px;
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .link-list { margin-top: 20px; }
+        .link-item {
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .link-item a { color: #fff; text-decoration: none; }
+        .link-item a:hover { color: #ff6600; }
+        .del-btn {
+            background: #ff3333;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
         .footer-text {
             text-align: center;
             margin: 40px 0;
@@ -237,35 +289,32 @@
     </style>
 </head>
 <body>
-    <!-- 右上角圆形头像 -->
-    <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
+    <img src="https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg" alt="头像" class="avatar">
 
-    <!-- 网站标题 -->
     <div class="title-box">
         <h1 class="website-name">虎天寿资源整理网站</h1>
     </div>
 
-    <!-- 当前位置分类显示 -->
     <div class="current-menu" id="title">当前位置：首页</div>
 
-    <!-- 导航菜单 -->
+    <!-- 导航栏 -->
     <div class="nav">
         <ul>
             <li><a onclick="showPage('首页','home')">首页</a></li>
             <li>
-                <a onclick="toggleMenu(this, '系统镜像','sysimg')">系统镜像</a>
+                <a onclick="toggleMenu(this)">系统镜像</a>
                 <ul class="sub-menu">
                     <li><a onclick="showPage('系统镜像 - 微系统','miniwin')">微系统</a></li>
                     <li><a onclick="showPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
                 </ul>
             </li>
             <li>
-                <a onclick="toggleMenu(this, '必装软件','soft')">必装软件</a>
+                <a onclick="toggleMenu(this)">必装软件</a>
                 <ul class="sub-menu">
                     <li><a onclick="showPage('必装软件 - 系统工具','syssoft')">系统</a></li>
                     <li><a onclick="showPage('必装软件 - 游戏合集','game')">游戏</a></li>
                     <li>
-                        <a onclick="toggleMenu(this, '必装软件 - 日常软件','daily')">日常</a>
+                        <a onclick="toggleMenu(this)">日常</a>
                         <ul class="sub-child">
                             <li><a onclick="showPage('日常 - 播放软件','player')">播放</a></li>
                             <li><a onclick="showPage('日常 - 解压缩软件','zip')">解压缩</a></li>
@@ -277,21 +326,17 @@
             </li>
             <li><a onclick="showPage('网站合集','web')">网站</a></li>
             <li><a onclick="showPage('网络加速器','acc')">加速器</a></li>
+            <li><a onclick="showPage('管理后台','admin')">管理后台</a></li>
         </ul>
     </div>
 
-    <!-- 搜索框 -->
     <div class="search-box">
         <input type="text" class="search-input" placeholder="请输入关键词搜索">
         <button class="search-btn" onclick="search()">搜索资源</button>
     </div>
 
-    <!-- 左侧电子时钟 + 右侧QQ/主页/捐献 -->
     <div class="side-wrap">
-        <!-- 电子数字时钟 -->
         <div class="digital-clock" id="clock"></div>
-
-        <!-- 右侧区域 -->
         <div class="right-info">
             <div class="author-info">
                 QQ：3608504926
@@ -306,7 +351,7 @@
         </div>
     </div>
 
-    <!-- 内置空白分区（永不404） -->
+    <!-- 所有页面容器 -->
     <div class="blank-box" id="area">
         <div class="page active" id="home">
             <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2>
@@ -315,30 +360,65 @@
         </div>
 
         <div class="page" id="sysimg"><h2 style="color:#ff6600">系统镜像专区</h2></div>
-        <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统空白区】<br><br>此处粘贴你的微系统网站、下载链接、网盘地址</h2></div>
-        <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像空白区】<br><br>此处放置系统镜像资源链接</h2></div>
-
+        <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统】</h2><div id="list-miniwin" class="link-list"></div></div>
+        <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像】</h2><div id="list-winimg" class="link-list"></div></div>
         <div class="page" id="soft"><h2 style="color:#ff6600">必备软件专区</h2></div>
-        <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具空白区】</h2></div>
-        <div class="page" id="game"><h2 style="color:#ff6600">【游戏合集空白区】</h2></div>
-        <div class="page" id="daily"><h2 style="color:#ff6600">【日常软件专区】</h2></div>
+        <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具】</h2><div id="list-syssoft" class="link-list"></div></div>
+        <div class="page" id="game"><h2 style="color:#ff6600">【游戏合集】</h2><div id="list-game" class="link-list"></div></div>
+        <div class="page" id="daily"><h2 style="color:#ff6600">【日常软件】</h2></div>
+        <div class="page" id="player"><h2 style="color:#ff6600">【播放软件】</h2><div id="list-player" class="link-list"></div></div>
+        <div class="page" id="zip"><h2 style="color:#ff6600">【解压软件】</h2><div id="list-zip" class="link-list"></div></div>
+        <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件】</h2><div id="list-safe" class="link-list"></div></div>
+        <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件】</h2><div id="list-chat" class="link-list"></div></div>
+        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站】</h2><div id="list-web" class="link-list"></div></div>
+        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div></div>
 
-        <div class="page" id="player"><h2 style="color:#ff6600">【播放软件空白区】</h2></div>
-        <div class="page" id="zip"><h2 style="color:#ff6600">【解压软件空白区】</h2></div>
-        <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件空白区】</h2></div>
-        <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件空白区】</h2></div>
+        <!-- 带密码登录的管理后台 -->
+        <div class="page" id="admin">
+            <div class="admin-box">
+                <h2 class="admin-title">下载链接管理面板</h2>
+                <!-- 密码登录框 -->
+                <div class="login-box" id="loginBox">
+                    <input type="password" id="pwd" placeholder="请输入管理员密码">
+                    <button onclick="adminLogin()">登录</button>
+                </div>
 
-        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站合集空白区】</h2></div>
-        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器空白区】</h2></div>
+                <!-- 登录后才显示的管理面板（别人看不到） -->
+                <div id="adminPanel" style="display:none;">
+                    <div class="admin-form">
+                        <select id="cate">
+                            <option value="miniwin">微系统</option>
+                            <option value="winimg">Win系统镜像</option>
+                            <option value="syssoft">系统工具</option>
+                            <option value="game">游戏合集</option>
+                            <option value="player">播放软件</option>
+                            <option value="zip">解压软件</option>
+                            <option value="safe">安全软件</option>
+                            <option value="chat">社交软件</option>
+                            <option value="web">优质网站</option>
+                            <option value="acc">网络加速器</option>
+                        </select>
+                        <input type="text" id="linkName" placeholder="链接名称">
+                        <input type="url" id="linkUrl" placeholder="下载链接地址">
+                        <button onclick="addLink()">添加链接</button>
+                    </div>
+                    <h3 style="color:#ff6600;margin:10px 0;">已添加全部链接</h3>
+                    <div id="allLinks"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 底部文案 -->
     <div class="footer-text">
         整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持
     </div>
 
     <script>
-        // ========== 电子数字时钟 ==========
+        // 你的专属管理员密码
+        const ADMIN_PASSWORD = "wangyiming87";
+        let isLogin = false;
+
+        // 电子数字时钟
         function digitalClock() {
             let now = new Date();
             let h = now.getHours().toString().padStart(2, '0');
@@ -349,31 +429,119 @@
         setInterval(digitalClock, 1000);
         digitalClock();
 
-        // ========== 菜单点击展开/收起（点击才显示，再点才隐藏，鼠标离开不消失） ==========
-        let activeMenu = null;
-        function toggleMenu(ele, title, id) {
-            const sub = ele.nextElementSibling;
-            if(activeMenu && activeMenu !== sub){
-                activeMenu.style.display = 'none';
-            }
-            if(sub.style.display === 'flex'){
-                sub.style.display = 'none';
-                activeMenu = null;
+        // 菜单点击展开/收起，鼠标移开不关闭
+        function toggleMenu(ele){
+            const next = ele.nextElementSibling;
+            if(next.style.display === 'flex'){
+                next.style.display = 'none';
             }else{
-                sub.style.display = 'flex';
-                activeMenu = sub;
+                next.style.display = 'flex';
             }
         }
 
-        // ========== 分类切换 + 平滑跳转空白区 ==========
+        // 页面切换
         function showPage(name, id){
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            loadLinks(id);
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
 
-        // ========== 百度搜索 ==========
+        // 管理员密码登录验证
+        function adminLogin(){
+            const inputPwd = document.getElementById('pwd').value;
+            if(inputPwd === ADMIN_PASSWORD){
+                isLogin = true;
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                renderAdminList();
+                alert("登录成功！已进入管理后台");
+            }else{
+                alert("密码错误，无权访问管理后台！");
+            }
+        }
+
+        // 本地存储链接数据
+        function getLinks(){
+            return JSON.parse(localStorage.getItem('resourceLinks') || '{}');
+        }
+        function saveLinks(data){
+            localStorage.setItem('resourceLinks', JSON.stringify(data));
+        }
+
+        // 添加链接（仅登录后可用）
+        function addLink(){
+            if(!isLogin) return alert("请先登录管理员账号！");
+            let cate = document.getElementById('cate').value;
+            let name = document.getElementById('linkName').value.trim();
+            let url = document.getElementById('linkUrl').value.trim();
+            if(!name || !url) return alert('请填写完整链接名称和地址！');
+            
+            let data = getLinks();
+            if(!data[cate]) data[cate] = [];
+            data[cate].push({name, url});
+            saveLinks(data);
+            
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+            renderAdminList();
+            loadLinks(cate);
+        }
+
+        // 删除链接（仅登录后可用）
+        function delLink(cate, index){
+            if(!isLogin) return;
+            let data = getLinks();
+            data[cate].splice(index, 1);
+            saveLinks(data);
+            renderAdminList();
+            loadLinks(cate);
+        }
+
+        // 加载各分类公开链接（所有人都能看）
+        function loadLinks(cate){
+            let data = getLinks();
+            let list = data[cate] || [];
+            let dom = document.getElementById(`list-${cate}`);
+            if(!dom) return;
+            dom.innerHTML = '';
+            list.forEach((item, i) => {
+                dom.innerHTML += `
+                <div class="link-item">
+                    <a href="${item.url}" target="_blank">${item.name}</a>
+                </div>`;
+            });
+        }
+
+        // 渲染管理面板全部链接
+        function renderAdminList(){
+            let data = getLinks();
+            let dom = document.getElementById('allLinks');
+            dom.innerHTML = '';
+            for(let cate in data){
+                dom.innerHTML += `<h4 style="color:#fff;margin:15px 0 5px;">${getCateName(cate)}</h4>`;
+                data[cate].forEach((item, i) => {
+                    dom.innerHTML += `
+                    <div class="link-item">
+                        <a href="${item.url}" target="_blank">${item.name}</a>
+                        <button class="del-btn" onclick="delLink('${cate}',${i})">删除</button>
+                    </div>`;
+                });
+            }
+        }
+
+        // 分类名称映射
+        function getCateName(cate){
+            let map = {
+                miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',
+                player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',
+                web:'优质网站',acc:'网络加速器'
+            };
+            return map[cate] || cate;
+        }
+
+        // 百度搜索
         function search(){
             let kw = document.querySelector('.search-input').value;
             if(kw.trim()) window.open('https://www.baidu.com/s?wd='+kw,'_self');
