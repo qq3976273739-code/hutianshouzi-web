@@ -40,6 +40,18 @@
             border-radius: 10px;
             display: inline-block;
         }
+        /* 当前分类显示栏 */
+        .current-menu {
+            text-align: center;
+            margin: 0 auto 30px;
+            background-color: rgba(0,0,0,0.7);
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 22px;
+            color: #ff6600;
+            font-weight: bold;
+            width: 60%;
+        }
         .nav {
             width: 85%;
             margin: 30px auto;
@@ -64,6 +76,7 @@
             padding: 8px 12px;
             border-radius: 5px;
             background-color: rgba(0,0,0,0.5);
+            cursor: pointer;
         }
         .nav a:hover {
             color: #ff6600;
@@ -267,40 +280,46 @@
     <div class="title-box">
         <h1 class="website-name">虎天寿资源整理网站</h1>
     </div>
+
+    <!-- 实时显示当前点击的分类名称 -->
+    <div class="current-menu" id="currentMenu">当前位置：首页</div>
+
     <div class="nav">
         <ul>
-            <li><a href="#" target="_blank">首页</a></li>
+            <li><a onclick="showMenu('首页')">首页</a></li>
             <li>
-                <a href="#" target="_blank">系统镜像</a>
+                <a onclick="showMenu('系统镜像')">系统镜像</a>
                 <ul class="sub-menu">
-                    <li><a href="#" target="_blank">微系统</a></li>
-                    <li><a href="#" target="_blank">Win系统</a></li>
+                    <li><a onclick="showMenu('系统镜像 - 微系统')">微系统</a></li>
+                    <li><a onclick="showMenu('系统镜像 - Win系统')">Win系统</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#" target="_blank">必装软件</a>
+                <a onclick="showMenu('必装软件')">必装软件</a>
                 <ul class="sub-menu">
-                    <li><a href="#" target="_blank">系统</a></li>
-                    <li><a href="#" target="_blank">游戏</a></li>
+                    <li><a onclick="showMenu('必装软件 - 系统')">系统</a></li>
+                    <li><a onclick="showMenu('必装软件 - 游戏')">游戏</a></li>
                     <li>
-                        <a href="#" target="_blank">日常</a>
+                        <a onclick="showMenu('必装软件 - 日常')">日常</a>
                         <ul class="sub-child">
-                            <li><a href="#" target="_blank">播放</a></li>
-                            <li><a href="#" target="_blank">解压缩</a></li>
-                            <li><a href="#" target="_blank">安全</a></li>
-                            <li><a href="#" target="_blank">社交</a></li>
+                            <li><a onclick="showMenu('必装软件 - 日常 - 播放')">播放</a></li>
+                            <li><a onclick="showMenu('必装软件 - 日常 - 解压缩')">解压缩</a></li>
+                            <li><a onclick="showMenu('必装软件 - 日常 - 安全')">安全</a></li>
+                            <li><a onclick="showMenu('必装软件 - 日常 - 社交')">社交</a></li>
                         </ul>
                     </li>
                 </ul>
             </li>
-            <li><a href="#" target="_blank">网站</a></li>
-            <li><a href="#" target="_blank">加速器</a></li>
+            <li><a onclick="showMenu('网站')">网站</a></li>
+            <li><a onclick="showMenu('加速器')">加速器</a></li>
         </ul>
     </div>
+
     <div class="search-box">
         <input type="text" class="search-input" placeholder="请输入要搜索的资源关键词...">
         <button class="search-btn" onclick="searchResource()">搜索资源</button>
     </div>
+
     <div class="clock">
         <div class="num num12">12</div>
         <div class="num num1">1</div>
@@ -319,20 +338,30 @@
         <div class="minute" id="minute"></div>
         <div class="second" id="second"></div>
     </div>
+
     <div class="author-info">
         QQ：3608504926
-        <a href="https://space.bilibili.com/3493111242164758" target="_blank">哔哩哔哩的主页</a>
+        <a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a>
     </div>
+
     <div class="donate">
         <div class="donate-title">捐献一点吧</div>
-        <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png" target="_blank">
+        <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
             <img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png" alt="捐献码">
         </a>
     </div>
+
     <div class="footer-text">
         整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持
     </div>
+
     <script>
+        // 显示当前菜单名称
+        function showMenu(name) {
+            document.getElementById('currentMenu').innerText = '当前位置：' + name;
+        }
+
+        // 圆形时钟
         const hourHand = document.getElementById('hour');
         const minuteHand = document.getElementById('minute');
         const secondHand = document.getElementById('second');
@@ -350,13 +379,14 @@
         }
         setInterval(runClock, 1000);
         runClock();
+
+        // 搜索功能
         function searchResource() {
             let keyword = document.querySelector('.search-input').value;
             if(keyword.trim() !== ''){
-                window.open(`https://www.baidu.com/s?wd=${keyword}`, '_blank');
+                window.open(`https://www.baidu.com/s?wd=${keyword}`, '_self');
             }
         }
     </script>
 </body>
-</html>   
-   
+</html>
