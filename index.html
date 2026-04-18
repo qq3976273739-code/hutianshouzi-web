@@ -68,16 +68,8 @@
         let isAdmin = false;
         let currentPageMap = {};
         
-        // 密码哈希（简单起见用SHA-256，实际应后端验证）
-        async function hashPassword(pwd) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(pwd + "salt2024"); // 加盐
-            const hash = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
-        }
-        
-        // 密码 wangyiming87 的哈希
-        const ADMIN_HASH = "8a5c6e4b8a2c5d9f1e3b7a8c4d2f6e9a1b3c5d7e9f1a2b3c4d5e6f7a8b9c0d1e";
+        // 明文密码验证（简单粗暴）
+        const ADMIN_PASSWORD = "wangyiming87";
         
         // XSS过滤
         function escapeHtml(str) {
@@ -87,8 +79,6 @@
                 if (m === '<') return '&lt;';
                 if (m === '>') return '&gt;';
                 return m;
-            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-                return c;
             });
         }
         
@@ -121,11 +111,10 @@
             saveData();
         }
         
-        // 保存到localStorage（加密存储）
+        // 保存到localStorage
         function saveData() {
             try {
                 const jsonStr = JSON.stringify(appData);
-                // 简单base64编码，防窥视
                 localStorage.setItem('siteData', btoa(encodeURIComponent(jsonStr)));
             } catch(e) { console.error('保存失败', e); }
         }
@@ -192,13 +181,10 @@
         function showPage(name, categoryId) {
             document.getElementById('title').innerText = '当前位置：' + escapeHtml(name);
             
-            // 隐藏所有页面
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             
-            // 显示目标页面
             let targetPage = document.getElementById(categoryId);
             if (!targetPage) {
-                // 创建新页面容器
                 targetPage = document.createElement('div');
                 targetPage.className = 'page';
                 targetPage.id = categoryId;
@@ -243,22 +229,18 @@
             }
         }
         
-        // 切换子菜单显示
         function toggleSubMenu(element) {
             const subMenu = element.nextElementSibling;
             if (subMenu) subMenu.classList.toggle('show');
         }
         
-        // 关闭所有子菜单
         function closeAllSubMenus() {
             document.querySelectorAll('.sub-menu').forEach(m => m.classList.remove('show'));
         }
         
-        // 管理面板相关
         function updateAdminSelects() {
             if (!isAdmin) return;
             
-            // 父菜单选择
             const parentSelect = document.getElementById('parentSelect');
             if (parentSelect) {
                 parentSelect.innerHTML = '<option value="">选择顶级菜单</option>';
@@ -267,7 +249,6 @@
                 });
             }
             
-            // 删除菜单选择
             const delType = document.getElementById('delType').value;
             const delSelect = document.getElementById('delSelect');
             if (delSelect) {
@@ -288,24 +269,20 @@
                 }
             }
             
-            // 分类选择（用于添加链接/页面）
             const categorySelects = ['pageCate', 'linkCate', 'delPageCate'];
             categorySelects.forEach(selectId => {
                 const select = document.getElementById(selectId);
                 if (select) {
                     select.innerHTML = '';
-                    // 添加顶级菜单
                     Object.entries(appData.topMenus).forEach(([id, menu]) => {
                         select.innerHTML += `<option value="${id}">【顶级】${escapeHtml(menu.name)}</option>`;
                     });
-                    // 添加子菜单
                     Object.entries(appData.subMenus).forEach(([id, menu]) => {
                         select.innerHTML += `<option value="${id}">【子级】${escapeHtml(menu.name)}</option>`;
                     });
                 }
             });
             
-            // 更新页面选择
             const linkCate = document.getElementById('linkCate')?.value;
             if (linkCate && appData.resources[linkCate]) {
                 const pageSelect = document.getElementById('linkPage');
@@ -317,7 +294,6 @@
                 }
             }
             
-            // 删除页面选择
             const delPageCate = document.getElementById('delPageCate')?.value;
             if (delPageCate && appData.resources[delPageCate]) {
                 const pageNumSelect = document.getElementById('delPageNum');
@@ -329,7 +305,6 @@
                 }
             }
             
-            // 渲染所有链接
             const allLinksDiv = document.getElementById('allLinks');
             if (allLinksDiv) {
                 allLinksDiv.innerHTML = '';
@@ -352,7 +327,6 @@
             }
         }
         
-        // 添加顶级菜单
         function addTopMenu() {
             if (!isAdmin) return;
             const name = document.getElementById('newTopMenu').value.trim();
@@ -367,7 +341,6 @@
             alert('添加成功');
         }
         
-        // 添加子菜单
         function addSubMenu() {
             if (!isAdmin) return;
             const parentId = document.getElementById('parentSelect').value;
@@ -384,7 +357,6 @@
             alert('添加成功');
         }
         
-        // 删除菜单
         function deleteMenu() {
             if (!isAdmin) return;
             const type = document.getElementById('delType').value;
@@ -393,7 +365,6 @@
             if (!confirm('确定删除吗？相关链接也会被删除')) return;
             
             if (type === 'top') {
-                // 删除顶级菜单及其所有子菜单
                 const childrenIds = Object.keys(appData.subMenus).filter(k => appData.subMenus[k].parentId === id);
                 childrenIds.forEach(cid => {
                     delete appData.subMenus[cid];
@@ -413,7 +384,6 @@
             alert('删除成功');
         }
         
-        // 添加页面
         function addPage() {
             if (!isAdmin) return;
             const catId = document.getElementById('pageCate').value;
@@ -427,7 +397,6 @@
             alert(`已添加第${newPage}页`);
         }
         
-        // 删除页面
         function deletePage() {
             if (!isAdmin) return;
             const catId = document.getElementById('delPageCate').value;
@@ -449,7 +418,6 @@
             alert('删除成功');
         }
         
-        // 添加链接
         function addLink() {
             if (!isAdmin) return;
             const catId = document.getElementById('linkCate').value;
@@ -469,7 +437,6 @@
             saveData();
             updateAdminSelects();
             
-            // 刷新当前显示的页面
             if (document.querySelector('.page.active')?.id === catId && currentPageMap[catId] == pageNum) {
                 renderLinks(`list-${catId}`, catId, pageNum);
             }
@@ -479,7 +446,6 @@
             alert('添加成功');
         }
         
-        // 删除链接
         function deleteLink(catId, pageNum, index) {
             if (!isAdmin) return;
             if (!confirm('确定删除此链接吗？')) return;
@@ -491,7 +457,6 @@
             }
         }
         
-        // 导出备份
         function exportBackup() {
             if (!isAdmin) return;
             const dataStr = JSON.stringify(appData);
@@ -505,7 +470,6 @@
             alert('导出成功');
         }
         
-        // 导入备份
         function importBackup() {
             if (!isAdmin) return;
             const input = document.createElement('input');
@@ -537,7 +501,6 @@
             input.click();
         }
         
-        // 重置默认
         function resetToDefault() {
             if (!isAdmin) return;
             if (!confirm('⚠️ 重置将丢失所有数据，确定吗？')) return;
@@ -549,11 +512,10 @@
             alert('已重置为默认数据');
         }
         
-        // 登录
-        async function adminLogin() {
+        // 登录 - 明文比对
+        function adminLogin() {
             const pwd = document.getElementById('adminPwd').value;
-            const hash = await hashPassword(pwd);
-            if (hash === ADMIN_HASH) {
+            if (pwd === ADMIN_PASSWORD) {
                 isAdmin = true;
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
@@ -564,7 +526,6 @@
             }
         }
         
-        // 退出
         function logout() {
             isAdmin = false;
             document.getElementById('loginBox').style.display = 'flex';
@@ -573,7 +534,6 @@
             alert('已退出');
         }
         
-        // 打开管理面板
         function openAdminModal() {
             document.getElementById('adminModal').style.display = 'block';
             if (isAdmin) {
@@ -590,13 +550,11 @@
             document.getElementById('adminModal').style.display = 'none';
         }
         
-        // 百度搜索
         function baiduSearch() {
             const kw = document.getElementById('searchInput').value.trim();
             if (kw) window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(kw), '_blank');
         }
         
-        // 数字时钟
         function updateClock() {
             const now = new Date();
             const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
@@ -604,7 +562,6 @@
             if (clockDiv) clockDiv.innerText = timeStr;
         }
         
-        // 回到顶部
         function initGoTop() {
             const btn = document.getElementById('goTopBtn');
             window.addEventListener('scroll', () => {
@@ -614,17 +571,14 @@
             btn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
         }
         
-        // 页面点击关闭子菜单
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.nav li')) closeAllSubMenus();
         });
         
-        // 监听分类变化
         document.getElementById('linkCate')?.addEventListener('change', updateAdminSelects);
         document.getElementById('delPageCate')?.addEventListener('change', updateAdminSelects);
         document.getElementById('delType')?.addEventListener('change', updateAdminSelects);
         
-        // 初始化
         loadData();
         buildNavigation();
         showPage('首页', 'home');
@@ -632,7 +586,6 @@
         setInterval(updateClock, 1000);
         updateClock();
         
-        // 确保首页资源存在
         if (!appData.resources.home) appData.resources.home = { 1: [] };
     </script>
 </body>
