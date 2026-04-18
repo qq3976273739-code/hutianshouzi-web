@@ -157,7 +157,7 @@
             background: #e65c00;
         }
 
-        /* ---------------- 圆形模拟时钟（表盘样式） ---------------- */
+        /* ---------------- 圆形模拟时钟（表盘+小时数字） ---------------- */
         .clock {
             width: 280px;
             height: 280px;
@@ -165,12 +165,32 @@
             background-color: rgba(0, 0, 0, 0.75);
             border-radius: 50%;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             box-shadow: 0 0 20px rgba(0,0,0,0.7);
             border: 8px solid #fff;
         }
+
+        /* 时钟数字 1-12 */
+        .clock .num {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            padding: 10px;
+        }
+        .num1 { transform: rotate(30deg); }
+        .num2 { transform: rotate(60deg); }
+        .num3 { transform: rotate(90deg); }
+        .num4 { transform: rotate(120deg); }
+        .num5 { transform: rotate(150deg); }
+        .num6 { transform: rotate(180deg); }
+        .num7 { transform: rotate(210deg); }
+        .num8 { transform: rotate(240deg); }
+        .num9 { transform: rotate(270deg); }
+        .num10 { transform: rotate(300deg); }
+        .num11 { transform: rotate(330deg); }
 
         /* 时钟中心点 */
         .clock-center {
@@ -179,6 +199,9 @@
             background: #ff6600;
             border-radius: 50%;
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 10;
         }
 
@@ -189,8 +212,11 @@
             background: #fff;
             position: absolute;
             bottom: 50%;
-            border-radius: 4px;
+            left: 50%;
             transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 4px;
+            z-index: 3;
         }
 
         /* 分针 */
@@ -200,8 +226,11 @@
             background: #fff;
             position: absolute;
             bottom: 50%;
-            border-radius: 3px;
+            left: 50%;
             transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 3px;
+            z-index: 2;
         }
 
         /* 秒针 */
@@ -211,8 +240,11 @@
             background: #ff6600;
             position: absolute;
             bottom: 50%;
-            border-radius: 1px;
+            left: 50%;
             transform-origin: bottom center;
+            transform: translateX(-50%);
+            border-radius: 1px;
+            z-index: 1;
         }
 
         /* 作者信息（捐献上方，蓝色B站链接） */
@@ -323,8 +355,20 @@
         <button class="search-btn" onclick="searchResource()">搜索资源</button>
     </div>
 
-    <!-- 圆形模拟时钟 -->
+    <!-- 圆形模拟时钟（带1-12小时数字） -->
     <div class="clock">
+        <div class="num num12">12</div>
+        <div class="num num1">1</div>
+        <div class="num num2">2</div>
+        <div class="num num3">3</div>
+        <div class="num num4">4</div>
+        <div class="num num5">5</div>
+        <div class="num num6">6</div>
+        <div class="num num7">7</div>
+        <div class="num num8">8</div>
+        <div class="num num9">9</div>
+        <div class="num num10">10</div>
+        <div class="num num11">11</div>
         <div class="clock-center"></div>
         <div class="hour" id="hour"></div>
         <div class="minute" id="minute"></div>
@@ -367,9 +411,9 @@
             let mRotation = 6 * minutes;
             let sRotation = 6 * seconds;
 
-            hourHand.style.transform = `rotate(${hRotation}deg)`;
-            minuteHand.style.transform = `rotate(${mRotation}deg)`;
-            secondHand.style.transform = `rotate(${sRotation}deg)`;
+            hourHand.style.transform = `translate(-50%) rotate(${hRotation}deg)`;
+            minuteHand.style.transform = `translate(-50%) rotate(${mRotation}deg)`;
+            secondHand.style.transform = `translate(-50%) rotate(${sRotation}deg)`;
         }
 
         setInterval(runClock, 1000);
@@ -384,4 +428,4 @@
         }
     </script>
 </body>
-</html>       
+</html>
