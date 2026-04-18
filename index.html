@@ -18,7 +18,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-        /* 右上角头像（后台唯一入口） */
+        /* 右上角头像（后台入口） */
         .avatar-box {
             position: absolute;
             top: 20px;
@@ -90,7 +90,7 @@
             color: #ff6600;
             background-color: rgba(0,0,0,0.8);
         }
-        /* 菜单展开/收起动画 + 互斥逻辑 */
+        /* 菜单动画 */
         .nav .sub-menu {
             display: none;
             position: absolute;
@@ -135,7 +135,7 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* 搜索框 + 百度图标 */
+        /* 搜索框 */
         .search-box {
             width: 60%;
             margin: 0 auto 40px;
@@ -193,7 +193,7 @@
         .page.active {
             display: block;
         }
-        /* 主页跳转按钮 顶部 */
+        /* 主页跳转按钮 */
         .home-top-btn {
             text-align: center;
             margin-bottom: 30px;
@@ -210,7 +210,7 @@
         .home-top-btn button:hover {
             background: #e65c0;
         }
-        /* 首页布局：时间左 + 收款码右 严格左右并排 */
+        /* 首页布局：左时间 右收款码 */
         .home-row {
             display: flex;
             align-items: center;
@@ -218,9 +218,8 @@
             gap: 60px;
             margin-top: 30px;
             flex-wrap: wrap;
-            flex-direction: row;
         }
-        /* 电子时钟 左侧 */
+        /* 电子时钟 */
         .digital-clock {
             background-color: rgba(0,0,0,0.75);
             padding: 25px 35px;
@@ -230,12 +229,10 @@
             color: #fff;
             letter-spacing: 5px;
             text-align: center;
-            order: 1;
         }
-        /* 收款码区域 右侧 */
+        /* 收款码 */
         .donate-group {
             text-align: center;
-            order: 2;
         }
         .donate {
             background-color: rgba(0,0,0,0.7);
@@ -252,7 +249,7 @@
             width: 180px;
             border-radius: 8px;
         }
-        /* 底部文字固定在收款码下方 */
+        /* 收款码下方文字 */
         .footer-text {
             text-align: center;
             margin-top: 15px;
@@ -275,6 +272,31 @@
         }
         .author-info a:hover {
             color: #ff6600;
+        }
+        /* 分页按钮样式（用户端） */
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            padding: 8px 15px;
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .page-btn.active {
+            background: #e65c0;
+            font-weight: bold;
+        }
+        .page-btn:hover {
+            background: #e65c0;
         }
         /* 管理后台弹窗 */
         .admin-modal {
@@ -312,7 +334,7 @@
             cursor: pointer;
             font-size: 16px;
         }
-        /* 自定义菜单 + 链接管理 */
+        /* 后台表单 */
         .admin-form {
             display: flex;
             gap: 10px;
@@ -339,343 +361,7 @@
         .link-list { margin-top: 20px; }
         .link-item {
             padding: 10px;
-            background: rgba(255,255,250.1);
-            margin: 5px 0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .link-item a { color: #fff; text-decoration: none; }
-        .link-item a:hover { color: #ff6600; }
-        .del-btn {
-            background: #ff3333;
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: #fff;
-            font-size: 22px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <!-- 头像后台入口 -->
-    <div class="avatar-box" onclick="openAdminModal()">
-        <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
-    </div>
-
-    <div class="title-box {
-            text-align: center;
-            margin: 40px 0;
-        }
-        .website-name {
-            font-size: 38px;
-            font-weight: bold;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px 30px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        .current-menu {
-            text-align: center;
-            margin: 0 auto 30px;
-            background-color: rgba(0,0,0,0.7);
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 22px;
-            color: #ff6600;
-            font-weight: bold;
-            width: 60%;
-        }
-        .nav {
-            width: 85%;
-            margin: 30px auto;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 12px;
-            padding: 20px;
-        }
-        .nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 45px;
-        }
-        .nav li {
-            position: relative;
-            padding: 8px 0;
-        }
-        .nav a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 19px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            background-color: rgba(0,0,0,0.5);
-            cursor: pointer;
-            display: block;
-        }
-        .nav a:hover {
-            color: #ff6600;
-            background-color: rgba(0,0,0,0.8);
-        }
-        /* 菜单展开/收起动画 + 互斥逻辑 */
-        .nav .sub-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: rgba(0,0,0,0.9);
-            border-radius: 8px;
-            padding: 12px;
-            width: 160px;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 999;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-        }
-        .nav .sub-menu.show {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .sub-menu li {
-            position: relative;
-        }
-        .sub-menu .sub-child {
-            display: none;
-            position: absolute;
-            left: 100%;
-            top: 0;
-            background-color: rgba(0,0,0,0.9);
-            border-radius: 8px;
-            padding: 12px;
-            width: 130px;
-            flex-direction: column;
-            gap: 10px;
-            opacity: 0;
-            transform: translateX(10px);
-            transition: all 0.3s ease;
-        }
-        .sub-menu .sub-child.show {
-            display: flex;
-            opacity: 1;
-            transform: translateX(0);
-        }
-        /* 搜索框 + 百度图标 */
-        .search-box {
-            width: 60%;
-            margin: 0 auto 40px;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .baidu-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
-        }
-        .search-input {
-            width: 70%;
-            height: 45px;
-            padding: 0 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px 0 0 6px;
-            outline: none;
-            background: rgba(255,255,255,0.9);
-        }
-        .search-btn {
-            height: 45px;
-            padding: 0 25px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 0 6px 6px 0;
-            background: #ff6600;
-            color: #fff;
-            cursor: pointer;
-        }
-        .search-btn:hover {
-            background: #e65c0;
-        }
-        /* 内容区域 */
-        .blank-box {
-            width: 80%;
-            margin: 80px auto;
-            padding: 40px;
-            background-color: rgba(0,0,0,0.75);
-            border-radius: 15px;
-            min-height: 400px;
-            scroll-margin-top: 30px;
-        }
-        .page {
-            display: none;
-        }
-        .page.active {
-            display: block;
-        }
-        /* 主页跳转按钮 顶部 */
-        .home-top-btn {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .home-top-btn button {
-            padding: 10px 25px;
-            font-size: 18px;
-            background: #ff6600;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .home-top-btn button:hover {
-            background: #e65c0;
-        }
-        /* 首页布局：时间左 + 收款码右 严格左右并排 */
-        .home-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 60px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            flex-direction: row;
-        }
-        /* 电子时钟 左侧 */
-        .digital-clock {
-            background-color: rgba(0,0,0,0.75);
-            padding: 25px 35px;
-            border-radius: 15px;
-            font-size: 45px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 5px;
-            text-align: center;
-            order: 1;
-        }
-        /* 收款码区域 右侧 */
-        .donate-group {
-            text-align: center;
-            order: 2;
-        }
-        .donate {
-            background-color: rgba(0,0,0,0.7);
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .donate-title {
-            font-size: 22px;
-            color: #ff6600;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-        .donate img {
-            width: 180px;
-            border-radius: 8px;
-        }
-        /* 底部文字固定在收款码下方 */
-        .footer-text {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 16px;
-            color: #fff;
-        }
-        .author-info {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .author-info a {
-            color: #0066ff;
-            text-decoration: none;
-            margin-left: 15px;
-            font-weight: bold;
-        }
-        .author-info a:hover {
-            color: #ff6600;
-        }
-        /* 管理后台弹窗 */
-        .admin-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            background: rgba(0,0,0,0.95);
-            padding: 30px;
-            border-radius: 12px;
-            display: none;
-            z-index: 9999;
-            width: 90%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .admin-title { color: #ff6600; font-size: 28px; margin-bottom: 20px; text-align: center; }
-        .login-box { text-align: center; margin: 20px 0; }
-        .login-box input {
-            padding: 12px;
-            font-size: 18px;
-            width: 300px;
-            border: none;
-            border-radius: 6px;
-            outline: none;
-        }
-        .login-box button {
-            padding: 12px 30px;
-            margin-left: 10px;
-            background: #ff6600;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        /* 自定义菜单 + 链接管理 */
-        .admin-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .admin-form select,
-        .admin-form input {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-        .admin-form button {
-            padding: 10px 20px;
-            background: #ff6600;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .link-list { margin-top: 20px; }
-        .link-item {
-            padding: 10px;
-            background: rgba(255,255,250.1);
+            background: rgba(255,255,255,0.1);
             margin: 5px 0;
             border-radius: 5px;
             display: flex;
@@ -745,7 +431,7 @@
         </ul>
     </div>
 
-    <!-- 搜索框 + 百度图标 -->
+    <!-- 搜索框 -->
     <div class="search-box">
         <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
         <input type="text" class="search-input" placeholder="请输入关键词搜索">
@@ -754,53 +440,44 @@
 
     <!-- 内容区域 -->
     <div class="blank-box" id="area">
-        <!-- 首页：顶部主页跳转 + 左时间右收款码 -->
+        <!-- 首页 -->
         <div class="page active" id="home">
-            <!-- 主页跳转 放在最上方 -->
             <div class="home-top-btn">
                 <button onclick="showPage('首页','home')">🏠 返回主页</button>
             </div>
-
             <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2>
             <br>
             <p style="font-size:18px;text-align:center">本站整理系统镜像、软件、实用网站、加速器各类资源<br>点击上方导航菜单查看对应分类</p>
-            
             <div class="author-info">
                 QQ：3608504926<br>
                 <a href="https://space.bilibili.com/3493111242164758">哔哩哔哩的主页</a>
             </div>
-
-            <!-- 核心：时间 左 / 收款码 右 -->
+            <!-- 左时间 右收款码 -->
             <div class="home-row">
                 <div class="digital-clock" id="clock"></div>
-                
                 <div class="donate-group">
                     <div class="donate">
                         <div class="donate-title">捐献一点吧</div>
-                        <!-- 已替换为你提供的最新收款码链接 -->
                         <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
                             <img src="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png">
                         </a>
                     </div>
-                    <!-- 文字固定在收款码下方 -->
-                    <div class="footer-text">
-                        整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持
-                    </div>
+                    <div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div>
                 </div>
             </div>
         </div>
 
-        <!-- 资源页面（保留所有原有链接） -->
-        <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统】</h2><div id="list-miniwin" class="link-list"></div></div>
-        <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像】</h2><div id="list-winimg" class="link-list"></div></div>
-        <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具】</h2><div id="list-syssoft" class="link-list"></div></div>
-        <div class="page" id="game"><h2 style="color:#ff6600">【游戏合集】</h2><div id="list-game" class="link-list"></div></div>
-        <div class="page" id="player"><h2 style="color:#ff6600">【播放软件】</h2><div id="list-player" class="link-list"></div></div>
-        <div class="page" id="zip"><h2 style="color:#ff6600">【解压软件】</h2><div id="list-zip" class="link-list"></div></div>
-        <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件】</h2><div id="list-safe" class="link-list"></div></div>
-        <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件】</h2><div id="list-chat" class="link-list"></div></div>
-        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站】</h2><div id="list-web" class="link-list"></div></div>
-        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div></div>
+        <!-- 资源分类页面（带分页容器） -->
+        <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统】</h2><div id="list-miniwin" class="link-list"></div><div id="page-miniwin" class="pagination"></div></div>
+        <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像】</h2><div id="list-winimg" class="link-list"></div><div id="page-winimg" class="pagination"></div></div>
+        <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具】</h2><div id="list-syssoft" class="link-list"></div><div id="page-syssoft" class="pagination"></div></div>
+        <div class="page" id="game"><h2 style="color:#ff6600">【游戏合集】</h2><div id="list-game" class="link-list"></div><div id="page-game" class="pagination"></div></div>
+        <div class="page" id="player"><h2 style="color:#ff6600">【播放软件】</h2><div id="list-player" class="link-list"></div><div id="page-player" class="pagination"></div></div>
+        <div class="page" id="zip"><h2 style="color:#ff6600">【解压软件】</h2><div id="list-zip" class="link-list"></div><div id="page-zip" class="pagination"></div></div>
+        <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件】</h2><div id="list-safe" class="link-list"></div><div id="page-safe" class="pagination"></div></div>
+        <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件】</h2><div id="list-chat" class="link-list"></div><div id="page-chat" class="pagination"></div></div>
+        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站】</h2><div id="list-web" class="link-list"></div><div id="page-web" class="pagination"></div></div>
+        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div><div id="page-acc" class="pagination"></div></div>
     </div>
 
     <!-- 管理后台弹窗 -->
@@ -814,14 +491,20 @@
             </div>
 
             <div id="adminPanel" style="display:none;">
-                <!-- 自定义添加菜单/页面 -->
+                <!-- 1. 自定义菜单 -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="自定义菜单名称(如:软件合集)">
                     <button onclick="addCate()">添加自定义菜单</button>
                 </div>
-                <!-- 链接管理 -->
+                <!-- 2. 分页管理（核心新增） -->
+                <div class="admin-form">
+                    <select id="pageCate"></select>
+                    <button onclick="addPage()">添加新页数（+1页）</button>
+                </div>
+                <!-- 3. 链接添加 -->
                 <div class="admin-form">
                     <select id="cate"></select>
+                    <select id="pageNum"></select>
                     <input type="text" id="linkName" placeholder="链接名称">
                     <input type="url" id="linkUrl" placeholder="下载链接地址">
                     <button onclick="addLink()">添加链接</button>
@@ -836,6 +519,7 @@
         // 管理员密码
         const ADMIN_PASSWORD = "wangyiming87";
         let isLogin = false;
+        let currentPage = {}; // 记录当前分类选中的页码
 
         // 电子时钟
         function digitalClock() {
@@ -848,26 +532,77 @@
         setInterval(digitalClock, 1000);
         digitalClock();
 
-        // 菜单互斥展开+动画
+        // 菜单展开/收起
         function toggleMenu(ele){
             const sub = ele.nextElementSibling;
             const parent = ele.parentElement.parentElement;
-            
             parent.querySelectorAll('.sub-menu, .sub-child').forEach(item => {
                 if(item !== sub) item.classList.remove('show');
             });
-            
             sub.classList.toggle('show');
         }
 
-        // 页面切换
+        // 本地存储工具
+        function getStorage(key){
+            return JSON.parse(localStorage.getItem(key) || '{}');
+        }
+        function setStorage(key, data){
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // 初始化默认分页（所有分类默认1页）
+        function initDefaultPages(){
+            let data = getStorage('resourceLinks');
+            let defaultCates = ['miniwin','winimg','syssoft','game','player','zip','safe','chat','web','acc'];
+            defaultCates.forEach(cate => {
+                if(!data[cate]) data[cate] = {1: []};
+            });
+            setStorage('resourceLinks', data);
+        }
+        initDefaultPages();
+
+        // 页面切换 + 加载分页
         function showPage(name, id){
             document.getElementById('title').innerText = '当前位置：' + name;
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            loadLinks(id);
+            currentPage[id] = 1; // 默认选中第1页
+            loadLinks(id, currentPage[id]);
+            renderPagination(id);
             document.querySelectorAll('.sub-menu, .sub-child').forEach(item => item.classList.remove('show'));
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
+        }
+
+        // 渲染前端分页按钮
+        function renderPagination(cate){
+            let data = getStorage('resourceLinks');
+            let pageDom = document.getElementById(`page-${cate}`);
+            if(!pageDom) return;
+            pageDom.innerHTML = '';
+            let pages = Object.keys(data[cate] || {});
+            if(pages.length <= 1) return; // 只有1页不显示分页
+            pages.forEach(page => {
+                pageDom.innerHTML += `<button class="page-btn ${page==currentPage[cate]?'active':''}" onclick="switchPage('${cate}',${page})">第${page}页</button>`;
+            });
+        }
+
+        // 切换分页
+        function switchPage(cate, page){
+            currentPage[cate] = page;
+            loadLinks(cate, page);
+            renderPagination(cate);
+        }
+
+        // 加载对应分类+页码的链接
+        function loadLinks(cate, page){
+            let data = getStorage('resourceLinks');
+            let list = data[cate]?.[page] || [];
+            let dom = document.getElementById(`list-${cate}`);
+            if(!dom) return;
+            dom.innerHTML = '';
+            list.forEach((item, i) => {
+                dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`;
+            });
         }
 
         // 后台弹窗
@@ -875,12 +610,13 @@
             document.getElementById('adminModal').style.display = 'block';
             document.getElementById('pwd').value = '';
             renderCateSelect();
+            renderPageSelect();
         }
         function closeAdminModal(){
             document.getElementById('adminModal').style.display = 'none';
         }
 
-        // 登录验证
+        // 管理员登录
         function adminLogin(){
             const inputPwd = document.getElementById('pwd').value;
             if(inputPwd === ADMIN_PASSWORD){
@@ -889,113 +625,126 @@
                 document.getElementById('adminPanel').style.display = 'block';
                 renderAdminList();
                 renderCateSelect();
+                renderPageSelect();
                 alert("登录成功！");
             }else{
                 alert("密码错误，无权访问！");
             }
         }
 
-        // 本地存储
-        function getStorage(key){
-            return JSON.parse(localStorage.getItem(key) || '{}');
-        }
-        function setStorage(key, data){
-            localStorage.setItem(key, JSON.stringify(data));
+        // 渲染分类下拉框
+        function renderCateSelect(){
+            let select = document.getElementById('cate');
+            let pageSelect = document.getElementById('pageCate');
+            select.innerHTML = ''; pageSelect.innerHTML = '';
+            let defaultCates = {miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'};
+            let customCates = getStorage('customCates');
+            let allCates = {...defaultCates, ...customCates};
+            for(let id in allCates){
+                let opt = document.createElement('option'); opt.value = id; opt.innerText = allCates[id];
+                select.appendChild(opt); pageSelect.appendChild(opt.cloneNode(true));
+            }
         }
 
-        // 自定义菜单
+        // 渲染页码下拉框
+        function renderPageSelect(){
+            let pageSelect = document.getElementById('pageNum');
+            let cate = document.getElementById('cate').value;
+            let data = getStorage('resourceLinks');
+            let pages = Object.keys(data[cate] || {});
+            pageSelect.innerHTML = '';
+            pages.forEach(page => {
+                let opt = document.createElement('option'); opt.value = page; opt.innerText = `第${page}页`;
+                pageSelect.appendChild(opt);
+            });
+        }
+
+        // 添加自定义菜单
         function addCate(){
             if(!isLogin) return;
             let name = document.getElementById('newCate').value.trim();
             if(!name) return alert("请输入菜单名称！");
             let cates = getStorage('customCates');
+            let data = getStorage('resourceLinks');
             let id = 'cate_'+Date.now();
             cates[id] = name;
+            data[id] = {1: []}; // 新菜单默认1页
             setStorage('customCates', cates);
+            setStorage('resourceLinks', data);
             document.getElementById('newCate').value = '';
             renderCateSelect();
+            renderPageSelect();
             alert("自定义菜单添加成功！");
         }
 
-        // 渲染分类下拉框
-        function renderCateSelect(){
-            let select = document.getElementById('cate');
-            select.innerHTML = '';
-            let defaultCates = {miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'};
-            let customCates = getStorage('customCates');
-            
-            for(let id in defaultCates){
-                let opt = document.createElement('option');
-                opt.value = id;
-                opt.innerText = defaultCates[id];
-                select.appendChild(opt);
-            }
-            for(let id in customCates){
-                let opt = document.createElement('option');
-                opt.value = id;
-                opt.innerText = customCates[id];
-                select.appendChild(opt);
-            }
+        // 添加新页数（核心功能）
+        function addPage(){
+            if(!isLogin) return;
+            let cate = document.getElementById('pageCate').value;
+            let data = getStorage('resourceLinks');
+            let currentPages = Object.keys(data[cate] || {}).map(Number);
+            let newPage = Math.max(...currentPages) + 1;
+            data[cate][newPage] = [];
+            setStorage('resourceLinks', data);
+            renderPageSelect();
+            renderAdminList();
+            alert(`成功添加【第${newPage}页】！`);
         }
 
-        // 添加链接
+        // 添加链接（指定页码）
         function addLink(){
             if(!isLogin) return alert("请先登录！");
             let cate = document.getElementById('cate').value;
+            let page = document.getElementById('pageNum').value;
             let name = document.getElementById('linkName').value.trim();
             let url = document.getElementById('linkUrl').value.trim();
             if(!name || !url) return alert('请填写完整信息！');
             
             let data = getStorage('resourceLinks');
-            if(!data[cate]) data[cate] = [];
-            data[cate].push({name, url});
+            data[cate][page].push({name, url});
             setStorage('resourceLinks', data);
             
             document.getElementById('linkName').value = '';
             document.getElementById('linkUrl').value = '';
             renderAdminList();
-            loadLinks(cate);
+            loadLinks(cate, page);
+            renderPagination(cate);
         }
 
         // 删除链接
-        function delLink(cate, index){
+        function delLink(cate, page, index){
             if(!isLogin) return;
             let data = getStorage('resourceLinks');
-            data[cate].splice(index, 1);
+            data[cate][page].splice(index, 1);
             setStorage('resourceLinks', data);
             renderAdminList();
-            loadLinks(cate);
+            loadLinks(cate, page);
         }
 
-        // 加载页面链接
-        function loadLinks(cate){
-            let data = getStorage('resourceLinks');
-            let list = data[cate] || [];
-            let dom = document.getElementById(`list-${cate}`);
-            if(!dom) return;
-            dom.innerHTML = '';
-            list.forEach(item => {
-                dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`;
-            });
-        }
-
-        // 渲染后台列表
+        // 渲染后台所有链接
         function renderAdminList(){
             let data = getStorage('resourceLinks');
             let cates = {...{miniwin:'微系统',winimg:'Win系统镜像',syssoft:'系统工具',game:'游戏合集',player:'播放软件',zip:'解压软件',safe:'安全软件',chat:'社交软件',web:'优质网站',acc:'网络加速器'},...getStorage('customCates')};
             let dom = document.getElementById('allLinks');
             dom.innerHTML = '';
             
-            for(let id in data){
-                if(data[id].length === 0) continue;
-                dom.innerHTML += `<h4 style="color:#fff;margin:15px 0 5px;">${cates[id] || id}</h4>`;
-                data[id].forEach((item, i) => {
-                    dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a><button class="del-btn" onclick="delLink('${id}',${i})">删除</button></div>`;
-                });
+            for(let cate in data){
+                let cateName = cates[cate] || cate;
+                for(let page in data[cate]){
+                    let list = data[cate][page];
+                    if(list.length === 0) continue;
+                    dom.innerHTML += `<h4 style="color:#fff;margin:15px 0 5px;">${cateName} - 第${page}页</h4>`;
+                    list.forEach((item, i) => {
+                        dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a><button class="del-btn" onclick="delLink('${cate}',${page},${i})">删除</button></div>`;
+                    });
+                }
             }
         }
 
-        // 搜索
+        // 分类切换时同步刷新页码
+        document.getElementById('cate').addEventListener('change', renderPageSelect);
+
+        // 百度搜索
         function search(){
             let kw = document.querySelector('.search-input').value;
             if(kw.trim()) window.open('https://www.baidu.com/s?wd='+kw,'_self');
