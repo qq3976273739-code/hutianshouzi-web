@@ -12,11 +12,11 @@
             font-family: "微软雅黑", sans-serif;
         }
 
-        /* 页面整体半透明黑底背景 */
+        /* 全屏背景图 */
         body {
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('');
-            background-color: #1a1a1a;
-            color: #fff;
+            background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
             min-height: 100vh;
             padding: 20px;
         }
@@ -26,86 +26,73 @@
             position: absolute;
             top: 20px;
             right: 30px;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #fff;
+            border: 3px solid #fff;
         }
 
-        /* 网站标题样式 */
+        /* 网站标题 + 半透明黑底 */
         .title-box {
             text-align: center;
-            margin: 30px 0;
-            position: relative;
+            margin: 40px 0;
         }
 
         .website-name {
-            font-size: 36px;
-            color: #fff;
-            text-shadow: 0 0 5px #000;
-        }
-
-        /* 作者信息（标题右下角） */
-        .author-info {
-            position: absolute;
-            right: 35%;
-            bottom: -25px;
-            font-size: 14px;
-            color: #ccc;
-        }
-
-        .author-info a {
-            color: #ccc;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-
-        .author-info a:hover {
-            color: #fff;
-        }
-
-        /* 导航栏样式（半透明黑底） */
-        .nav {
-            width: 80%;
-            margin: 50px auto;
+            font-size: 38px;
+            font-weight: bold;
             background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 30px;
             border-radius: 10px;
-            padding: 15px;
+            display: inline-block;
+        }
+
+        /* 导航栏 + 半透明黑底 */
+        .nav {
+            width: 85%;
+            margin: 30px auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 20px;
         }
 
         .nav ul {
             list-style: none;
             display: flex;
             justify-content: center;
-            gap: 50px;
+            gap: 45px;
         }
 
         .nav li {
             position: relative;
-            padding: 10px 0;
+            padding: 8px 0;
         }
 
         .nav a {
             color: #fff;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 19px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: rgba(0,0,0,0.5);
         }
 
         .nav a:hover {
             color: #ff6600;
+            background-color: rgba(0,0,0,0.8);
         }
 
-        /* 下拉菜单 */
+        /* 二级下拉菜单 */
         .nav .sub-menu {
             display: none;
             position: absolute;
-            top: 40px;
+            top: 45px;
             left: 0;
             background-color: rgba(0,0,0,0.9);
-            border-radius: 5px;
-            padding: 10px;
-            width: 150px;
+            border-radius: 8px;
+            padding: 12px;
+            width: 160px;
             flex-direction: column;
             gap: 10px;
             z-index: 999;
@@ -115,16 +102,16 @@
             display: flex;
         }
 
-        /* 三级菜单 */
+        /* 三级下拉菜单 */
         .sub-menu .sub-child {
             display: none;
             position: absolute;
-            left: 150px;
-            top: 70px;
+            left: 160px;
+            top: 75px;
             background-color: rgba(0,0,0,0.9);
-            border-radius: 5px;
-            padding: 10px;
-            width: 120px;
+            border-radius: 8px;
+            padding: 12px;
+            width: 130px;
             flex-direction: column;
             gap: 10px;
         }
@@ -133,42 +120,159 @@
             display: flex;
         }
 
-        /* 实时时钟（左侧中间） */
-        .clock {
-            text-align: left;
-            margin: 100px 50px;
-            font-size: 48px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 10px #ff6600;
-        }
-
-        /* 捐献提示（醒目样式） */
-        .donate {
+        /* 搜索引擎样式 半透明黑底 */
+        .search-box {
+            width: 60%;
+            margin: 0 auto 40px;
             text-align: center;
-            margin: 50px 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 12px;
         }
 
-        .donate-title {
-            font-size: 24px;
-            color: #ff6600;
+        .search-input {
+            width: 70%;
+            height: 45px;
+            padding: 0 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px 0 0 6px;
+            outline: none;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .search-btn {
+            height: 45px;
+            padding: 0 25px;
+            font-size: 16px;
             font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .donate img {
-            width: 200px;
-            border-radius: 5px;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            background: #ff6600;
+            color: #fff;
             cursor: pointer;
         }
 
-        /* 底部文案 */
+        .search-btn:hover {
+            background: #e65c00;
+        }
+
+        /* ---------------- 圆形模拟时钟（表盘样式） ---------------- */
+        .clock {
+            width: 280px;
+            height: 280px;
+            margin: 80px 50px;
+            background-color: rgba(0, 0, 0, 0.75);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.7);
+            border: 8px solid #fff;
+        }
+
+        /* 时钟中心点 */
+        .clock-center {
+            width: 18px;
+            height: 18px;
+            background: #ff6600;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+        }
+
+        /* 时针 */
+        .hour {
+            width: 8px;
+            height: 70px;
+            background: #fff;
+            position: absolute;
+            bottom: 50%;
+            border-radius: 4px;
+            transform-origin: bottom center;
+        }
+
+        /* 分针 */
+        .minute {
+            width: 6px;
+            height: 100px;
+            background: #fff;
+            position: absolute;
+            bottom: 50%;
+            border-radius: 3px;
+            transform-origin: bottom center;
+        }
+
+        /* 秒针 */
+        .second {
+            width: 3px;
+            height: 120px;
+            background: #ff6600;
+            position: absolute;
+            bottom: 50%;
+            border-radius: 1px;
+            transform-origin: bottom center;
+        }
+
+        /* 作者信息（捐献上方，蓝色B站链接） */
+        .author-info {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 18px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .author-info a {
+            color: #0066ff; /* 蓝色字体 */
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .author-info a:hover {
+            color: #ff6600;
+        }
+
+        /* 捐献提示 + 半透明黑底 */
+        .donate {
+            text-align: center;
+            margin: 20px 0 60px;
+        }
+
+        .donate-title {
+            font-size: 26px;
+            color: #ff6600;
+            font-weight: bold;
+            background-color: rgba(0,0,0,0.7);
+            padding: 10px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .donate img {
+            width: 220px;
+            border-radius: 8px;
+            border: 2px solid rgba(0,0,0,0.7);
+        }
+
+        /* 底部文案 + 半透明黑底 */
         .footer-text {
             text-align: center;
-            margin-top: 80px;
-            font-size: 16px;
-            color: #ccc;
-            opacity: 0.8;
+            margin: 40px 0;
+            font-size: 17px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 12px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            opacity: 0.95;
         }
     </style>
 </head>
@@ -176,50 +280,64 @@
     <!-- 右上角圆形头像 -->
     <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="头像" class="avatar">
 
-    <!-- 网站标题 + 作者信息 -->
+    <!-- 网站标题 -->
     <div class="title-box">
         <h1 class="website-name">虎天寿资源整理网站</h1>
-        <div class="author-info">
-            QQ：3608504926
-            <a href="https://space.bilibili.com/3493111242164758" target="_blank">作者主页</a>
-        </div>
     </div>
 
     <!-- 导航栏 -->
     <div class="nav">
         <ul>
-            <li><a href="#">首页</a></li>
+            <li><a href="#" target="_blank">首页</a></li>
             <li>
-                <a href="#">系统镜像</a>
+                <a href="#" target="_blank">系统镜像</a>
                 <ul class="sub-menu">
-                    <li><a href="#">微系统</a></li>
-                    <li><a href="#">Win系统镜像</a></li>
+                    <li><a href="#" target="_blank">微系统</a></li>
+                    <li><a href="#" target="_blank">Win系统</a></li>
                 </ul>
             </li>
             <li>
-                <a href="#">必装软件</a>
+                <a href="#" target="_blank">必装软件</a>
                 <ul class="sub-menu">
-                    <li><a href="#">系统</a></li>
-                    <li><a href="#">游戏</a></li>
+                    <li><a href="#" target="_blank">系统</a></li>
+                    <li><a href="#" target="_blank">游戏</a></li>
                     <li>
-                        <a href="#">日常</a>
+                        <a href="#" target="_blank">日常</a>
                         <ul class="sub-child">
-                            <li><a href="#">播放</a></li>
-                            <li><a href="#">解压缩</a></li>
-                            <li><a href="#">安全</a></li>
-                            <li><a href="#">社交</a></li>
+                            <li><a href="#" target="_blank">播放</a></li>
+                            <li><a href="#" target="_blank">解压缩</a></li>
+                            <li><a href="#" target="_blank">安全</a></li>
+                            <li><a href="#" target="_blank">社交</a></li>
                         </ul>
                     </li>
                 </ul>
             </li>
-            <li><a href="#">网站加速器</a></li>
+            <li><a href="#" target="_blank">网站</a></li>
+            <li><a href="#" target="_blank">加速器</a></li>
         </ul>
     </div>
 
-    <!-- 左侧实时时钟 -->
-    <div class="clock" id="clock"></div>
+    <!-- 搜索引擎 -->
+    <div class="search-box">
+        <input type="text" class="search-input" placeholder="请输入要搜索的资源关键词...">
+        <button class="search-btn" onclick="searchResource()">搜索资源</button>
+    </div>
 
-    <!-- 捐献提示 -->
+    <!-- 圆形模拟时钟 -->
+    <div class="clock">
+        <div class="clock-center"></div>
+        <div class="hour" id="hour"></div>
+        <div class="minute" id="minute"></div>
+        <div class="second" id="second"></div>
+    </div>
+
+    <!-- QQ + B站主页（捐献上方） -->
+    <div class="author-info">
+        QQ：3608504926
+        <a href="https://space.bilibili.com/3493111242164758" target="_blank">哔哩哔哩的主页</a>
+    </div>
+
+    <!-- 捐献区域 -->
     <div class="donate">
         <div class="donate-title">捐献一点吧</div>
         <a href="https://i.cetsteam.com/imgs/2026/04/01/6206ae66c0bf00a8.png" target="_blank">
@@ -232,19 +350,38 @@
         整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持
     </div>
 
-    <!-- 实时时钟JS -->
     <script>
-        function showTime() {
+        // 模拟时钟核心代码
+        const hourHand = document.getElementById('hour');
+        const minuteHand = document.getElementById('minute');
+        const secondHand = document.getElementById('second');
+
+        function runClock() {
             let date = new Date();
-            let hours = date.getHours().toString().padStart(2, '0');
-            let minutes = date.getMinutes().toString().padStart(2, '0');
-            let seconds = date.getSeconds().toString().padStart(2, '0');
-            let time = hours + ":" + minutes + ":" + seconds;
-            document.getElementById("clock").innerText = time;
+            let hours = date.getHours() % 12;
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+
+            // 计算指针旋转角度
+            let hRotation = 30 * hours + 0.5 * minutes;
+            let mRotation = 6 * minutes;
+            let sRotation = 6 * seconds;
+
+            hourHand.style.transform = `rotate(${hRotation}deg)`;
+            minuteHand.style.transform = `rotate(${mRotation}deg)`;
+            secondHand.style.transform = `rotate(${sRotation}deg)`;
         }
-        // 每秒刷新一次时间
-        setInterval(showTime, 1000);
-        showTime();
+
+        setInterval(runClock, 1000);
+        runClock();
+
+        // 搜索功能
+        function searchResource() {
+            let keyword = document.querySelector('.search-input').value;
+            if(keyword.trim() !== ''){
+                window.open(`https://www.baidu.com/s?wd=${keyword}`, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
