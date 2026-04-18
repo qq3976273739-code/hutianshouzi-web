@@ -739,10 +739,10 @@
             homeLi.innerHTML = '<a onclick="showPage(\'首页\',\'home\')">首页</a>';
             navUl.appendChild(homeLi);
 
-            // 关键修复：提前创建所有默认顶级菜单的页面容器
+            // 强制创建所有顶级菜单页面容器（包括默认）
             for (let topId in topMenus) {
                 const top = topMenus[topId];
-                ensurePageContainer(topId, top.name); // 强制创建页面容器
+                ensurePageContainer(topId, top.name);
                 const children = Object.values(subMenus).filter(sub => sub.parentId === topId);
                 const li = document.createElement('li');
                 if (children.length > 0) {
@@ -1048,11 +1048,12 @@
             document.getElementById('linkUrl').value = '';
             renderAdminList();
             
-            if (document.querySelector('.page.active')?.id === menuId) {
+            // 关键修复：添加后强制刷新对应菜单页面
+            let activeMenuId = document.querySelector('.page.active')?.id;
+            if (activeMenuId === menuId) {
                 loadLinks(menuId, page);
                 renderPagination(menuId);
             }
-            alert("添加成功！");
         }
 
         function delLink(menuId, page, idx) {
