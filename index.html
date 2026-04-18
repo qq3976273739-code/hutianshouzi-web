@@ -145,7 +145,6 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* 搜索框 */
         .search-box {
             width: 60%;
             margin: 0 auto 40px;
@@ -417,39 +416,14 @@
     </div>
     <div class="current-menu" id="title">当前位置：首页</div>
 
-    <div class="nav">
+    <!-- 导航栏容器 -->
+    <div class="nav" id="navContainer">
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="个人头像" class="nav-avatar">
-        <ul>
-            <li><a onclick="showPage('首页','home')">首页</a></li>
-            <li>
-                <a onclick="toggleMenu(this)">系统镜像</a>
-                <ul class="sub-menu">
-                    <li><a onclick="showPage('系统镜像 - 微系统','miniwin')">微系统</a></li>
-                    <li><a onclick="showPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
-                </ul>
-            </li>
-            <li>
-                <a onclick="toggleMenu(this)">必装软件</a>
-                <ul class="sub-menu">
-                    <li><a onclick="showPage('必装软件 - 系统工具','syssoft')">系统</a></li>
-                    <li><a onclick="showPage('必装软件 - 游戏合集','game')">游戏</a></li>
-                    <li>
-                        <a onclick="toggleMenu(this)">日常</a>
-                        <ul class="sub-child">
-                            <li><a onclick="showPage('日常 - 播放软件','player')">播放</a></li>
-                            <li><a onclick="showPage('日常 - 解压缩软件','zip')">解压缩</a></li>
-                            <li><a onclick="showPage('日常 - 安全防护','safe')">安全</a></li>
-                            <li><a onclick="showPage('日常 - 社交软件','chat')">社交</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li><a onclick="showPage('网站合集','web')">网站</a></li>
-            <li><a onclick="showPage('网络加速器','acc')">加速器</a></li>
+        <ul id="navMenuList">
+            <!-- 动态生成导航菜单 -->
         </ul>
     </div>
 
-    <!-- 搜索框 (AI已移除) -->
     <div class="search-box">
         <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
         <input type="text" class="search-input" id="baiduSearchInput" placeholder="输入搜索内容">
@@ -457,6 +431,7 @@
     </div>
 
     <div class="blank-box" id="area">
+        <!-- 首页固定 -->
         <div class="page active" id="home">
             <div class="home-top-btn">
                 <button onclick="showPage('首页','home')">🏠 返回主页</button>
@@ -482,16 +457,7 @@
             </div>
         </div>
 
-        <div class="page" id="miniwin"><h2 style="color:#ff6600">【微系统】</h2><div id="list-miniwin" class="link-list"></div><div id="page-miniwin" class="pagination"></div></div>
-        <div class="page" id="winimg"><h2 style="color:#ff6600">【Win系统镜像】</h2><div id="list-winimg" class="link-list"></div><div id="page-winimg" class="pagination"></div></div>
-        <div class="page" id="syssoft"><h2 style="color:#ff6600">【系统工具】</h2><div id="list-syssoft" class="link-list"></div><div id="page-syssoft" class="pagination"></div></div>
-        <div class="page" id="game"><h2 style="color:#ff6600">【游戏合集】</h2><div id="list-game" class="link-list"></div><div id="page-game" class="pagination"></div></div>
-        <div class="page" id="player"><h2 style="color:#ff6600">【播放软件】</h2><div id="list-player" class="link-list"></div><div id="page-player" class="pagination"></div></div>
-        <div class="page" id="zip"><h2 style="color:#ff6600">【解压软件】</h2><div id="list-zip" class="link-list"></div><div id="page-zip" class="pagination"></div></div>
-        <div class="page" id="safe"><h2 style="color:#ff6600">【安全软件】</h2><div id="list-safe" class="link-list"></div><div id="page-safe" class="pagination"></div></div>
-        <div class="page" id="chat"><h2 style="color:#ff6600">【社交软件】</h2><div id="list-chat" class="link-list"></div><div id="page-chat" class="pagination"></div></div>
-        <div class="page" id="web"><h2 style="color:#ff6600">【优质网站】</h2><div id="list-web" class="link-list"></div><div id="page-web" class="pagination"></div></div>
-        <div class="page" id="acc"><h2 style="color:#ff6600">【网络加速器】</h2><div id="list-acc" class="link-list"></div><div id="page-acc" class="pagination"></div></div>
+        <!-- 默认分类页面容器（动态生成的也会追加在此） -->
     </div>
 
     <!-- 后台管理弹窗 -->
@@ -503,35 +469,25 @@
                 <input type="password" id="pwd" placeholder="请输入管理员密码">
                 <button onclick="adminLogin()">登录</button>
             </div>
-
             <div id="adminPanel" style="display:none;">
-                <!-- 1. 自定义菜单 -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="自定义菜单名称(如:软件合集)">
                     <button onclick="addCate()">添加自定义菜单</button>
                 </div>
-
-                <!-- 2. 删除自定义菜单 (新增功能) -->
                 <div class="admin-form">
                     <select id="delCateSelect"></select>
                     <button class="del-menu-btn" onclick="deleteCustomMenu()">🗑️ 删除选中菜单</button>
-                    <span class="warning-tip">⚠️ 仅可删除自定义添加的菜单，默认菜单不可删除</span>
+                    <span class="warning-tip">⚠️ 仅可删除自定义添加的菜单</span>
                 </div>
-
-                <!-- 3. 分页管理 - 添加页数 -->
                 <div class="admin-form">
                     <select id="pageCate"></select>
                     <button onclick="addPage()">添加新页数（+1页）</button>
                 </div>
-
-                <!-- 4. 分页管理 - 删除页数 -->
                 <div class="admin-form">
                     <select id="delPageCate"></select>
                     <select id="delPageNum"></select>
                     <button class="del-page-btn" onclick="deletePage()">删除选中页数</button>
                 </div>
-
-                <!-- 5. 链接添加 -->
                 <div class="admin-form">
                     <select id="cate"></select>
                     <select id="pageNum"></select>
@@ -539,7 +495,6 @@
                     <input type="url" id="linkUrl" placeholder="下载链接地址">
                     <button onclick="addLink()">添加链接</button>
                 </div>
-
                 <h3 style="color:#ff6600;margin:10px 0;">已添加全部链接</h3>
                 <div id="allLinks"></div>
             </div>
@@ -576,15 +531,6 @@
         setInterval(digitalClock, 1000);
         digitalClock();
 
-        function toggleMenu(ele) {
-            const sub = ele.nextElementSibling;
-            const parent = ele.parentElement.parentElement;
-            parent.querySelectorAll('.sub-menu, .sub-child').forEach(item => {
-                if (item !== sub) item.classList.remove('show');
-            });
-            sub.classList.toggle('show');
-        }
-
         function getStorage(key) {
             return JSON.parse(localStorage.getItem(key) || '{}');
         }
@@ -592,7 +538,8 @@
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        function initDefaultPages() {
+        // 初始化默认数据
+        function initData() {
             let data = getStorage('resourceLinks');
             for (let cate in DEFAULT_CATES) {
                 if (!data[cate]) data[cate] = { 1: [] };
@@ -600,17 +547,105 @@
             setStorage('resourceLinks', data);
             if (!getStorage('customCates')) setStorage('customCates', {});
         }
-        initDefaultPages();
+        initData();
 
-        function showPage(name, id) {
-            document.getElementById('title').innerText = '当前位置：' + name;
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            currentPage[id] = 1;
-            loadLinks(id, currentPage[id]);
-            renderPagination(id);
-            document.querySelectorAll('.sub-menu, .sub-child').forEach(item => item.classList.remove('show'));
-            document.getElementById('area').scrollIntoView({ behavior: 'smooth' });
+        // 获取所有分类（默认+自定义）
+        function getAllCates() {
+            let custom = getStorage('customCates');
+            return { ...DEFAULT_CATES, ...custom };
+        }
+
+        // 动态创建页面容器（如果不存在）
+        function ensurePageContainer(cateId, cateName) {
+            let container = document.getElementById(cateId);
+            if (!container) {
+                let area = document.getElementById('area');
+                let newDiv = document.createElement('div');
+                newDiv.className = 'page';
+                newDiv.id = cateId;
+                newDiv.innerHTML = `<h2 style="color:#ff6600">【${cateName}】</h2><div id="list-${cateId}" class="link-list"></div><div id="page-${cateId}" class="pagination"></div>`;
+                area.appendChild(newDiv);
+            } else {
+                // 更新标题（名称可能变了）
+                let titleH2 = container.querySelector('h2');
+                if (titleH2) titleH2.innerHTML = `【${cateName}】`;
+            }
+        }
+
+        // 删除页面容器
+        function removePageContainer(cateId) {
+            let container = document.getElementById(cateId);
+            if (container) container.remove();
+        }
+
+        // 重建整个导航菜单（基于当前所有分类）
+        function rebuildNavMenu() {
+            const allCates = getAllCates();
+            const navUl = document.getElementById('navMenuList');
+            if (!navUl) return;
+            // 清空现有菜单（保留首页）
+            navUl.innerHTML = '';
+            // 首页
+            let homeLi = document.createElement('li');
+            homeLi.innerHTML = '<a onclick="showPage(\'首页\',\'home\')">首页</a>';
+            navUl.appendChild(homeLi);
+            // 系统镜像固定分组
+            let sysImgLi = document.createElement('li');
+            sysImgLi.innerHTML = `<a onclick="toggleMenu(this)">系统镜像</a>
+                <ul class="sub-menu">
+                    <li><a onclick="showPage('系统镜像 - 微系统','miniwin')">微系统</a></li>
+                    <li><a onclick="showPage('系统镜像 - Win系统镜像','winimg')">Win系统镜像</a></li>
+                </ul>`;
+            navUl.appendChild(sysImgLi);
+            // 必装软件分组
+            let softLi = document.createElement('li');
+            softLi.innerHTML = `<a onclick="toggleMenu(this)">必装软件</a>
+                <ul class="sub-menu">
+                    <li><a onclick="showPage('必装软件 - 系统工具','syssoft')">系统</a></li>
+                    <li><a onclick="showPage('必装软件 - 游戏合集','game')">游戏</a></li>
+                    <li>
+                        <a onclick="toggleMenu(this)">日常</a>
+                        <ul class="sub-child">
+                            <li><a onclick="showPage('日常 - 播放软件','player')">播放</a></li>
+                            <li><a onclick="showPage('日常 - 解压缩软件','zip')">解压缩</a></li>
+                            <li><a onclick="showPage('日常 - 安全防护','safe')">安全</a></li>
+                            <li><a onclick="showPage('日常 - 社交软件','chat')">社交</a></li>
+                        </ul>
+                    </li>
+                </ul>`;
+            navUl.appendChild(softLi);
+            // 网站和加速器
+            let webLi = document.createElement('li');
+            webLi.innerHTML = '<a onclick="showPage(\'网站合集\',\'web\')">网站</a>';
+            navUl.appendChild(webLi);
+            let accLi = document.createElement('li');
+            accLi.innerHTML = '<a onclick="showPage(\'网络加速器\',\'acc\')">加速器</a>';
+            navUl.appendChild(accLi);
+            // 动态添加自定义菜单（直接作为一级菜单）
+            for (let [id, name] of Object.entries(allCates)) {
+                if (DEFAULT_CATES[id]) continue; // 默认已处理，跳过
+                let customLi = document.createElement('li');
+                customLi.innerHTML = `<a onclick="showPage('${name}','${id}')">${name}</a>`;
+                navUl.appendChild(customLi);
+                // 确保页面容器存在
+                ensurePageContainer(id, name);
+            }
+            // 确保所有默认分类的页面容器存在
+            for (let [id, name] of Object.entries(DEFAULT_CATES)) {
+                ensurePageContainer(id, name);
+            }
+        }
+
+        // 加载分类链接和分页
+        function loadLinks(cate, page) {
+            let data = getStorage('resourceLinks');
+            let list = data[cate]?.[page] || [];
+            let dom = document.getElementById(`list-${cate}`);
+            if (!dom) return;
+            dom.innerHTML = '';
+            list.forEach(item => {
+                dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`;
+            });
         }
 
         function renderPagination(cate) {
@@ -631,17 +666,26 @@
             renderPagination(cate);
         }
 
-        function loadLinks(cate, page) {
-            let data = getStorage('resourceLinks');
-            let list = data[cate]?.[page] || [];
-            let dom = document.getElementById(`list-${cate}`);
-            if (!dom) return;
-            dom.innerHTML = '';
-            list.forEach(item => {
-                dom.innerHTML += `<div class="link-item"><a href="${item.url}" target="_blank">${item.name}</a></div>`;
-            });
+        function showPage(name, id) {
+            document.getElementById('title').innerText = '当前位置：' + name;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            let targetPage = document.getElementById(id);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                if (id !== 'home') {
+                    if (!currentPage[id]) currentPage[id] = 1;
+                    loadLinks(id, currentPage[id]);
+                    renderPagination(id);
+                }
+            } else {
+                // 如果页面不存在（极少情况），回首页
+                document.getElementById('home').classList.add('active');
+            }
+            document.querySelectorAll('.sub-menu, .sub-child').forEach(item => item.classList.remove('show'));
+            document.getElementById('area').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // 后台相关函数
         function openAdminModal() {
             document.getElementById('adminModal').style.display = 'block';
             document.getElementById('pwd').value = '';
@@ -665,17 +709,11 @@
             }
         }
 
-        // 获取所有分类（默认+自定义）
-        function getAllCates() {
-            let custom = getStorage('customCates');
-            return { ...DEFAULT_CATES, ...custom };
-        }
-
         function renderAllSelects() {
             renderCateSelect();
             renderPageSelect();
             renderDelPageSelect();
-            renderDelCateSelect();  // 新增：删除菜单的下拉框
+            renderDelCateSelect();
         }
 
         function renderCateSelect() {
@@ -696,7 +734,6 @@
             }
         }
 
-        // 删除菜单专用下拉 (只显示自定义菜单)
         function renderDelCateSelect() {
             let select = document.getElementById('delCateSelect');
             select.innerHTML = '';
@@ -744,48 +781,7 @@
             });
         }
 
-        // 新增: 删除自定义菜单（连同所有页及链接）
-        function deleteCustomMenu() {
-            if (!isLogin) return alert("请先登录！");
-            let select = document.getElementById('delCateSelect');
-            if (!select.options.length || select.options[0].disabled) {
-                alert("没有可删除的自定义菜单");
-                return;
-            }
-            let cateId = select.value;
-            let cateName = select.options[select.selectedIndex].text;
-            let confirmDel = confirm(`⚠️ 确认删除整个菜单【${cateName}】吗？\n该菜单下的所有页和链接都会被永久删除！`);
-            if (!confirmDel) return;
-
-            // 删除资源数据
-            let resourceData = getStorage('resourceLinks');
-            delete resourceData[cateId];
-            setStorage('resourceLinks', resourceData);
-
-            // 删除自定义菜单记录
-            let customCates = getStorage('customCates');
-            delete customCates[cateId];
-            setStorage('customCates', customCates);
-
-            // 重新渲染后台和前端导航 (需要重建导航栏)
-            renderAllSelects();
-            renderAdminList();
-
-            // 如果当前打开的页面正好是被删除的分类，则跳回首页
-            let activePageId = document.querySelector('.page.active')?.id;
-            if (activePageId === cateId) {
-                showPage('首页', 'home');
-            } else {
-                // 刷新可能影响其他依赖
-                for (let key in currentPage) {
-                    if (key === cateId) delete currentPage[key];
-                }
-            }
-            // 重新构建导航菜单（因为动态菜单需要刷新dom，简便方法：重新生成导航栏html，但为了简洁，提醒用户刷新页面）
-            alert("菜单已删除，请手动刷新页面以更新导航栏。");
-            location.reload(); // 彻底刷新以重建导航栏
-        }
-
+        // 添加自定义菜单
         function addCate() {
             if (!isLogin) return;
             let name = document.getElementById('newCate').value.trim();
@@ -798,9 +794,46 @@
             setStorage('customCates', cates);
             setStorage('resourceLinks', data);
             document.getElementById('newCate').value = '';
+            // 动态更新界面
+            rebuildNavMenu();          // 重建导航
+            ensurePageContainer(id, name); // 确保页面容器
             renderAllSelects();
-            alert("自定义菜单添加成功！请刷新页面查看导航栏。");
-            location.reload();
+            renderAdminList();
+            alert(`自定义菜单“${name}”已添加，可在导航栏查看。`);
+        }
+
+        // 删除自定义菜单
+        function deleteCustomMenu() {
+            if (!isLogin) return alert("请先登录！");
+            let select = document.getElementById('delCateSelect');
+            if (!select.options.length || select.options[0].disabled) {
+                alert("没有可删除的自定义菜单");
+                return;
+            }
+            let cateId = select.value;
+            let cateName = select.options[select.selectedIndex].text;
+            let confirmDel = confirm(`⚠️ 确认删除整个菜单【${cateName}】吗？该菜单下的所有页和链接都会被永久删除！`);
+            if (!confirmDel) return;
+
+            let resourceData = getStorage('resourceLinks');
+            delete resourceData[cateId];
+            setStorage('resourceLinks', resourceData);
+            let customCates = getStorage('customCates');
+            delete customCates[cateId];
+            setStorage('customCates', customCates);
+
+            // 如果当前正在显示被删除的页面，跳回首页
+            let activePage = document.querySelector('.page.active');
+            if (activePage && activePage.id === cateId) {
+                showPage('首页', 'home');
+            }
+            // 移除页面容器
+            removePageContainer(cateId);
+            // 重建导航
+            rebuildNavMenu();
+            renderAllSelects();
+            renderAdminList();
+            alert(`菜单“${cateName}”已删除。`);
         }
 
         function addPage() {
@@ -813,6 +846,11 @@
             setStorage('resourceLinks', data);
             renderAllSelects();
             renderAdminList();
+            // 如果当前正在查看该分类，刷新分页
+            let activeId = document.querySelector('.page.active')?.id;
+            if (activeId === cate) {
+                renderPagination(cate);
+            }
             alert(`成功添加【第${newPage}页】！`);
         }
 
@@ -853,8 +891,10 @@
             document.getElementById('linkName').value = '';
             document.getElementById('linkUrl').value = '';
             renderAdminList();
-            loadLinks(cate, page);
-            renderPagination(cate);
+            if (document.querySelector('.page.active')?.id === cate) {
+                loadLinks(cate, page);
+                renderPagination(cate);
+            }
         }
 
         function delLink(cate, page, index) {
@@ -863,7 +903,9 @@
             data[cate][page].splice(index, 1);
             setStorage('resourceLinks', data);
             renderAdminList();
-            loadLinks(cate, page);
+            if (document.querySelector('.page.active')?.id === cate) {
+                loadLinks(cate, page);
+            }
         }
 
         function renderAdminList() {
@@ -891,6 +933,11 @@
             let kw = document.getElementById('baiduSearchInput').value;
             if (kw.trim()) window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(kw), '_self');
         }
+
+        // 页面启动时构建导航
+        rebuildNavMenu();
+        // 显示首页
+        showPage('首页', 'home');
     </script>
 </body>
 </html>
