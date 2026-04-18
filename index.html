@@ -34,14 +34,19 @@
         .link-item a {color:#fff;text-decoration:none}
         .pagination {text-align:center;margin-top:30px}
         .page-btn {padding:8px 15px;background:#ff6600;color:#fff;border:none;border-radius:5px;margin:0 3px;cursor:pointer}
-        .admin-modal {position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.95);padding:30px;border-radius:12px;display:none;z-index:9999;width:90%;max-width:800px}
+
+        .admin-modal {
+            position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+            background:rgba(0,0,0,.95);padding:30px;border-radius:12px;
+            display:none;z-index:9999;width:90%;max-width:800px;
+            max-height:80vh;overflow-y:auto;
+        }
         .admin-title {color:#ff6600;font-size:28px;margin-bottom:20px;text-align:center}
         .login-box {text-align:center;margin:20px 0}
         .login-box input {padding:12px;font-size:18px;width:300px;border:none;border-radius:6px}
         .login-box button {padding:12px 30px;background:#ff6600;color:#fff;border:none;border-radius:6px;cursor:pointer}
-        .admin-form {display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-        .admin-form select,
-        .admin-form input {padding:10px;font-size:16px;border-radius:5px;border:none;outline:none}
+        .admin-form {display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+        .admin-form select,.admin-form input {padding:10px;font-size:16px;border-radius:5px;border:none;outline:none}
         .admin-form button {padding:10px 20px;background:#ff6600;color:#fff;border:none;border-radius:5px;cursor:pointer}
         .del-btn {background:red;color:#fff;border:none;padding:5px 10px;border-radius:3px;cursor:pointer}
         .close-btn {position:absolute;top:15px;right:20px;font-size:22px;cursor:pointer}
@@ -71,6 +76,8 @@
 <div class="blank-box" id="area">
     <div class="page active" id="home">
         <h2 style="text-align:center;color:#ff6600">欢迎来到虎天寿资源整理网站</h2>
+        <br>
+        <p style="text-align:center;font-size:18px">点击上方菜单查看内容</p>
     </div>
 </div>
 
@@ -93,7 +100,7 @@
             <input id="newSub" placeholder="子菜单">
             <button onclick="addSub()">添加子菜单</button>
         </div>
-        <hr>
+        <hr style="border-color:#ff6600;margin:15px 0">
         <div class="admin-form">
             <select id="menuSelect"></select>
             <select id="pageSelect"></select>
@@ -101,6 +108,7 @@
             <input id="linkUrl" placeholder="网址" style="width:200px">
             <button onclick="addLink()">添加链接</button>
         </div>
+        <hr style="border-color:#ff6600;margin:15px 0">
         <div id="allLinks"></div>
     </div>
 </div>
@@ -118,10 +126,14 @@ const DEFAULT_TOP = {
 };
 
 const DEFAULT_SUB = {
-    mini: { parent: "top1", name: "微系统" },
-    win:  { parent: "top1", name: "Win系统镜像" },
-    tool: { parent: "top2", name: "系统工具" },
-    game: { parent: "top2", name: "游戏合集" }
+    mini:    { parent: "top1", name: "微系统" },
+    winimg:  { parent: "top1", name: "Win系统镜像" },
+    tool:    { parent: "top2", name: "系统工具" },
+    game:    { parent: "top2", name: "游戏合集" },
+    player:  { parent: "top2", name: "播放软件" },
+    zip:     { parent: "top2", name: "解压软件" },
+    safe:    { parent: "top2", name: "安全软件" },
+    chat:    { parent: "top2", name: "社交软件" }
 };
 
 function init() {
@@ -133,7 +145,6 @@ function init() {
     subMenus = s ? JSON.parse(s) : DEFAULT_SUB;
     links = l ? JSON.parse(l) : {};
 
-    // 初始化所有菜单页面（关键修复：分支页面自动创建）
     for (let id in topMenus) ensurePage(id);
     for (let id in subMenus) ensurePage(id);
 
@@ -149,7 +160,7 @@ function ensurePage(id) {
     let div = document.createElement("div");
     div.className = "page";
     div.id = id;
-    div.innerHTML = `<h2 style="color:#ff6600">加载中...</h2><div id="list_${id}" class="link-list"></div><div id="page_${id}" class="pagination"></div>`;
+    div.innerHTML = `<div id="list_${id}" class="link-list"></div><div id="page_${id}" class="pagination"></div>`;
     area.appendChild(div);
 }
 
@@ -175,6 +186,7 @@ function buildNav() {
 
 function toggle(a) {
     let sub = a.nextElementSibling;
+    document.querySelectorAll(".sub-menu").forEach(m => m.classList.remove("show"));
     sub.classList.toggle("show");
 }
 
@@ -193,13 +205,15 @@ function renderPage(id) {
     let list = links[id][p] || [];
     let listDom = document.getElementById("list_" + id);
     let pageDom = document.getElementById("page_" + id);
+
     listDom.innerHTML = "";
     list.forEach(i => {
         listDom.innerHTML += `<div class="link-item"><a href="${i.url}" target="_blank">${i.name}</a></div>`;
     });
+
     pageDom.innerHTML = "";
     for (let i in links[id]) {
-        pageDom.innerHTML += `<button class="page-btn" onclick="goPage('${id}',${i})">${i}页</button>`;
+        pageDom.innerHTML += `<button class="page-btn" onclick="goPage('${id}',${i})">第${i}页</button>`;
     }
 }
 
@@ -212,6 +226,7 @@ function refreshSelects() {
     let pSel = document.getElementById("parentSelect");
     let mSel = document.getElementById("menuSelect");
     pSel.innerHTML = mSel.innerHTML = "";
+
     for (let id in topMenus) {
         pSel.innerHTML += `<option value="${id}">${topMenus[id].name}</option>`;
         mSel.innerHTML += `<option value="${id}">${topMenus[id].name}</option>`;
@@ -232,7 +247,7 @@ function refreshPages() {
 }
 
 function addTop() {
-    let name = document.getElementById("newTop").value;
+    let name = document.getElementById("newTop").value.trim();
     if (!name) return;
     let id = "t" + Date.now();
     topMenus[id] = {name};
@@ -244,7 +259,7 @@ function addTop() {
 
 function addSub() {
     let parent = document.getElementById("parentSelect").value;
-    let name = document.getElementById("newSub").value;
+    let name = document.getElementById("newSub").value.trim();
     if (!name) return;
     let id = "s" + Date.now();
     subMenus[id] = {parent, name};
@@ -257,9 +272,10 @@ function addSub() {
 function addLink() {
     let id = document.getElementById("menuSelect").value;
     let p = document.getElementById("pageSelect").value;
-    let name = document.getElementById("linkName").value;
-    let url = document.getElementById("linkUrl").value;
-    if (!name || !url) return;
+    let name = document.getElementById("linkName").value.trim();
+    let url = document.getElementById("linkUrl").value.trim();
+    if (!name || !url) return alert("请填写名称和网址");
+
     if (!links[id]) links[id] = {1:[]};
     if (!links[id][p]) links[id][p] = [];
     links[id][p].push({name, url});
@@ -268,6 +284,7 @@ function addLink() {
     refreshList();
     document.getElementById("linkName").value = "";
     document.getElementById("linkUrl").value = "";
+    alert("添加成功！");
 }
 
 function save() {
@@ -278,7 +295,7 @@ function save() {
 
 function refreshList() {
     let dom = document.getElementById("allLinks");
-    dom.innerHTML = "<h3>所有链接</h3>";
+    dom.innerHTML = "<h3>已添加链接</h3>";
     for (let id in links) {
         for (let p in links[id]) {
             links[id][p].forEach((i, idx) => {
