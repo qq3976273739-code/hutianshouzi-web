@@ -59,6 +59,7 @@
             font-weight: bold;
             width: 60%;
         }
+        /* ========== 原有主导航 ========== */
         .nav {
             width: 85%;
             margin: 30px auto;
@@ -122,6 +123,34 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* ========== 【新增：导航下方副导航栏】和上方样式完美统一 ========== */
+        .sub-nav {
+            width: 85%;
+            margin: 0 auto 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            flex-wrap: wrap;
+        }
+        .sub-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background-color: rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
+        .sub-nav a:hover {
+            color: #ff6600;
+            background-color: rgba(0,0,0,0.8);
+        }
+
         .search-box {
             width: 60%;
             margin: 0 auto 40px;
@@ -424,10 +453,14 @@
     </div>
     <div class="current-menu" id="title">当前位置：首页</div>
 
+    <!-- 原有顶部主导航 -->
     <div class="nav" id="navContainer">
         <img src="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" alt="个人头像" class="nav-avatar">
         <ul id="navMenuList"></ul>
     </div>
+
+    <!-- ============== 【新增：导航下方副导航栏】页面展示区域 ============== -->
+    <div class="sub-nav" id="subNavBox"></div>
 
     <div class="search-box">
         <img src="https://www.baidu.com/favicon.ico" class="baidu-icon" alt="百度">
@@ -475,12 +508,23 @@
             </div>
             <div id="adminPanel" style="display:none;">
                 
-                <!-- ==================== 新增：顶级菜单 增行 + 删行 ==================== -->
+                <!-- ==================== 原有：顶级菜单 增行 + 删行 ==================== -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="顶级菜单名称">
                     <button onclick="addTopCate()">➕ 添加顶级菜单（增一行）</button>
                     <button class="del-page-btn" onclick="deleteLastTopCate()">➖ 删除最后一个顶级菜单（减一行）</button>
                 </div>
+
+                <!-- ==================== 【新增：后台副导航管理模块】增+删全套 ==================== -->
+                <hr>
+                <h3 style="color:#ff6600;">📌 下方副导航栏管理</h3>
+                <div class="admin-form">
+                    <input type="text" id="subNavName" placeholder="副导航按钮名称" style="width:180px;">
+                    <input type="url" id="subNavUrl" placeholder="跳转网址 http/https" style="width:250px;">
+                    <button onclick="addSubNavItem()">➕ 添加副导航按钮（新增下方导航项）</button>
+                    <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个副导航按钮</button>
+                </div>
+                <hr>
 
                 <div class="admin-form">
                     <select id="parentCateSelect"></select>
@@ -538,26 +582,71 @@
         let topMenus = {};
         let subMenus = {};
         let resourceLinks = {};
+        // ========== 【新增：副导航数据存储】 ==========
+        let subNavList = [];
 
         function initData() {
             let storedTop = localStorage.getItem('topMenus');
             let storedSub = localStorage.getItem('subMenus');
             let storedLinks = localStorage.getItem('resourceLinks');
+            // 读取副导航本地存储
+            let storedSubNav = localStorage.getItem('subNavList');
 
             topMenus = storedTop ? JSON.parse(storedTop) : {};
             subMenus = storedSub ? JSON.parse(storedSub) : {};
             resourceLinks = storedLinks ? JSON.parse(storedLinks) : {};
+            subNavList = storedSubNav ? JSON.parse(storedSubNav) : [];
+            
             saveData();
+            renderSubNav(); // 页面加载渲染副导航
         }
         function saveData() {
             localStorage.setItem('topMenus', JSON.stringify(topMenus));
             localStorage.setItem('subMenus', JSON.stringify(subMenus));
             localStorage.setItem('resourceLinks', JSON.stringify(resourceLinks));
+            // 同步保存副导航数据
+            localStorage.setItem('subNavList', JSON.stringify(subNavList));
+        }
+
+        // ========== 【新增：副导航页面渲染函数】 ==========
+        function renderSubNav(){
+            let box = document.getElementById('subNavBox');
+            box.innerHTML = '';
+            // 循环渲染所有后台添加的导航按钮
+            subNavList.forEach(item => {
+                box.innerHTML += `<a href="${item.url}" target="_blank">${item.name}</a>`;
+            });
+        }
+        // ========== 【新增：后台添加副导航按钮】 ==========
+        function addSubNavItem(){
+            if(!isLogin)return;
+            let name = document.getElementById('subNavName').value.trim();
+            let url = document.getElementById('subNavUrl').value.trim();
+            if(!name || !url) return alert("请完整填写按钮名称+跳转网址！");
+            
+            subNavList.push({name:name, url:url});
+            saveData();
+            renderSubNav();
+            // 清空输入框
+            document.getElementById('subNavName').value = '';
+            document.getElementById('subNavUrl').value = '';
+            alert("✅ 副导航按钮添加成功！页面下方已实时显示");
+        }
+        // ========== 【新增：后台删除最后一个副导航按钮】 ==========
+        function deleteLastSubNavItem(){
+            if(!isLogin)return;
+            if(subNavList.length === 0) return alert("当前没有副导航按钮可删除！");
+            if(!confirm("确定删除最后添加的这个副导航按钮吗？")) return;
+            
+            subNavList.pop(); // 删除数组最后一项
+            saveData();
+            renderSubNav();
+            alert("✅ 副导航按钮删除成功！页面已同步更新");
         }
 
         function exportBackup() {
             if (!isLogin) return;
-            const backup = {topMenus,subMenus,resourceLinks};
+            const backup = {topMenus,subMenus,resourceLinks,subNavList};
             const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -579,8 +668,10 @@
                     topMenus=d.topMenus||{};
                     subMenus=d.subMenus||{};
                     resourceLinks=d.resourceLinks||{};
+                    subNavList=d.subNavList||[]; // 备份兼容副导航数据
                     saveData();
                     rebuildNav();
+                    renderSubNav(); // 恢复后重绘副导航
                     renderAllSelect();
                     renderList();
                     showPage('首页','home');
@@ -593,8 +684,8 @@
             if(!isLogin)return;
             if(!confirm("清空全部数据？"))return;
             localStorage.clear();
-            topMenus={};subMenus={};resourceLinks={};
-            rebuildNav();renderAllSelect();renderList();showPage('首页','home');
+            topMenus={};subMenus={};resourceLinks={};subNavList=[];
+            rebuildNav();renderSubNav();renderAllSelect();renderList();showPage('首页','home');
             alert("已清空");
         }
 
@@ -732,7 +823,7 @@
             }else alert("密码错误");
         }
 
-        // ==================== 新增：删除最后一个顶级菜单（减一行） ====================
+        // 删除最后一个顶级菜单
         function deleteLastTopCate(){
             if(!isLogin)return;
             let topArr = Object.keys(topMenus);
@@ -742,12 +833,8 @@
             }
             if(!confirm("确定删除最后添加的顶级菜单？该菜单下所有分支、链接全部一起删除！")) return;
             
-            // 获取最后一个顶级菜单ID
             let lastId = topArr[topArr.length - 1];
-            
-            // 删除顶级菜单
             delete topMenus[lastId];
-            // 连带删除它下面所有子菜单
             for(let sid in subMenus){
                 if(subMenus[sid].parentId === lastId){
                     delete subMenus[sid];
@@ -755,7 +842,6 @@
                     removePage(sid);
                 }
             }
-            // 删除该菜单所有链接数据
             delete resourceLinks[lastId];
             removePage(lastId);
 
@@ -933,6 +1019,7 @@
         }
         setInterval(clock,1000);clock();
 
+        // 网站初始化
         initData();
         rebuildNav();
         showPage('首页','home');
