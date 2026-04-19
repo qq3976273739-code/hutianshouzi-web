@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 完整管理版</title>
+    <title>虎天寿资源整理网站 - 副导航独立页面版</title>
     <style>
+        /* 样式与原版完全一致，未改动，为节省篇幅此处省略，实际运行时会保留完整样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
         .avatar-box { position: absolute; top: 20px; right: 30px; cursor: pointer; }
@@ -74,7 +75,6 @@
         .restore-btn { background: #28a745 !important; }
         .clear-btn { background: #dc3545 !important; }
         #backupFileInput { display: none; }
-        /* 意见反馈框样式 */
         .feedback-container {
             position: fixed;
             bottom: 25px;
@@ -259,30 +259,25 @@
                 </div>
 
                 <hr>
-                <h3 style="color:#ff6600;">📌 下方副导航栏管理（支持创建新页面）</h3>
+                <h3 style="color:#ff6600;">📌 下方副导航栏管理（支持独立页面，不显示在主菜单）</h3>
                 <div class="admin-form">
                     <input type="text" id="subNavName" placeholder="按钮名称" style="width:180px;">
                     <select id="subNavType" style="width:150px;">
                         <option value="external">外部链接</option>
                         <option value="internal">跳转到已有菜单</option>
-                        <option value="new">创建新页面（顶级菜单）</option>
+                        <option value="new">创建独立页面（仅副导航）</option>
                     </select>
                     <select id="subNavInternalTarget" style="width:200px; display:none;">
                         <option value="">-- 选择内部菜单 --</option>
                     </select>
                     <input type="text" id="subNavUrl" placeholder="外部网址" style="width:200px; display:none;">
-                    <input type="text" id="subNavNewPageName" placeholder="新页面名称" style="width:180px; display:none;">
+                    <input type="text" id="subNavNewPageName" placeholder="页面名称" style="width:180px; display:none;">
                     <button onclick="addSubNavItem()">➕ 添加副导航按钮</button>
                 </div>
                 <div class="admin-form">
                     <select id="delSubNavSelect" style="min-width:200px;"></select>
                     <button class="del-page-btn" onclick="deleteSelectedSubNav()">🗑️ 删除选中的副导航按钮</button>
                     <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个</button>
-                </div>
-                <!-- 添加顶级菜单（与主功能一致） -->
-                <div class="admin-form">
-                    <input type="text" id="newCate2" placeholder="顶级菜单名称（与主功能一致）" style="width:220px;">
-                    <button onclick="addTopCateFromSubNav()">➕ 添加顶级菜单（与主功能一致）</button>
                 </div>
                 <hr>
 
@@ -346,7 +341,7 @@
         let topMenus = {};
         let subMenus = {};
         let resourceLinks = {};
-        // subNavList 中每个元素: { name, type, targetId(内部菜单id) 或 url }
+        let extraPages = {};        // 独立页面（不显示在主菜单），{ pageId: { name, id } }
         let subNavList = [];
         let feedbackList = [];
 
@@ -372,6 +367,7 @@
                     if (cloudData.topMenus) topMenus = cloudData.topMenus;
                     if (cloudData.subMenus) subMenus = cloudData.subMenus;
                     if (cloudData.resourceLinks) resourceLinks = cloudData.resourceLinks;
+                    if (cloudData.extraPages) extraPages = cloudData.extraPages;
                     if (cloudData.subNavList) subNavList = cloudData.subNavList;
                     if (cloudData.feedbackList) feedbackList = cloudData.feedbackList;
                     saveData();
@@ -388,6 +384,7 @@
             let storedTop = localStorage.getItem('topMenus');
             let storedSub = localStorage.getItem('subMenus');
             let storedLinks = localStorage.getItem('resourceLinks');
+            let storedExtra = localStorage.getItem('extraPages');
             let storedSubNav = localStorage.getItem('subNavList');
             let storedFeedback = localStorage.getItem('feedbackList');
 
@@ -395,6 +392,7 @@
                 topMenus = JSON.parse(storedTop);
                 subMenus = JSON.parse(storedSub);
                 resourceLinks = JSON.parse(storedLinks);
+                extraPages = storedExtra ? JSON.parse(storedExtra) : {};
                 subNavList = storedSubNav ? JSON.parse(storedSubNav) : [];
                 feedbackList = storedFeedback ? JSON.parse(storedFeedback) : [];
             } else {
@@ -406,6 +404,7 @@
             if (!topMenus) topMenus = {};
             if (!subMenus) subMenus = {};
             if (!resourceLinks) resourceLinks = {};
+            if (!extraPages) extraPages = {};
             if (!subNavList) subNavList = [];
             if (!feedbackList) feedbackList = [];
             
@@ -421,23 +420,22 @@
             localStorage.setItem('topMenus', JSON.stringify(topMenus));
             localStorage.setItem('subMenus', JSON.stringify(subMenus));
             localStorage.setItem('resourceLinks', JSON.stringify(resourceLinks));
+            localStorage.setItem('extraPages', JSON.stringify(extraPages));
             localStorage.setItem('subNavList', JSON.stringify(subNavList));
             localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
         }
 
-        // 更新内部菜单下拉框
+        // 更新内部菜单下拉框（包括顶级、子级和独立页面）
         function updateInternalTargetSelect() {
             let sel = document.getElementById('subNavInternalTarget');
             if (!sel) return;
             sel.innerHTML = '<option value="">-- 选择内部菜单 --</option>';
-            // 添加顶级菜单
             for (let id in topMenus) {
                 let opt = document.createElement('option');
                 opt.value = id;
                 opt.innerText = '【顶级】' + topMenus[id].name;
                 sel.appendChild(opt);
             }
-            // 添加子菜单
             for (let id in subMenus) {
                 let parent = topMenus[subMenus[id].parentId];
                 let parentName = parent ? parent.name : '未知';
@@ -446,9 +444,14 @@
                 opt.innerText = '【子级】' + parentName + ' → ' + subMenus[id].name;
                 sel.appendChild(opt);
             }
+            for (let id in extraPages) {
+                let opt = document.createElement('option');
+                opt.value = id;
+                opt.innerText = '【副导航独立页】' + extraPages[id].name;
+                sel.appendChild(opt);
+            }
         }
 
-        // 监听跳转类型切换，动态显示不同输入框
         function toggleSubNavType() {
             let type = document.getElementById('subNavType').value;
             let internalSel = document.getElementById('subNavInternalTarget');
@@ -495,9 +498,10 @@
                     let targetName = '';
                     if (topMenus[item.targetId]) targetName = topMenus[item.targetId].name;
                     else if (subMenus[item.targetId]) targetName = subMenus[item.targetId].name;
+                    else if (extraPages[item.targetId]) targetName = extraPages[item.targetId].name;
                     displayText += ` (内部: ${targetName || item.targetId})`;
                 } else if (item.type === 'new') {
-                    displayText += ` (新建页面: ${item.newPageName})`;
+                    displayText += ` (独立页: ${item.newPageName})`;
                 } else {
                     displayText += ` (外部: ${item.url || '#'})`;
                 }
@@ -512,11 +516,21 @@
             if (!sel || sel.options.length === 0 || sel.options[0].disabled) return alert("没有可删除的副导航按钮");
             let idx = parseInt(sel.value);
             if (isNaN(idx)) return;
-            if (!confirm(`确定删除副导航按钮“${subNavList[idx].name}”吗？`)) return;
+            let item = subNavList[idx];
+            if (!confirm(`确定删除副导航按钮“${item.name}”吗？`)) return;
+            // 如果是独立页面且没有其他按钮引用，可选择删除页面资源（可选）
+            if (item.type === 'new' && item.targetId && extraPages[item.targetId]) {
+                if (confirm(`同时删除关联的独立页面“${item.newPageName}”及其所有链接吗？`)) {
+                    delete extraPages[item.targetId];
+                    delete resourceLinks[item.targetId];
+                }
+            }
             subNavList.splice(idx, 1);
             saveData();
             renderSubNav();
             renderDelSubNavSelect();
+            updateInternalTargetSelect();
+            renderAllSelect(); // 刷新链接分类下拉
             alert("✅ 删除成功");
         }
 
@@ -527,11 +541,11 @@
                 let a = document.createElement('a');
                 a.innerText = item.name;
                 if (item.type === 'internal' || item.type === 'new') {
-                    // 内部跳转（包括新建的页面）
                     let targetId = item.targetId;
                     let targetName = '';
                     if (topMenus[targetId]) targetName = topMenus[targetId].name;
                     else if (subMenus[targetId]) targetName = subMenus[targetId].name;
+                    else if (extraPages[targetId]) targetName = extraPages[targetId].name;
                     else targetName = item.newPageName || '页面';
                     a.onclick = (e) => {
                         e.preventDefault();
@@ -540,7 +554,6 @@
                     a.href = 'javascript:void(0)';
                     a.style.cursor = 'pointer';
                 } else {
-                    // 外部链接
                     a.href = item.url && item.url.trim() !== '' ? item.url : '#';
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
@@ -549,16 +562,14 @@
             });
         }
 
-        // 创建新顶级菜单的内部函数
-        function createNewTopMenu(name) {
-            let id = 'top_' + Date.now();
-            topMenus[id] = { name: name };
+        // 创建独立页面（不显示在主菜单）
+        function createExtraPage(name) {
+            let id = 'extra_' + Date.now();
+            extraPages[id] = { name: name, id: id };
             resourceLinks[id] = { 1: [] };
             saveData();
-            rebuildNav();
-            renderAllSelect();
-            renderList();
             updateInternalTargetSelect();
+            renderAllSelect(); // 让分类下拉框能立即显示
             return id;
         }
 
@@ -576,9 +587,8 @@
             } 
             else if (type === 'new') {
                 let newPageName = document.getElementById('subNavNewPageName').value.trim();
-                if (!newPageName) return alert("请输入新页面名称！");
-                // 创建新的顶级菜单
-                let newId = createNewTopMenu(newPageName);
+                if (!newPageName) return alert("请输入页面名称！");
+                let newId = createExtraPage(newPageName);
                 newItem.targetId = newId;
                 newItem.newPageName = newPageName;
             }
@@ -604,133 +614,43 @@
             if (!isLogin) return;
             if (subNavList.length === 0) return alert("当前没有副导航按钮可删除！");
             if (!confirm("确定删除最后添加的这个副导航按钮吗？")) return;
+            let last = subNavList[subNavList.length-1];
+            if (last.type === 'new' && last.targetId && extraPages[last.targetId]) {
+                if (confirm(`同时删除关联的独立页面“${last.newPageName}”及其所有链接吗？`)) {
+                    delete extraPages[last.targetId];
+                    delete resourceLinks[last.targetId];
+                }
+            }
             subNavList.pop();
             saveData();
             renderSubNav();
             renderDelSubNavSelect();
+            updateInternalTargetSelect();
+            renderAllSelect();
             alert("✅ 删除成功");
         }
 
-        // 反馈框开关
-        function closeFeedback() {
-            document.getElementById('feedbackBox').style.display = 'none';
-            let openBtn = document.createElement('div');
-            openBtn.className = 'open-feedback-btn';
-            openBtn.id = 'openFeedbackBtn';
-            openBtn.innerHTML = '💬 打开意见反馈';
-            openBtn.onclick = function() {
-                document.getElementById('feedbackBox').style.display = 'block';
-                this.remove();
-            };
-            document.getElementById('feedbackContainer').appendChild(openBtn);
-        }
-
-        function initFeedbackToggle() {
-            let container = document.getElementById('feedbackContainer');
-            let existingOpen = document.getElementById('openFeedbackBtn');
-            if (existingOpen) existingOpen.remove();
-            let feedbackBox = document.getElementById('feedbackBox');
-            if (feedbackBox) feedbackBox.style.display = 'block';
-        }
-
-        function submitFeedback(){
-            let name = document.getElementById('feedbackName').value.trim();
-            let content = document.getElementById('feedbackContent').value.trim();
-            if(!name || !content){
-                alert("昵称和内容都要填写！");
-                return;
+        // 获取所有可用的分类（用于添加链接的下拉框），包括顶级、子级和独立页面
+        function getAllMenuForSelect() {
+            let arr = [];
+            for (let id in topMenus) arr.push({ id, name: '【顶级】' + topMenus[id].name, type: 'top' });
+            for (let id in subMenus) {
+                let p = topMenus[subMenus[id].parentId];
+                let prefix = p ? p.name : '未知';
+                arr.push({ id, name: '【子级】' + prefix + ' → ' + subMenus[id].name, type: 'sub' });
             }
-            let time = new Date().toLocaleString();
-            feedbackList.unshift({id:Date.now(),name:name,content:content,time:time});
-            saveData();
-            renderFeedback();
-            renderAdminFeedback();
-            document.getElementById('feedbackName').value = '';
-            document.getElementById('feedbackContent').value = '';
-            alert("✅ 意见提交成功！");
-        }
-        function renderFeedback(){
-            let box = document.getElementById('feedbackList');
-            box.innerHTML = '';
-            feedbackList.forEach(item=>{
-                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
-            });
-        }
-        function renderAdminFeedback(){
-            let box = document.getElementById('adminFeedbackList');
-            box.innerHTML = '';
-            feedbackList.forEach((item,index)=>{
-                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div><button class="del-btn" onclick="deleteFeedback(${index})">删除</button></div>`;
-            });
-        }
-        function deleteFeedback(index){
-            if(!isLogin)return;
-            if(!confirm("确定删除这条意见？"))return;
-            feedbackList.splice(index,1);
-            saveData();
-            renderFeedback();
-            renderAdminFeedback();
-            alert("✅ 删除成功");
-        }
-
-        function exportBackup() {
-            if (!isLogin) return;
-            const backup = {topMenus,subMenus,resourceLinks,subNavList,feedbackList};
-            const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `网站备份_${new Date().toLocaleDateString()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert("备份成功");
-        }
-        document.getElementById('backupFileInput').addEventListener('change',e=>{
-            if(!isLogin)return;
-            const file=e.target.files[0];
-            if(!file)return;
-            if(!confirm("恢复会覆盖全部数据！继续？"))return;
-            const reader=new FileReader();
-            reader.onload=ev=>{
-                try{
-                    const d=JSON.parse(ev.target.result);
-                    topMenus=d.topMenus||{};
-                    subMenus=d.subMenus||{};
-                    resourceLinks=d.resourceLinks||{};
-                    subNavList=d.subNavList||[];
-                    feedbackList=d.feedbackList||[];
-                    saveData();
-                    rebuildNav();
-                    renderSubNav();
-                    renderDelSubNavSelect();
-                    renderAllSelect();
-                    renderList();
-                    renderFeedback();
-                    renderAdminFeedback();
-                    showPage('首页','home');
-                    alert("恢复成功");
-                }catch{alert("文件错误")}
-            }
-            reader.readAsText(file);
-        });
-        function clearAllData(){
-            if(!isLogin)return;
-            if(!confirm("清空全部数据？"))return;
-            localStorage.clear();
-            topMenus={};subMenus={};resourceLinks={};subNavList=[];feedbackList=[];
-            rebuildNav();renderSubNav();renderDelSubNavSelect();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
-            alert("已清空");
-        }
-
-        function getAllMenu(){
-            let arr=[];
-            for(let id in topMenus) arr.push({id,name:topMenus[id].name,type:'top'});
-            for(let id in subMenus){
-                let p=topMenus[subMenus[id].parentId];
-                arr.push({id,name:(p?p.name:'未知')+'→'+subMenus[id].name,type:'sub'});
+            for (let id in extraPages) {
+                arr.push({ id, name: '【副导航页】' + extraPages[id].name, type: 'extra' });
             }
             return arr;
         }
+
+        // 重构原有函数中使用 getAllMenu 的地方
+        function getAllMenu() {
+            return getAllMenuForSelect();
+        }
+
+        // 其余原有函数保持不变（但需要修改部分引用）
         function getTopList(){
             let arr=[];for(let id in topMenus) arr.push({id,name:topMenus[id].name});return arr;
         }
@@ -778,7 +698,9 @@
                 ul.appendChild(li);
                 createPage(topId,top.name);
             }
+            // 注意：extraPages 不添加到主菜单栏
             for(let sid in subMenus) createPage(sid,subMenus[sid].name);
+            for(let eid in extraPages) createPage(eid, extraPages[eid].name); // 预创建页面区域，但不在主菜单显示
         }
 
         function loadData(menuId){
@@ -911,17 +833,6 @@
             document.getElementById('newCate').value = '';
             alert("顶级菜单添加成功！");
         }
-        function addTopCateFromSubNav(){
-            if(!isLogin)return;
-            let name = document.getElementById('newCate2').value.trim();
-            if(!name) return alert("请输入菜单名称");
-            let id = 'top_' + Date.now();
-            topMenus[id] = { name: name };
-            resourceLinks[id] = { 1: [] };
-            saveData(); rebuildNav(); renderAllSelect(); renderList(); updateInternalTargetSelect();
-            document.getElementById('newCate2').value = '';
-            alert("顶级菜单添加成功！");
-        }
 
         function addSubCate(){
             if(!isLogin)return;
@@ -1033,6 +944,116 @@
             document.getElementById('clock').innerText=h+':'+m+':'+s;
         }
         setInterval(clock,1000);clock();
+
+        // 反馈框开关
+        function closeFeedback() {
+            document.getElementById('feedbackBox').style.display = 'none';
+            let openBtn = document.createElement('div');
+            openBtn.className = 'open-feedback-btn';
+            openBtn.id = 'openFeedbackBtn';
+            openBtn.innerHTML = '💬 打开意见反馈';
+            openBtn.onclick = function() {
+                document.getElementById('feedbackBox').style.display = 'block';
+                this.remove();
+            };
+            document.getElementById('feedbackContainer').appendChild(openBtn);
+        }
+        function initFeedbackToggle() {
+            let container = document.getElementById('feedbackContainer');
+            let existingOpen = document.getElementById('openFeedbackBtn');
+            if (existingOpen) existingOpen.remove();
+            let feedbackBox = document.getElementById('feedbackBox');
+            if (feedbackBox) feedbackBox.style.display = 'block';
+        }
+        function submitFeedback(){
+            let name = document.getElementById('feedbackName').value.trim();
+            let content = document.getElementById('feedbackContent').value.trim();
+            if(!name || !content){
+                alert("昵称和内容都要填写！");
+                return;
+            }
+            let time = new Date().toLocaleString();
+            feedbackList.unshift({id:Date.now(),name:name,content:content,time:time});
+            saveData();
+            renderFeedback();
+            renderAdminFeedback();
+            document.getElementById('feedbackName').value = '';
+            document.getElementById('feedbackContent').value = '';
+            alert("✅ 意见提交成功！");
+        }
+        function renderFeedback(){
+            let box = document.getElementById('feedbackList');
+            box.innerHTML = '';
+            feedbackList.forEach(item=>{
+                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
+            });
+        }
+        function renderAdminFeedback(){
+            let box = document.getElementById('adminFeedbackList');
+            box.innerHTML = '';
+            feedbackList.forEach((item,index)=>{
+                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div><button class="del-btn" onclick="deleteFeedback(${index})">删除</button></div>`;
+            });
+        }
+        function deleteFeedback(index){
+            if(!isLogin)return;
+            if(!confirm("确定删除这条意见？"))return;
+            feedbackList.splice(index,1);
+            saveData();
+            renderFeedback();
+            renderAdminFeedback();
+            alert("✅ 删除成功");
+        }
+
+        function exportBackup() {
+            if (!isLogin) return;
+            const backup = {topMenus,subMenus,resourceLinks,extraPages,subNavList,feedbackList};
+            const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `网站备份_${new Date().toLocaleDateString()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert("备份成功");
+        }
+        document.getElementById('backupFileInput').addEventListener('change',e=>{
+            if(!isLogin)return;
+            const file=e.target.files[0];
+            if(!file)return;
+            if(!confirm("恢复会覆盖全部数据！继续？"))return;
+            const reader=new FileReader();
+            reader.onload=ev=>{
+                try{
+                    const d=JSON.parse(ev.target.result);
+                    topMenus=d.topMenus||{};
+                    subMenus=d.subMenus||{};
+                    resourceLinks=d.resourceLinks||{};
+                    extraPages=d.extraPages||{};
+                    subNavList=d.subNavList||[];
+                    feedbackList=d.feedbackList||[];
+                    saveData();
+                    rebuildNav();
+                    renderSubNav();
+                    renderDelSubNavSelect();
+                    renderAllSelect();
+                    renderList();
+                    renderFeedback();
+                    renderAdminFeedback();
+                    showPage('首页','home');
+                    alert("恢复成功");
+                }catch{alert("文件错误")}
+            }
+            reader.readAsText(file);
+        });
+        function clearAllData(){
+            if(!isLogin)return;
+            if(!confirm("清空全部数据？"))return;
+            localStorage.clear();
+            topMenus={};subMenus={};resourceLinks={};extraPages={};subNavList=[];feedbackList=[];
+            rebuildNav();renderSubNav();renderDelSubNavSelect();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
+            alert("已清空");
+        }
 
         (async function() {
             await initData();
