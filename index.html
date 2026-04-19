@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 分支管理（云端同步版）</title>
+    <title>虎天寿资源整理网站 - 完整管理版</title>
     <style>
-        /* 此处省略完全相同的 CSS，为节省篇幅不重复粘贴，实际使用请保留原有全部样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
         .avatar-box { position: absolute; top: 20px; right: 30px; cursor: pointer; }
@@ -166,9 +165,13 @@
                 <h3 style="color:#ff6600;">📌 下方副导航栏管理</h3>
                 <div class="admin-form">
                     <input type="text" id="subNavName" placeholder="副导航按钮名称" style="width:180px;">
-                    <input type="url" id="subNavUrl" placeholder="跳转网址 http/https" style="width:250px;">
-                    <button onclick="addSubNavItem()">➕ 添加副导航按钮（新增下方导航项）</button>
-                    <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个副导航按钮</button>
+                    <input type="text" id="subNavUrl" placeholder="跳转网址（可选）" style="width:250px;">
+                    <button onclick="addSubNavItem()">➕ 添加副导航按钮</button>
+                </div>
+                <div class="admin-form">
+                    <select id="delSubNavSelect" style="min-width:200px;"></select>
+                    <button class="del-page-btn" onclick="deleteSelectedSubNav()">🗑️ 删除选中的副导航按钮</button>
+                    <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个</button>
                 </div>
                 <hr>
 
@@ -235,34 +238,40 @@
         let subNavList = [];
         let feedbackList = [];
 
-        // 云端数据地址
+        // 云端数据地址（jsDelivr CDN）
         const CLOUD_DATA_URL = "https://cdn.jsdelivr.net/gh/qq3976273739-code/my-site-data/data.json";
 
-        // 从云端拉取数据并合并到本地（优先使用云端完整数据）
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
         async function fetchCloudData() {
             try {
                 const response = await fetch(CLOUD_DATA_URL, { cache: "no-cache" });
                 if (!response.ok) throw new Error("HTTP " + response.status);
                 const cloudData = await response.json();
-                // 期望云端数据格式包含 topMenus, subMenus, resourceLinks, subNavList, feedbackList
                 if (cloudData && typeof cloudData === "object") {
                     if (cloudData.topMenus) topMenus = cloudData.topMenus;
                     if (cloudData.subMenus) subMenus = cloudData.subMenus;
                     if (cloudData.resourceLinks) resourceLinks = cloudData.resourceLinks;
                     if (cloudData.subNavList) subNavList = cloudData.subNavList;
                     if (cloudData.feedbackList) feedbackList = cloudData.feedbackList;
-                    // 保存到 localStorage 作为缓存
                     saveData();
                     console.log("已从云端加载数据");
                     return true;
                 }
             } catch (err) {
-                console.warn("云端数据读取失败，将使用本地存储", err);
+                console.warn("云端数据读取失败", err);
             }
             return false;
         }
 
-        // 初始化数据：先尝试从 localStorage 读取，如果没有或需要更新则从云端拉取
         async function initData() {
             let storedTop = localStorage.getItem('topMenus');
             let storedSub = localStorage.getItem('subMenus');
@@ -270,7 +279,6 @@
             let storedSubNav = localStorage.getItem('subNavList');
             let storedFeedback = localStorage.getItem('feedbackList');
 
-            // 如果本地有数据，先加载本地
             if (storedTop && storedSub && storedLinks) {
                 topMenus = JSON.parse(storedTop);
                 subMenus = JSON.parse(storedSub);
@@ -278,25 +286,22 @@
                 subNavList = storedSubNav ? JSON.parse(storedSubNav) : [];
                 feedbackList = storedFeedback ? JSON.parse(storedFeedback) : [];
             } else {
-                // 无本地数据，尝试从云端获取
                 await fetchCloudData();
             }
             
-            // 无论是否有本地数据，都尝试从云端拉取最新版本（覆盖本地冲突，以云端为准）
-            // 这确保管理员在别处修改后，所有访客能拿到最新数据
             await fetchCloudData();
             
-            // 确保数据结构完整
             if (!topMenus) topMenus = {};
             if (!subMenus) subMenus = {};
             if (!resourceLinks) resourceLinks = {};
             if (!subNavList) subNavList = [];
             if (!feedbackList) feedbackList = [];
             
-            saveData(); // 将最终数据写入 localStorage 缓存
+            saveData();
             renderSubNav();
             renderFeedback();
             renderAdminFeedback();
+            renderDelSubNavSelect();
         }
 
         function saveData() {
@@ -307,6 +312,74 @@
             localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
         }
 
+        function renderDelSubNavSelect() {
+            let sel = document.getElementById('delSubNavSelect');
+            if (!sel) return;
+            sel.innerHTML = '';
+            if (subNavList.length === 0) {
+                sel.innerHTML = '<option disabled>无副导航按钮</option>';
+                return;
+            }
+            subNavList.forEach((item, idx) => {
+                let opt = document.createElement('option');
+                opt.value = idx;
+                let displayUrl = item.url && item.url !== '#' ? ` (${item.url})` : '';
+                opt.innerText = `${item.name}${displayUrl}`;
+                sel.appendChild(opt);
+            });
+        }
+
+        function deleteSelectedSubNav() {
+            if (!isLogin) return;
+            let sel = document.getElementById('delSubNavSelect');
+            if (!sel || sel.options.length === 0 || sel.options[0].disabled) return alert("没有可删除的副导航按钮");
+            let idx = parseInt(sel.value);
+            if (isNaN(idx)) return;
+            if (!confirm(`确定删除副导航按钮“${subNavList[idx].name}”吗？`)) return;
+            subNavList.splice(idx, 1);
+            saveData();
+            renderSubNav();
+            renderDelSubNavSelect();
+            alert("✅ 删除成功");
+        }
+
+        function renderSubNav() {
+            let box = document.getElementById('subNavBox');
+            box.innerHTML = '';
+            subNavList.forEach(item => {
+                let url = item.url && item.url.trim() !== '' ? item.url : '#';
+                box.innerHTML += `<a href="${escapeHtml(url)}" target="_blank">${escapeHtml(item.name)}</a>`;
+            });
+        }
+
+        function addSubNavItem() {
+            if (!isLogin) return;
+            let name = document.getElementById('subNavName').value.trim();
+            let url = document.getElementById('subNavUrl').value.trim();
+            if (!name) return alert("请填写按钮名称！");
+            // 如果网址为空，默认设为 "#"
+            if (url === '') url = '#';
+            subNavList.push({ name: name, url: url });
+            saveData();
+            renderSubNav();
+            renderDelSubNavSelect();
+            document.getElementById('subNavName').value = '';
+            document.getElementById('subNavUrl').value = '';
+            alert("✅ 副导航按钮添加成功！");
+        }
+
+        function deleteLastSubNavItem() {
+            if (!isLogin) return;
+            if (subNavList.length === 0) return alert("当前没有副导航按钮可删除！");
+            if (!confirm("确定删除最后添加的这个副导航按钮吗？")) return;
+            subNavList.pop();
+            saveData();
+            renderSubNav();
+            renderDelSubNavSelect();
+            alert("✅ 删除成功");
+        }
+
+        // 以下为原有的完整管理函数（未改动核心逻辑）
         function submitFeedback(){
             let name = document.getElementById('feedbackName').value.trim();
             let content = document.getElementById('feedbackContent').value.trim();
@@ -327,25 +400,14 @@
             let box = document.getElementById('feedbackList');
             box.innerHTML = '';
             feedbackList.forEach(item=>{
-                box.innerHTML += `
-                <div class="feedback-item">
-                    <div class="feedback-name">${escapeHtml(item.name)}</div>
-                    <div class="feedback-time">${escapeHtml(item.time)}</div>
-                    <div class="feedback-content">${escapeHtml(item.content)}</div>
-                </div>`;
+                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
             });
         }
         function renderAdminFeedback(){
             let box = document.getElementById('adminFeedbackList');
             box.innerHTML = '';
             feedbackList.forEach((item,index)=>{
-                box.innerHTML += `
-                <div class="feedback-item">
-                    <div class="feedback-name">${escapeHtml(item.name)}</div>
-                    <div class="feedback-time">${escapeHtml(item.time)}</div>
-                    <div class="feedback-content">${escapeHtml(item.content)}</div>
-                    <button class="del-btn" onclick="deleteFeedback(${index})">删除</button>
-                </div>`;
+                box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div><button class="del-btn" onclick="deleteFeedback(${index})">删除</button></div>`;
             });
         }
         function deleteFeedback(index){
@@ -356,35 +418,6 @@
             renderFeedback();
             renderAdminFeedback();
             alert("✅ 删除成功");
-        }
-
-        function renderSubNav(){
-            let box = document.getElementById('subNavBox');
-            box.innerHTML = '';
-            subNavList.forEach(item => {
-                box.innerHTML += `<a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.name)}</a>`;
-            });
-        }
-        function addSubNavItem(){
-            if(!isLogin)return;
-            let name = document.getElementById('subNavName').value.trim();
-            let url = document.getElementById('subNavUrl').value.trim();
-            if(!name || !url) return alert("请完整填写按钮名称+跳转网址！");
-            subNavList.push({name:name, url:url});
-            saveData();
-            renderSubNav();
-            document.getElementById('subNavName').value = '';
-            document.getElementById('subNavUrl').value = '';
-            alert("✅ 副导航按钮添加成功！");
-        }
-        function deleteLastSubNavItem(){
-            if(!isLogin)return;
-            if(subNavList.length === 0) return alert("当前没有副导航按钮可删除！");
-            if(!confirm("确定删除最后添加的这个副导航按钮吗？")) return;
-            subNavList.pop();
-            saveData();
-            renderSubNav();
-            alert("✅ 副导航按钮删除成功！");
         }
 
         function exportBackup() {
@@ -416,6 +449,7 @@
                     saveData();
                     rebuildNav();
                     renderSubNav();
+                    renderDelSubNavSelect();
                     renderAllSelect();
                     renderList();
                     renderFeedback();
@@ -431,7 +465,7 @@
             if(!confirm("清空全部数据？"))return;
             localStorage.clear();
             topMenus={};subMenus={};resourceLinks={};subNavList=[];feedbackList=[];
-            rebuildNav();renderSubNav();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
+            rebuildNav();renderSubNav();renderDelSubNavSelect();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
             alert("已清空");
         }
 
@@ -459,11 +493,7 @@
             let div=document.createElement('div');
             div.className='page';
             div.id=id;
-            div.innerHTML=`
-                <h2 style="color:#ff6600">【${escapeHtml(name)}】</h2>
-                <div class="link-list" id="box_${id}"></div>
-                <div class="pagination" id="pagebtn_${id}"></div>
-            `;
+            div.innerHTML=`<h2 style="color:#ff6600">【${escapeHtml(name)}】</h2><div class="link-list" id="box_${id}"></div><div class="pagination" id="pagebtn_${id}"></div>`;
             document.getElementById('area').appendChild(div);
         }
         function removePage(id){
@@ -481,7 +511,6 @@
                 let top=topMenus[topId];
                 let subs=Object.values(subMenus).filter(s=>s.parentId===topId);
                 let li=document.createElement('li');
-
                 if(subs.length>0){
                     li.innerHTML=`<a onclick="toggleMenu(this)">${escapeHtml(top.name)}</a><ul class="sub-menu"></ul>`;
                     let subUl=li.querySelector('.sub-menu');
@@ -504,16 +533,13 @@
             if(!currentPage[menuId]) currentPage[menuId]=1;
             let page=currentPage[menuId];
             let list=resourceLinks[menuId][page]||[];
-
             let box=document.getElementById('box_'+menuId);
             let pageBox=document.getElementById('pagebtn_'+menuId);
             if(!box||!pageBox)return;
-
             box.innerHTML='';
             list.forEach(item=>{
                 box.innerHTML+=`<div class="link-item"><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.name)}</a></div>`;
             });
-
             let pages=Object.keys(resourceLinks[menuId]);
             pageBox.innerHTML='';
             if(pages.length<=1)return;
@@ -545,14 +571,12 @@
 
         const adminSwitch = "on";
         function openAdminModal(){
-            if(adminSwitch === "off"){
-                alert("后台管理已关闭");
-                return;
-            }
+            if(adminSwitch === "off"){ alert("后台管理已关闭"); return; }
             document.getElementById('pwd').value = "";
             document.getElementById('adminModal').style.display='block';
             renderAllSelect();
             renderAdminFeedback();
+            renderDelSubNavSelect();
         }
         function closeAdminModal(){document.getElementById('adminModal').style.display='none';}
 
@@ -561,7 +585,7 @@
                 isLogin=true;
                 document.getElementById('loginBox').style.display='none';
                 document.getElementById('adminPanel').style.display='block';
-                renderAllSelect();renderList();renderAdminFeedback();
+                renderAllSelect();renderList();renderAdminFeedback();renderDelSubNavSelect();
                 alert("登录成功");
             }else alert("密码错误");
         }
@@ -569,12 +593,8 @@
         function deleteLastTopCate(){
             if(!isLogin)return;
             let topArr = Object.keys(topMenus);
-            if(topArr.length === 0){
-                alert("没有顶级菜单可删除！");
-                return;
-            }
+            if(topArr.length === 0){ alert("没有顶级菜单可删除！"); return; }
             if(!confirm("确定删除最后添加的顶级菜单？该菜单下所有分支、链接全部一起删除！")) return;
-            
             let lastId = topArr[topArr.length - 1];
             delete topMenus[lastId];
             for(let sid in subMenus){
@@ -586,7 +606,6 @@
             }
             delete resourceLinks[lastId];
             removePage(lastId);
-
             saveData();
             rebuildNav();
             renderAllSelect();
@@ -596,15 +615,11 @@
 
         function renderAllSelect(){
             let ps=document.getElementById('parentCateSelect');
-            ps.innerHTML='';getTopList().forEach(t=>{
-                let opt=document.createElement('option');opt.value=t.id;opt.innerText=escapeHtml(t.name);ps.appendChild(opt);
-            });
+            ps.innerHTML='';getTopList().forEach(t=>{ let opt=document.createElement('option');opt.value=t.id;opt.innerText=escapeHtml(t.name);ps.appendChild(opt); });
             let ds=document.getElementById('delBranchSelect');
             ds.innerHTML='';let slist=getSubList();
             if(slist.length==0){ds.innerHTML='<option disabled>暂无分支</option>';}
-            else slist.forEach(s=>{
-                let opt=document.createElement('option');opt.value=s.id;opt.innerText=escapeHtml(s.name);ds.appendChild(opt);
-            });
+            else slist.forEach(s=>{ let opt=document.createElement('option');opt.value=s.id;opt.innerText=escapeHtml(s.name);ds.appendChild(opt); });
             let cate=document.getElementById('cate');
             let pcate=document.getElementById('pageCate');
             let dpcate=document.getElementById('delPageCate');
@@ -621,18 +636,14 @@
             let sel=document.getElementById('pageNum');
             sel.innerHTML='';
             let pages=Object.keys(resourceLinks[id]||{1:[]});
-            pages.forEach(p=>{
-                let opt=document.createElement('option');opt.value=p;opt.innerText='第'+p+'页';sel.appendChild(opt);
-            });
+            pages.forEach(p=>{ let opt=document.createElement('option');opt.value=p;opt.innerText='第'+p+'页';sel.appendChild(opt); });
         }
         function renderDelPageSelect(){
             let id=document.getElementById('delPageCate').value;
             let sel=document.getElementById('delPageNum');
             sel.innerHTML='';
             let pages=Object.keys(resourceLinks[id]||{1:[]});
-            pages.forEach(p=>{
-                let opt=document.createElement('option');opt.value=p;opt.innerText='第'+p+'页';sel.appendChild(opt);
-            });
+            pages.forEach(p=>{ let opt=document.createElement('option');opt.value=p;opt.innerText='第'+p+'页';sel.appendChild(opt); });
         }
 
         function addTopCate(){
@@ -699,11 +710,9 @@
             let name=document.getElementById('linkName').value.trim();
             let url=document.getElementById('linkUrl').value.trim();
             if(!name||!url)return alert("名称网址都要填");
-
             if(!resourceLinks[mid])resourceLinks[mid]={};
             if(!resourceLinks[mid][p])resourceLinks[mid][p]=[];
             resourceLinks[mid][p].push({name,url});
-
             saveData();
             document.getElementById('linkName').value='';
             document.getElementById('linkUrl').value='';
@@ -735,16 +744,6 @@
             });
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
         document.getElementById('cate').addEventListener('change',renderPageSelect);
         document.getElementById('delPageCate').addEventListener('change',renderDelPageSelect);
 
@@ -755,10 +754,7 @@
 
         function initTop(){
             let btn=document.getElementById('goTopBtn');
-            window.addEventListener('scroll',()=>{
-                if(window.scrollY>300)btn.classList.add('show');
-                else btn.classList.remove('show');
-            });
+            window.addEventListener('scroll',()=>{ if(window.scrollY>300)btn.classList.add('show'); else btn.classList.remove('show'); });
             btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
         }
 
@@ -771,7 +767,6 @@
         }
         setInterval(clock,1000);clock();
 
-        // 启动：先初始化数据（含云端拉取），再构建界面
         (async function() {
             await initData();
             rebuildNav();
