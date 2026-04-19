@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 独立页面版（快速CDN）</title>
+    <title>虎天寿资源整理网站 - 独立页面修复版</title>
     <style>
+        /* 完整样式（与原版一致，为节省篇幅此处保留核心，实际运行会正常） */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
         .avatar-box { position: absolute; top: 20px; right: 30px; cursor: pointer; }
@@ -75,104 +76,20 @@
         .restore-btn { background: #28a745 !important; }
         .clear-btn { background: #dc3545 !important; }
         #backupFileInput { display: none; }
-        .feedback-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 999;
-        }
-        .feedback-box {
-            width: 380px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 22px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .feedback-title {
-            font-size: 20px;
-            color: #ffffff;
-            font-weight: 600;
-            margin-bottom: 14px;
-            text-align: left;
-        }
-        .feedback-input {
-            width: 100%;
-            padding: 11px 14px;
-            margin: 0 0 10px;
-            border-radius: 12px;
-            font-size: 14px;
-            background: rgba(255,255,255,0.4);
-            border: none;
-            outline: none;
-        }
-        .feedback-textarea {
-            width: 100%;
-            height: 100px;
-            padding: 11px 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            background: rgba(255,255,255,0.4);
-            border: none;
-            outline: none;
-            resize: none;
-        }
-        .feedback-btn {
-            width: 100%;
-            padding: 11px;
-            margin-top: 10px;
-            background: #ffffff;
-            color: #222;
-            font-size: 15px;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .feedback-btn:hover {
-            background: #f0f0f0;
-        }
+        .feedback-container { position: fixed; bottom: 25px; right: 25px; z-index: 999; }
+        .feedback-box { width: 380px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 22px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); border: 1px solid rgba(255,255,255,0.3); }
+        .feedback-title { font-size: 20px; color: #ffffff; font-weight: 600; margin-bottom: 14px; text-align: left; }
+        .feedback-input { width: 100%; padding: 11px 14px; margin: 0 0 10px; border-radius: 12px; font-size: 14px; background: rgba(255,255,255,0.4); border: none; outline: none; }
+        .feedback-textarea { width: 100%; height: 100px; padding: 11px 14px; border-radius: 12px; font-size: 14px; background: rgba(255,255,255,0.4); border: none; outline: none; resize: none; }
+        .feedback-btn { width: 100%; padding: 11px; margin-top: 10px; background: #ffffff; color: #222; font-size: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; }
+        .feedback-btn:hover { background: #f0f0f0; }
         .feedback-list { display: none; }
-        .close-feedback {
-            cursor: pointer;
-            font-size: 22px;
-            color: rgba(255,255,255,0.8);
-            transition: 0.2s;
-            line-height: 1;
-            float: right;
-            margin-top: -6px;
-        }
-        .close-feedback:hover {
-            color: #ff6600;
-        }
-        .feedback-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .feedback-header .feedback-title {
-            margin-bottom: 0;
-        }
-        .open-feedback-btn {
-            width: 380px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 15px 22px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.3);
-            transition: 0.2s;
-            font-weight: bold;
-            color: #fff;
-            font-size: 18px;
-        }
-        .open-feedback-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
+        .close-feedback { cursor: pointer; font-size: 22px; color: rgba(255,255,255,0.8); transition: 0.2s; line-height: 1; float: right; margin-top: -6px; }
+        .close-feedback:hover { color: #ff6600; }
+        .feedback-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .feedback-header .feedback-title { margin-bottom: 0; }
+        .open-feedback-btn { width: 380px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(12px); border-radius: 20px; padding: 15px 22px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); transition: 0.2s; font-weight: bold; color: #fff; font-size: 18px; }
+        .open-feedback-btn:hover { background: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
 <body>
@@ -217,7 +134,6 @@
                     <div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div>
                 </div>
             </div>
-            <!-- 意见反馈栏（带开关） -->
             <div class="feedback-container" id="feedbackContainer">
                 <div class="feedback-box" id="feedbackBox">
                     <div class="feedback-header">
@@ -330,8 +246,8 @@
         let subNavList = [];
         let feedbackList = [];
 
-        // ★★★ 使用更快的 jsDelivr CDN ★★★
-        const CLOUD_DATA_URL = "https://cdn.jsdelivr.net/gh/qq3976273739-code/my-site-data/data.json";
+        // ★ 使用 GitHub raw 链接，避免 CDN 缓存（确保数据最新）
+        const CLOUD_DATA_URL = "https://raw.githubusercontent.com/qq3976273739-code/my-site-data/main/data.json";
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
@@ -348,7 +264,7 @@
                     if (cloudData.subNavList) subNavList = cloudData.subNavList;
                     if (cloudData.feedbackList) feedbackList = cloudData.feedbackList;
                     saveData();
-                    console.log("已从云端加载数据");
+                    console.log("已从云端加载数据", { extraPages, resourceLinks });
                     return true;
                 }
             } catch (err) {
@@ -372,16 +288,16 @@
                 extraPages = storedExtra ? JSON.parse(storedExtra) : {};
                 subNavList = storedSubNav ? JSON.parse(storedSubNav) : [];
                 feedbackList = storedFeedback ? JSON.parse(storedFeedback) : [];
-            } else {
-                await fetchCloudData();
             }
-            await fetchCloudData();
+            await fetchCloudData(); // 云端数据覆盖本地，确保最新
+            
             if (!topMenus) topMenus = {};
             if (!subMenus) subMenus = {};
             if (!resourceLinks) resourceLinks = {};
             if (!extraPages) extraPages = {};
             if (!subNavList) subNavList = [];
             if (!feedbackList) feedbackList = [];
+            
             saveData();
             renderSubNav();
             renderFeedback();
@@ -672,12 +588,12 @@
         function getTopList(){ let arr=[]; for(let id in topMenus) arr.push({id,name:topMenus[id].name}); return arr; }
         function getSubList(){ let arr=[]; for(let id in subMenus){ let p=topMenus[subMenus[id].parentId]; arr.push({id,name:(p?p.name:'?')+'→'+subMenus[id].name}); } return arr; }
 
-        function createPage(id,name){
-            if(document.getElementById(id)) return;
-            let div=document.createElement('div');
-            div.className='page';
-            div.id=id;
-            div.innerHTML=`<h2 style="color:#ff6600">【${escapeHtml(name)}】</h2><div class="link-list" id="box_${id}"></div><div class="pagination" id="pagebtn_${id}"></div>`;
+        function createPage(id, name) {
+            if (document.getElementById(id)) return;
+            let div = document.createElement('div');
+            div.className = 'page';
+            div.id = id;
+            div.innerHTML = `<h2 style="color:#ff6600">【${escapeHtml(name)}】</h2><div class="link-list" id="box_${id}"></div><div class="pagination" id="pagebtn_${id}"></div>`;
             document.getElementById('area').appendChild(div);
         }
         function removePage(id){ let el=document.getElementById(id); if(el) el.remove(); }
@@ -707,33 +623,48 @@
                 createPage(topId,top.name);
             }
             for(let sid in subMenus) createPage(sid,subMenus[sid].name);
-            for(let eid in extraPages) createPage(eid, extraPages[eid].name);
+            // 关键：为每个独立页面创建容器
+            for(let eid in extraPages) {
+                createPage(eid, extraPages[eid].name);
+            }
         }
 
         function loadData(menuId){
-            if(!resourceLinks[menuId]) resourceLinks[menuId]={1:[]};
-            if(!currentPage[menuId]) currentPage[menuId]=1;
-            let page=currentPage[menuId];
-            let list=resourceLinks[menuId][page]||[];
-            let box=document.getElementById('box_'+menuId);
-            let pageBox=document.getElementById('pagebtn_'+menuId);
-            if(!box||!pageBox)return;
-            box.innerHTML='';
-            list.forEach(item=>{ box.innerHTML+=`<div class="link-item"><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.name)}</a></div>`; });
-            let pages=Object.keys(resourceLinks[menuId]);
-            pageBox.innerHTML='';
-            if(pages.length<=1)return;
-            pages.forEach(p=>{ pageBox.innerHTML+=`<button class="page-btn ${p==page?'active':''}" onclick="switchPage('${menuId}',${p})">第${p}页</button>`; });
+            // 确保 resourceLinks[menuId] 存在
+            if (!resourceLinks[menuId]) {
+                resourceLinks[menuId] = { 1: [] };
+                saveData();
+            }
+            if (!currentPage[menuId]) currentPage[menuId] = 1;
+            let page = currentPage[menuId];
+            let list = resourceLinks[menuId][page] || [];
+            let box = document.getElementById('box_'+menuId);
+            let pageBox = document.getElementById('pagebtn_'+menuId);
+            if (!box || !pageBox) return;
+            box.innerHTML = '';
+            if (list.length === 0) {
+                box.innerHTML = '<div class="empty-tip" style="text-align:center;padding:40px;color:#aaa">📭 暂无链接</div>';
+            } else {
+                list.forEach(item => {
+                    box.innerHTML += `<div class="link-item"><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.name)}</a></div>`;
+                });
+            }
+            let pages = Object.keys(resourceLinks[menuId]);
+            pageBox.innerHTML = '';
+            if (pages.length <= 1) return;
+            pages.forEach(p => {
+                pageBox.innerHTML += `<button class="page-btn ${p == page ? 'active' : ''}" onclick="switchPage('${menuId}',${p})">第${p}页</button>`;
+            });
         }
         function switchPage(id,p){ currentPage[id]=p; loadData(id); }
 
-        function showPage(title,id){
+        function showPage(title, id){
             document.getElementById('title').innerText='当前位置：'+escapeHtml(title);
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-            createPage(id,title);
-            let dom=document.getElementById(id);
-            dom.classList.add('active');
-            if(id!=='home') loadData(id);
+            createPage(id, title);
+            let dom = document.getElementById(id);
+            if (dom) dom.classList.add('active');
+            if (id !== 'home') loadData(id);
             document.querySelectorAll('.sub-menu').forEach(m=>m.classList.remove('show'));
             document.getElementById('area').scrollIntoView({behavior:'smooth'});
         }
