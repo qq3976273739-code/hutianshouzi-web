@@ -23,7 +23,7 @@
         .nav .sub-menu { display: none; position: absolute; top: 100%; left: 0; background-color: rgba(0,0,0,0.9); border-radius: 8px; padding: 12px; width: 160px; flex-direction: column; gap: 10px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .nav .sub-menu.show { display: flex; opacity: 1; transform: translateY(0); }
         .sub-nav { width: 85%; margin: 0 auto 30px; background-color: rgba(0, 0, 0, 0.7); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; justify-content: center; gap: 35px; flex-wrap: wrap; }
-        .sub-nav a { color: #ffffff; text-decoration: none; font-size: 18px; padding: 8px 16px; border-radius: 6px; background-color: rgba(0,0,0,0.5); transition: all 0.2s; }
+        .sub-nav a { color: #ffffff; text-decoration: none; font-size: 18px; padding: 8px 16px; border-radius: 6px; background-color: rgba(0,0,0,0.5); transition: all 0.2s; cursor: pointer; }
         .sub-nav a:hover { color: #ff6600; background-color: rgba(0,0,0,0.8); }
         .search-box { width: 60%; margin: 0 auto 40px; text-align: center; background-color: rgba(0, 0, 0, 0.7); padding: 20px; border-radius: 12px; display: flex; align-items: center,justify-content:center; gap: 8px; }
         .baidu-icon { width: 28px; height: 28px; border-radius: 4px; }
@@ -74,7 +74,7 @@
         .restore-btn { background: #28a745 !important; }
         .clear-btn { background: #dc3545 !important; }
         #backupFileInput { display: none; }
-        /* 意见反馈框样式（带开关） */
+        /* 意见反馈框样式 */
         .feedback-container {
             position: fixed;
             bottom: 25px;
@@ -259,10 +259,17 @@
                 </div>
 
                 <hr>
-                <h3 style="color:#ff6600;">📌 下方副导航栏管理</h3>
+                <h3 style="color:#ff6600;">📌 下方副导航栏管理（跳转方式与主菜单一致）</h3>
                 <div class="admin-form">
-                    <input type="text" id="subNavName" placeholder="副导航按钮名称" style="width:180px;">
-                    <input type="text" id="subNavUrl" placeholder="跳转网址（可选）" style="width:250px;">
+                    <input type="text" id="subNavName" placeholder="按钮名称" style="width:180px;">
+                    <select id="subNavType" style="width:120px;">
+                        <option value="internal">内部跳转（菜单）</option>
+                        <option value="external">外部链接</option>
+                    </select>
+                    <select id="subNavInternalTarget" style="width:200px; display:none;">
+                        <option value="">-- 选择内部菜单 --</option>
+                    </select>
+                    <input type="text" id="subNavUrl" placeholder="外部网址（可选）" style="width:200px; display:none;">
                     <button onclick="addSubNavItem()">➕ 添加副导航按钮</button>
                 </div>
                 <div class="admin-form">
@@ -270,7 +277,7 @@
                     <button class="del-page-btn" onclick="deleteSelectedSubNav()">🗑️ 删除选中的副导航按钮</button>
                     <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个</button>
                 </div>
-                <!-- 新增：与主功能一致的添加顶级菜单按钮 -->
+                <!-- 添加顶级菜单（与主功能一致） -->
                 <div class="admin-form">
                     <input type="text" id="newCate2" placeholder="顶级菜单名称（与主功能一致）" style="width:220px;">
                     <button onclick="addTopCateFromSubNav()">➕ 添加顶级菜单（与主功能一致）</button>
@@ -337,6 +344,7 @@
         let topMenus = {};
         let subMenus = {};
         let resourceLinks = {};
+        // subNavList 中每个元素: { name, type, targetId(内部菜单id) 或 url }
         let subNavList = [];
         let feedbackList = [];
 
@@ -404,6 +412,7 @@
             renderFeedback();
             renderAdminFeedback();
             renderDelSubNavSelect();
+            updateInternalTargetSelect(); // 填充内部菜单下拉
         }
 
         function saveData() {
@@ -413,6 +422,50 @@
             localStorage.setItem('subNavList', JSON.stringify(subNavList));
             localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
         }
+
+        // 更新内部菜单下拉框
+        function updateInternalTargetSelect() {
+            let sel = document.getElementById('subNavInternalTarget');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- 选择内部菜单 --</option>';
+            // 添加顶级菜单
+            for (let id in topMenus) {
+                let opt = document.createElement('option');
+                opt.value = id;
+                opt.innerText = '【顶级】' + topMenus[id].name;
+                sel.appendChild(opt);
+            }
+            // 添加子菜单
+            for (let id in subMenus) {
+                let parent = topMenus[subMenus[id].parentId];
+                let parentName = parent ? parent.name : '未知';
+                let opt = document.createElement('option');
+                opt.value = id;
+                opt.innerText = '【子级】' + parentName + ' → ' + subMenus[id].name;
+                sel.appendChild(opt);
+            }
+        }
+
+        // 监听跳转类型切换
+        function toggleSubNavType() {
+            let type = document.getElementById('subNavType').value;
+            let internalSel = document.getElementById('subNavInternalTarget');
+            let urlInput = document.getElementById('subNavUrl');
+            if (type === 'internal') {
+                internalSel.style.display = 'inline-block';
+                urlInput.style.display = 'none';
+                urlInput.value = '';
+            } else {
+                internalSel.style.display = 'none';
+                urlInput.style.display = 'inline-block';
+                internalSel.value = '';
+            }
+        }
+        document.getElementById('subNavType')?.addEventListener('change', toggleSubNavType);
+        // 初始调用
+        setTimeout(() => {
+            if (document.getElementById('subNavType')) toggleSubNavType();
+        }, 100);
 
         function renderDelSubNavSelect() {
             let sel = document.getElementById('delSubNavSelect');
@@ -425,8 +478,16 @@
             subNavList.forEach((item, idx) => {
                 let opt = document.createElement('option');
                 opt.value = idx;
-                let displayUrl = item.url && item.url !== '#' ? ` (${item.url})` : '';
-                opt.innerText = `${item.name}${displayUrl}`;
+                let displayText = item.name;
+                if (item.type === 'internal') {
+                    let targetName = '';
+                    if (topMenus[item.targetId]) targetName = topMenus[item.targetId].name;
+                    else if (subMenus[item.targetId]) targetName = subMenus[item.targetId].name;
+                    displayText += ` (内部: ${targetName || item.targetId})`;
+                } else {
+                    displayText += ` (外部: ${item.url || '#'})`;
+                }
+                opt.innerText = displayText;
                 sel.appendChild(opt);
             });
         }
@@ -449,23 +510,53 @@
             let box = document.getElementById('subNavBox');
             box.innerHTML = '';
             subNavList.forEach(item => {
-                let url = item.url && item.url.trim() !== '' ? item.url : '#';
-                box.innerHTML += `<a href="${escapeHtml(url)}" target="_blank">${escapeHtml(item.name)}</a>`;
+                let a = document.createElement('a');
+                a.innerText = item.name;
+                if (item.type === 'internal') {
+                    // 内部跳转，调用 showPage
+                    let targetId = item.targetId;
+                    let targetName = '';
+                    if (topMenus[targetId]) targetName = topMenus[targetId].name;
+                    else if (subMenus[targetId]) targetName = subMenus[targetId].name;
+                    else targetName = '未知页面';
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        showPage(targetName, targetId);
+                    };
+                    a.href = 'javascript:void(0)';
+                    a.style.cursor = 'pointer';
+                } else {
+                    // 外部链接，新标签页打开
+                    a.href = item.url && item.url.trim() !== '' ? item.url : '#';
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                }
+                box.appendChild(a);
             });
         }
 
         function addSubNavItem() {
             if (!isLogin) return;
             let name = document.getElementById('subNavName').value.trim();
-            let url = document.getElementById('subNavUrl').value.trim();
             if (!name) return alert("请填写按钮名称！");
-            if (url === '') url = '#';
-            subNavList.push({ name: name, url: url });
+            let type = document.getElementById('subNavType').value;
+            let newItem = { name: name, type: type };
+            if (type === 'internal') {
+                let targetId = document.getElementById('subNavInternalTarget').value;
+                if (!targetId) return alert("请选择内部菜单！");
+                newItem.targetId = targetId;
+            } else {
+                let url = document.getElementById('subNavUrl').value.trim();
+                if (url === '') url = '#';
+                newItem.url = url;
+            }
+            subNavList.push(newItem);
             saveData();
             renderSubNav();
             renderDelSubNavSelect();
             document.getElementById('subNavName').value = '';
             document.getElementById('subNavUrl').value = '';
+            document.getElementById('subNavInternalTarget').value = '';
             alert("✅ 副导航按钮添加成功！");
         }
 
@@ -480,7 +571,7 @@
             alert("✅ 删除成功");
         }
 
-        // 反馈框开关函数
+        // 反馈框开关
         function closeFeedback() {
             document.getElementById('feedbackBox').style.display = 'none';
             let openBtn = document.createElement('div');
@@ -494,7 +585,6 @@
             document.getElementById('feedbackContainer').appendChild(openBtn);
         }
 
-        // 页面加载时确保打开按钮不存在
         function initFeedbackToggle() {
             let container = document.getElementById('feedbackContainer');
             let existingOpen = document.getElementById('openFeedbackBtn');
@@ -700,6 +790,7 @@
             renderAllSelect();
             renderAdminFeedback();
             renderDelSubNavSelect();
+            updateInternalTargetSelect();
         }
         function closeAdminModal(){document.getElementById('adminModal').style.display='none';}
 
@@ -708,7 +799,7 @@
                 isLogin=true;
                 document.getElementById('loginBox').style.display='none';
                 document.getElementById('adminPanel').style.display='block';
-                renderAllSelect();renderList();renderAdminFeedback();renderDelSubNavSelect();
+                renderAllSelect();renderList();renderAdminFeedback();renderDelSubNavSelect();updateInternalTargetSelect();
                 alert("登录成功");
             }else alert("密码错误");
         }
@@ -776,11 +867,10 @@
             let id = 'top_' + Date.now();
             topMenus[id] = { name: name };
             resourceLinks[id] = { 1: [] };
-            saveData(); rebuildNav(); renderAllSelect(); renderList();
+            saveData(); rebuildNav(); renderAllSelect(); renderList(); updateInternalTargetSelect();
             document.getElementById('newCate').value = '';
             alert("顶级菜单添加成功！");
         }
-        // 副导航栏管理区域添加的顶级菜单功能（完全一致）
         function addTopCateFromSubNav(){
             if(!isLogin)return;
             let name = document.getElementById('newCate2').value.trim();
@@ -788,7 +878,7 @@
             let id = 'top_' + Date.now();
             topMenus[id] = { name: name };
             resourceLinks[id] = { 1: [] };
-            saveData(); rebuildNav(); renderAllSelect(); renderList();
+            saveData(); rebuildNav(); renderAllSelect(); renderList(); updateInternalTargetSelect();
             document.getElementById('newCate2').value = '';
             alert("顶级菜单添加成功！");
         }
@@ -801,7 +891,7 @@
             let id='sub_'+Date.now();
             subMenus[id]={parentId:pid,name:name};
             resourceLinks[id]={1:[]};
-            saveData();rebuildNav();renderAllSelect();renderList();
+            saveData();rebuildNav();renderAllSelect();renderList();updateInternalTargetSelect();
             document.getElementById('subCateName').value='';alert("分支添加成功");
         }
         function deleteBranch(){
@@ -811,7 +901,7 @@
             let id=sel.value;
             if(!confirm("删除分支+所有链接一起消失！确定？"))return;
             delete subMenus[id];delete resourceLinks[id];
-            removePage(id);saveData();rebuildNav();renderAllSelect();renderList();
+            removePage(id);saveData();rebuildNav();renderAllSelect();renderList();updateInternalTargetSelect();
             if(document.querySelector('.page.active').id===id)showPage('首页','home');
             alert("删除成功");
         }
