@@ -6,7 +6,6 @@
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
     <title>虎天寿资源整理网站 - 副导航独立页面版</title>
     <style>
-        /* 样式与原版完全一致，未改动，为节省篇幅此处省略，实际运行时会保留完整样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
         .avatar-box { position: absolute; top: 20px; right: 30px; cursor: pointer; }
@@ -66,6 +65,7 @@
         .link-item a { color: #fff; text-decoration: none; }
         .link-item a:hover { color: #ff6600; }
         .del-btn { background: #ff3333; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .edit-btn { background: #0099ff; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px; }
         .close-btn { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 22px; cursor: pointer; }
         hr { margin: 20px 0; border-color: #ff6600; }
         .go-top { position: fixed; bottom: 50px; right: 30px; width: 50px; height: 50px; background-color: #ff6600; color: #fff; border-radius: 50%; text-align: center; line-height: 50px; font-size: 28px; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
@@ -224,7 +224,6 @@
                 </div>
             </div>
 
-            <!-- 用户意见栏（带开关） -->
             <div class="feedback-container" id="feedbackContainer">
                 <div class="feedback-box" id="feedbackBox">
                     <div class="feedback-header">
@@ -254,8 +253,8 @@
                 
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="顶级菜单名称">
-                    <button onclick="addTopCate()">➕ 添加顶级菜单（增一行）</button>
-                    <button class="del-page-btn" onclick="deleteLastTopCate()">➖ 删除最后一个顶级菜单（减一行）</button>
+                    <button onclick="addTopCate()">➕ 添加顶级菜单</button>
+                    <button class="del-page-btn" onclick="deleteLastTopCate()">➖ 删除最后一个顶级菜单</button>
                 </div>
 
                 <hr>
@@ -265,7 +264,7 @@
                     <select id="subNavType" style="width:150px;">
                         <option value="external">外部链接</option>
                         <option value="internal">跳转到已有菜单</option>
-                        <option value="new">创建独立页面（仅副导航）</option>
+                        <option value="new">创建独立页面</option>
                     </select>
                     <select id="subNavInternalTarget" style="width:200px; display:none;">
                         <option value="">-- 选择内部菜单 --</option>
@@ -275,8 +274,14 @@
                     <button onclick="addSubNavItem()">➕ 添加副导航按钮</button>
                 </div>
                 <div class="admin-form">
+                    <select id="editSubNavSelect" style="min-width:200px;">
+                        <option value="">-- 选择要编辑的按钮 --</option>
+                    </select>
+                    <button class="edit-btn" onclick="showEditSubNavDialog()">✏️ 编辑选中按钮</button>
+                </div>
+                <div class="admin-form">
                     <select id="delSubNavSelect" style="min-width:200px;"></select>
-                    <button class="del-page-btn" onclick="deleteSelectedSubNav()">🗑️ 删除选中的副导航按钮</button>
+                    <button class="del-page-btn" onclick="deleteSelectedSubNav()">🗑️ 删除选中的按钮</button>
                     <button class="del-page-btn" onclick="deleteLastSubNavItem()">➖ 删除最后一个</button>
                 </div>
                 <hr>
@@ -341,11 +346,10 @@
         let topMenus = {};
         let subMenus = {};
         let resourceLinks = {};
-        let extraPages = {};        // 独立页面（不显示在主菜单），{ pageId: { name, id } }
+        let extraPages = {};
         let subNavList = [];
         let feedbackList = [];
 
-        // 云端数据地址（jsDelivr CDN）
         const CLOUD_DATA_URL = "https://cdn.jsdelivr.net/gh/qq3976273739-code/my-site-data/data.json";
 
         function escapeHtml(str) {
@@ -412,7 +416,7 @@
             renderSubNav();
             renderFeedback();
             renderAdminFeedback();
-            renderDelSubNavSelect();
+            updateSubNavSelects();
             updateInternalTargetSelect();
         }
 
@@ -425,7 +429,6 @@
             localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
         }
 
-        // 更新内部菜单下拉框（包括顶级、子级和独立页面）
         function updateInternalTargetSelect() {
             let sel = document.getElementById('subNavInternalTarget');
             if (!sel) return;
@@ -447,8 +450,47 @@
             for (let id in extraPages) {
                 let opt = document.createElement('option');
                 opt.value = id;
-                opt.innerText = '【副导航独立页】' + extraPages[id].name;
+                opt.innerText = '【独立页】' + extraPages[id].name;
                 sel.appendChild(opt);
+            }
+        }
+
+        function updateSubNavSelects() {
+            let editSel = document.getElementById('editSubNavSelect');
+            let delSel = document.getElementById('delSubNavSelect');
+            if (editSel) {
+                editSel.innerHTML = '<option value="">-- 选择要编辑的按钮 --</option>';
+                subNavList.forEach((item, idx) => {
+                    let opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.innerText = item.name;
+                    editSel.appendChild(opt);
+                });
+            }
+            if (delSel) {
+                delSel.innerHTML = '';
+                if (subNavList.length === 0) {
+                    delSel.innerHTML = '<option disabled>无副导航按钮</option>';
+                } else {
+                    subNavList.forEach((item, idx) => {
+                        let opt = document.createElement('option');
+                        opt.value = idx;
+                        let displayText = item.name;
+                        if (item.type === 'internal') {
+                            let targetName = '';
+                            if (topMenus[item.targetId]) targetName = topMenus[item.targetId].name;
+                            else if (subMenus[item.targetId]) targetName = subMenus[item.targetId].name;
+                            else if (extraPages[item.targetId]) targetName = extraPages[item.targetId].name;
+                            displayText += ` (内部: ${targetName || item.targetId})`;
+                        } else if (item.type === 'new') {
+                            displayText += ` (独立页: ${item.newPageName})`;
+                        } else {
+                            displayText += ` (外部: ${item.url || '#'})`;
+                        }
+                        opt.innerText = displayText;
+                        delSel.appendChild(opt);
+                    });
+                }
             }
         }
 
@@ -478,61 +520,7 @@
             }
         }
         document.getElementById('subNavType')?.addEventListener('change', toggleSubNavType);
-        setTimeout(() => {
-            if (document.getElementById('subNavType')) toggleSubNavType();
-        }, 100);
-
-        function renderDelSubNavSelect() {
-            let sel = document.getElementById('delSubNavSelect');
-            if (!sel) return;
-            sel.innerHTML = '';
-            if (subNavList.length === 0) {
-                sel.innerHTML = '<option disabled>无副导航按钮</option>';
-                return;
-            }
-            subNavList.forEach((item, idx) => {
-                let opt = document.createElement('option');
-                opt.value = idx;
-                let displayText = item.name;
-                if (item.type === 'internal') {
-                    let targetName = '';
-                    if (topMenus[item.targetId]) targetName = topMenus[item.targetId].name;
-                    else if (subMenus[item.targetId]) targetName = subMenus[item.targetId].name;
-                    else if (extraPages[item.targetId]) targetName = extraPages[item.targetId].name;
-                    displayText += ` (内部: ${targetName || item.targetId})`;
-                } else if (item.type === 'new') {
-                    displayText += ` (独立页: ${item.newPageName})`;
-                } else {
-                    displayText += ` (外部: ${item.url || '#'})`;
-                }
-                opt.innerText = displayText;
-                sel.appendChild(opt);
-            });
-        }
-
-        function deleteSelectedSubNav() {
-            if (!isLogin) return;
-            let sel = document.getElementById('delSubNavSelect');
-            if (!sel || sel.options.length === 0 || sel.options[0].disabled) return alert("没有可删除的副导航按钮");
-            let idx = parseInt(sel.value);
-            if (isNaN(idx)) return;
-            let item = subNavList[idx];
-            if (!confirm(`确定删除副导航按钮“${item.name}”吗？`)) return;
-            // 如果是独立页面且没有其他按钮引用，可选择删除页面资源（可选）
-            if (item.type === 'new' && item.targetId && extraPages[item.targetId]) {
-                if (confirm(`同时删除关联的独立页面“${item.newPageName}”及其所有链接吗？`)) {
-                    delete extraPages[item.targetId];
-                    delete resourceLinks[item.targetId];
-                }
-            }
-            subNavList.splice(idx, 1);
-            saveData();
-            renderSubNav();
-            renderDelSubNavSelect();
-            updateInternalTargetSelect();
-            renderAllSelect(); // 刷新链接分类下拉
-            alert("✅ 删除成功");
-        }
+        setTimeout(() => { if (document.getElementById('subNavType')) toggleSubNavType(); }, 100);
 
         function renderSubNav() {
             let box = document.getElementById('subNavBox');
@@ -562,14 +550,13 @@
             });
         }
 
-        // 创建独立页面（不显示在主菜单）
         function createExtraPage(name) {
             let id = 'extra_' + Date.now();
             extraPages[id] = { name: name, id: id };
             resourceLinks[id] = { 1: [] };
             saveData();
             updateInternalTargetSelect();
-            renderAllSelect(); // 让分类下拉框能立即显示
+            renderAllSelect();
             return id;
         }
 
@@ -592,7 +579,7 @@
                 newItem.targetId = newId;
                 newItem.newPageName = newPageName;
             }
-            else { // external
+            else {
                 let url = document.getElementById('subNavUrl').value.trim();
                 if (url === '') url = '#';
                 newItem.url = url;
@@ -601,13 +588,93 @@
             subNavList.push(newItem);
             saveData();
             renderSubNav();
-            renderDelSubNavSelect();
-            // 清空表单
+            updateSubNavSelects();
             document.getElementById('subNavName').value = '';
             document.getElementById('subNavUrl').value = '';
             document.getElementById('subNavInternalTarget').value = '';
             document.getElementById('subNavNewPageName').value = '';
             alert("✅ 副导航按钮添加成功！");
+        }
+
+        function showEditSubNavDialog() {
+            let editSel = document.getElementById('editSubNavSelect');
+            let idx = editSel.value;
+            if (idx === "" || idx === null) return alert("请先选择要编辑的按钮");
+            let item = subNavList[parseInt(idx)];
+            if (!item) return alert("按钮不存在");
+            
+            let newName = prompt("修改按钮名称:", item.name);
+            if (newName === null) return;
+            if (newName.trim() === "") return alert("名称不能为空");
+            
+            let newType = prompt("修改类型 (external/internal/new):", item.type);
+            if (newType === null) return;
+            if (!["external", "internal", "new"].includes(newType)) return alert("类型必须为 external / internal / new");
+            
+            if (newType === 'internal') {
+                let targetId = prompt("请输入内部菜单ID (可从下拉框中查看):", item.targetId || "");
+                if (targetId === null) return;
+                if (!targetId) return alert("目标ID不能为空");
+                // 验证目标是否存在
+                if (!topMenus[targetId] && !subMenus[targetId] && !extraPages[targetId]) {
+                    return alert("目标ID不存在");
+                }
+                item.targetId = targetId;
+                delete item.url;
+                delete item.newPageName;
+            } else if (newType === 'new') {
+                let newPageName = prompt("请输入独立页面名称:", item.newPageName || "");
+                if (newPageName === null) return;
+                if (!newPageName.trim()) return alert("页面名称不能为空");
+                // 如果已有 targetId 且是 extra 类型，直接改名；否则创建新页面
+                if (item.type === 'new' && item.targetId && extraPages[item.targetId]) {
+                    extraPages[item.targetId].name = newPageName;
+                    item.newPageName = newPageName;
+                } else {
+                    let newId = createExtraPage(newPageName);
+                    item.targetId = newId;
+                    item.newPageName = newPageName;
+                }
+                delete item.url;
+            } else {
+                let url = prompt("请输入外部链接地址:", item.url || "#");
+                if (url === null) return;
+                if (url.trim() === "") url = "#";
+                item.url = url;
+                delete item.targetId;
+                delete item.newPageName;
+            }
+            item.name = newName.trim();
+            item.type = newType;
+            saveData();
+            renderSubNav();
+            updateSubNavSelects();
+            updateInternalTargetSelect();
+            renderAllSelect();
+            alert("✅ 修改成功");
+        }
+
+        function deleteSelectedSubNav() {
+            if (!isLogin) return;
+            let sel = document.getElementById('delSubNavSelect');
+            if (!sel || sel.options.length === 0 || sel.options[0].disabled) return alert("没有可删除的副导航按钮");
+            let idx = parseInt(sel.value);
+            if (isNaN(idx)) return;
+            let item = subNavList[idx];
+            if (!confirm(`确定删除副导航按钮“${item.name}”吗？`)) return;
+            if (item.type === 'new' && item.targetId && extraPages[item.targetId]) {
+                if (confirm(`同时删除关联的独立页面“${item.newPageName}”及其所有链接吗？`)) {
+                    delete extraPages[item.targetId];
+                    delete resourceLinks[item.targetId];
+                }
+            }
+            subNavList.splice(idx, 1);
+            saveData();
+            renderSubNav();
+            updateSubNavSelects();
+            updateInternalTargetSelect();
+            renderAllSelect();
+            alert("✅ 删除成功");
         }
 
         function deleteLastSubNavItem() {
@@ -624,13 +691,13 @@
             subNavList.pop();
             saveData();
             renderSubNav();
-            renderDelSubNavSelect();
+            updateSubNavSelects();
             updateInternalTargetSelect();
             renderAllSelect();
             alert("✅ 删除成功");
         }
 
-        // 获取所有可用的分类（用于添加链接的下拉框），包括顶级、子级和独立页面
+        // 获取所有可用的分类（用于添加链接的下拉框）
         function getAllMenuForSelect() {
             let arr = [];
             for (let id in topMenus) arr.push({ id, name: '【顶级】' + topMenus[id].name, type: 'top' });
@@ -645,12 +712,10 @@
             return arr;
         }
 
-        // 重构原有函数中使用 getAllMenu 的地方
         function getAllMenu() {
             return getAllMenuForSelect();
         }
 
-        // 其余原有函数保持不变（但需要修改部分引用）
         function getTopList(){
             let arr=[];for(let id in topMenus) arr.push({id,name:topMenus[id].name});return arr;
         }
@@ -698,9 +763,8 @@
                 ul.appendChild(li);
                 createPage(topId,top.name);
             }
-            // 注意：extraPages 不添加到主菜单栏
             for(let sid in subMenus) createPage(sid,subMenus[sid].name);
-            for(let eid in extraPages) createPage(eid, extraPages[eid].name); // 预创建页面区域，但不在主菜单显示
+            for(let eid in extraPages) createPage(eid, extraPages[eid].name);
         }
 
         function loadData(menuId){
@@ -751,7 +815,7 @@
             document.getElementById('adminModal').style.display='block';
             renderAllSelect();
             renderAdminFeedback();
-            renderDelSubNavSelect();
+            updateSubNavSelects();
             updateInternalTargetSelect();
         }
         function closeAdminModal(){document.getElementById('adminModal').style.display='none';}
@@ -761,7 +825,7 @@
                 isLogin=true;
                 document.getElementById('loginBox').style.display='none';
                 document.getElementById('adminPanel').style.display='block';
-                renderAllSelect();renderList();renderAdminFeedback();renderDelSubNavSelect();updateInternalTargetSelect();
+                renderAllSelect();renderList();renderAdminFeedback();updateSubNavSelects();updateInternalTargetSelect();
                 alert("登录成功");
             }else alert("密码错误");
         }
@@ -945,7 +1009,6 @@
         }
         setInterval(clock,1000);clock();
 
-        // 反馈框开关
         function closeFeedback() {
             document.getElementById('feedbackBox').style.display = 'none';
             let openBtn = document.createElement('div');
@@ -1035,7 +1098,7 @@
                     saveData();
                     rebuildNav();
                     renderSubNav();
-                    renderDelSubNavSelect();
+                    updateSubNavSelects();
                     renderAllSelect();
                     renderList();
                     renderFeedback();
@@ -1051,7 +1114,7 @@
             if(!confirm("清空全部数据？"))return;
             localStorage.clear();
             topMenus={};subMenus={};resourceLinks={};extraPages={};subNavList=[];feedbackList=[];
-            rebuildNav();renderSubNav();renderDelSubNavSelect();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
+            rebuildNav();renderSubNav();updateSubNavSelects();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
             alert("已清空");
         }
 
