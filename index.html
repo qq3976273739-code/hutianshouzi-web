@@ -469,18 +469,17 @@
         <div class="admin-box">
             <h2 class="admin-title">下载链接 / 网站管理面板</h2>
             <div class="login-box" id="loginBox">
-                <!-- 终极修复3点：
-                1. type="password" 黑点隐藏
-                2. autocomplete="off" 禁止浏览器记住密码
-                3. 打开弹窗自动清空密码框 -->
+                <!-- 密码隐藏+禁止浏览器自动填充+点开清空 -->
                 <input type="password" id="pwd" placeholder="请输入管理员密码" autocomplete="off">
                 <button onclick="adminLogin()">登录</button>
             </div>
             <div id="adminPanel" style="display:none;">
                 
+                <!-- ==================== 新增：顶级菜单 增行 + 删行 ==================== -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="顶级菜单名称">
-                    <button onclick="addTopCate()">添加顶级菜单</button>
+                    <button onclick="addTopCate()">➕ 添加顶级菜单（增一行）</button>
+                    <button class="del-page-btn" onclick="deleteLastTopCate()">➖ 删除最后一个顶级菜单（减一行）</button>
                 </div>
 
                 <div class="admin-form">
@@ -709,17 +708,14 @@
         }
 
         // ===================== 后台总开关 on/off =====================
-        // on = 开启后台   off = 完全关闭后台
-        // 只改这里一个单词即可！
         const adminSwitch = "on";
 
-        // 打开后台弹窗【自动清空密码框】+ 禁止浏览器填充
         function openAdminModal(){
             if(adminSwitch === "off"){
                 alert("后台管理已关闭");
                 return;
             }
-            // 重点：每次点开后台，强制清空密码输入框
+            // 每次打开后台自动清空密码框
             document.getElementById('pwd').value = "";
             document.getElementById('adminModal').style.display='block';
             renderAllSelect();
@@ -734,6 +730,40 @@
                 renderAllSelect();renderList();
                 alert("登录成功");
             }else alert("密码错误");
+        }
+
+        // ==================== 新增：删除最后一个顶级菜单（减一行） ====================
+        function deleteLastTopCate(){
+            if(!isLogin)return;
+            let topArr = Object.keys(topMenus);
+            if(topArr.length === 0){
+                alert("没有顶级菜单可删除！");
+                return;
+            }
+            if(!confirm("确定删除最后添加的顶级菜单？该菜单下所有分支、链接全部一起删除！")) return;
+            
+            // 获取最后一个顶级菜单ID
+            let lastId = topArr[topArr.length - 1];
+            
+            // 删除顶级菜单
+            delete topMenus[lastId];
+            // 连带删除它下面所有子菜单
+            for(let sid in subMenus){
+                if(subMenus[sid].parentId === lastId){
+                    delete subMenus[sid];
+                    delete resourceLinks[sid];
+                    removePage(sid);
+                }
+            }
+            // 删除该菜单所有链接数据
+            delete resourceLinks[lastId];
+            removePage(lastId);
+
+            saveData();
+            rebuildNav();
+            renderAllSelect();
+            renderList();
+            alert("✅ 最后一个顶级菜单已删除！");
         }
 
         function renderAllSelect(){
@@ -780,12 +810,12 @@
         function addTopCate(){
             if(!isLogin)return;
             let name=document.getElementById('newCate').value.trim();
-            if(!name)return alert("请输入名称");
+            if(!name)return alert("请输入菜单名称");
             let id='top_'+Date.now();
             topMenus[id]={name:name};
             resourceLinks[id]={1:[]};
             saveData();rebuildNav();renderAllSelect();renderList();
-            document.getElementById('newCate').value='';alert("添加成功");
+            document.getElementById('newCate').value='';alert("顶级菜单添加成功！");
         }
         function addSubCate(){
             if(!isLogin)return;
