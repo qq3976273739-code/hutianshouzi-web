@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 云端同步版</title>
+    <title>虎天寿资源整理网站</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
         body { background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed; background-size: cover; color: #ffffff; min-height: 100vh; padding: 20px; }
@@ -603,7 +603,7 @@
         }
         function removePage(id){ let el=document.getElementById(id); if(el) el.remove(); }
 
-        // ★★★★★ 修改后的导航栏生成函数，添加了固定菜单“甲方粑粑网站” ★★★★★
+        // ★★★★★ 导航栏生成函数，添加了固定菜单“甲方爸爸” ★★★★★
         function rebuildNav(){
             let ul=document.getElementById('navMenuList');
             ul.innerHTML='';
@@ -630,9 +630,9 @@
             }
             for(let sid in subMenus) createPage(sid,subMenus[sid].name);
             for(let eid in extraPages) createPage(eid, extraPages[eid].name);
-            // 添加固定外部链接菜单：甲方粑粑网站
+            // 添加固定外部链接菜单：甲方爸爸（链接已更新）
             let customLi = document.createElement('li');
-            customLi.innerHTML = '<a href="http://siyecaolmh.top" target="_blank" rel="noopener noreferrer">甲方粑粑网站</a>';
+            customLi.innerHTML = '<a href="https://syc.siyecaoscw.top" target="_blank" rel="noopener noreferrer">甲方爸爸</a>';
             ul.appendChild(customLi);
         }
 
