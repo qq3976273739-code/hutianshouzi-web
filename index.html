@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 独立页面修复版</title>
+    <title>虎天寿资源整理网站</title>
     <style>
         /* 完整样式（与原版一致，为节省篇幅此处保留核心，实际运行会正常） */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "微软雅黑", sans-serif; }
@@ -246,51 +246,46 @@
         let subNavList = [];
         let feedbackList = [];
 
-        // ★ 使用 GitHub raw 链接，避免 CDN 缓存（确保数据最新）
-        const CLOUD_DATA_URL = "https://raw.githubusercontent.com/qq3976273739-code/my-site-data/main/data.json";
+        // 你的 GitHub 云端数据地址（固定不变）
+        const CLOUD_DATA_URL = "https://raw.githubusercontent.com/qq3976273739-code/my-site-data/refs/heads/main/data.json";
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
+        // 【核心修改】强制优先加载云端，无缓存、云端完全覆盖本地
         async function fetchCloudData() {
             try {
-                const response = await fetch(CLOUD_DATA_URL, { cache: "no-cache" });
-                if (!response.ok) throw new Error("HTTP " + response.status);
+                const response = await fetch(CLOUD_DATA_URL, { 
+                    cache: "no-store", 
+                    headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' }
+                });
+                if (!response.ok) throw new Error("请求失败：" + response.status);
                 const cloudData = await response.json();
-                if (cloudData && typeof cloudData === "object") {
-                    if (cloudData.topMenus) topMenus = cloudData.topMenus;
-                    if (cloudData.subMenus) subMenus = cloudData.subMenus;
-                    if (cloudData.resourceLinks) resourceLinks = cloudData.resourceLinks;
-                    if (cloudData.extraPages) extraPages = cloudData.extraPages;
-                    if (cloudData.subNavList) subNavList = cloudData.subNavList;
-                    if (cloudData.feedbackList) feedbackList = cloudData.feedbackList;
-                    saveData();
-                    console.log("已从云端加载数据", { extraPages, resourceLinks });
-                    return true;
-                }
+
+                // 云端数据强制全覆盖所有变量
+                topMenus = cloudData.topMenus || {};
+                subMenus = cloudData.subMenus || {};
+                resourceLinks = cloudData.resourceLinks || {};
+                extraPages = cloudData.extraPages || {};
+                subNavList = cloudData.subNavList || [];
+                feedbackList = cloudData.feedbackList || [];
+
+                // 同步写入本地存储
+                saveData();
+                console.log("✅ 成功加载 GitHub 云端全部备份数据");
+                return true;
             } catch (err) {
-                console.warn("云端数据读取失败", err);
+                console.error("❌ 云端数据加载失败", err);
+                alert("云端备份加载失败，将使用浏览器本地缓存数据");
+                return false;
             }
-            return false;
         }
 
+        // 初始化流程：先云端 → 再本地兜底 → 存储 → 渲染全部页面
         async function initData() {
-            let storedTop = localStorage.getItem('topMenus');
-            let storedSub = localStorage.getItem('subMenus');
-            let storedLinks = localStorage.getItem('resourceLinks');
-            let storedExtra = localStorage.getItem('extraPages');
-            let storedSubNav = localStorage.getItem('subNavList');
-            let storedFeedback = localStorage.getItem('feedbackList');
+            // 第一步：优先拉取 GitHub 云端备份数据
+            await fetchCloudData();
 
-            if (storedTop && storedSub && storedLinks) {
-                topMenus = JSON.parse(storedTop);
-                subMenus = JSON.parse(storedSub);
-                resourceLinks = JSON.parse(storedLinks);
-                extraPages = storedExtra ? JSON.parse(storedExtra) : {};
-                subNavList = storedSubNav ? JSON.parse(storedSubNav) : [];
-                feedbackList = storedFeedback ? JSON.parse(storedFeedback) : [];
-            }
-            await fetchCloudData(); // 云端数据覆盖本地，确保最新
-            
+            // 云端加载完后兜底校验，防止空数据报错
             if (!topMenus) topMenus = {};
             if (!subMenus) subMenus = {};
             if (!resourceLinks) resourceLinks = {};
@@ -623,14 +618,12 @@
                 createPage(topId,top.name);
             }
             for(let sid in subMenus) createPage(sid,subMenus[sid].name);
-            // 关键：为每个独立页面创建容器
             for(let eid in extraPages) {
                 createPage(eid, extraPages[eid].name);
             }
         }
 
         function loadData(menuId){
-            // 确保 resourceLinks[menuId] 存在
             if (!resourceLinks[menuId]) {
                 resourceLinks[menuId] = { 1: [] };
                 saveData();
@@ -718,128 +711,4 @@
         function addSubCate(){ if(!isLogin)return; let pid=document.getElementById('parentCateSelect').value; let name=document.getElementById('subCateName').value.trim(); if(!pid||!name)return alert("选顶级菜单+填名称"); let id='sub_'+Date.now(); subMenus[id]={parentId:pid,name:name}; resourceLinks[id]={1:[]}; saveData(); rebuildNav(); renderAllSelect(); renderList(); updateInternalTargetSelect(); document.getElementById('subCateName').value=''; alert("分支添加成功"); }
         function deleteBranch(){ if(!isLogin)return; let sel=document.getElementById('delBranchSelect'); if(sel.options[0].disabled)return alert("无分支可删"); let id=sel.value; if(!confirm("删除分支+所有链接一起消失！确定？"))return; delete subMenus[id]; delete resourceLinks[id]; removePage(id); saveData(); rebuildNav(); renderAllSelect(); renderList(); updateInternalTargetSelect(); if(document.querySelector('.page.active').id===id)showPage('首页','home'); alert("删除成功"); }
         function addPage(){ if(!isLogin)return; let id=document.getElementById('pageCate').value; let ps=Object.keys(resourceLinks[id]||{1:[]}).map(Number); let np=Math.max(...ps)+1; resourceLinks[id][np]=[]; saveData(); renderAllSelect(); renderList(); alert("新增第"+np+"页"); }
-        function deletePage(){ if(!isLogin)return; let id=document.getElementById('delPageCate').value; let p=document.getElementById('delPageNum').value; let ps=Object.keys(resourceLinks[id]); if(ps.length<=1)return alert("至少留1页"); if(!confirm("删除该页所有链接？"))return; delete resourceLinks[id][p]; saveData(); renderAllSelect(); renderList(); if(document.querySelector('.page.active').id===id){ if(currentPage[id]==p)currentPage[id]=1; loadData(id); } alert("删除成功"); }
-        function addLink(){ if(!isLogin)return; let mid=document.getElementById('cate').value; let p=document.getElementById('pageNum').value; let name=document.getElementById('linkName').value.trim(); let url=document.getElementById('linkUrl').value.trim(); if(!name||!url)return alert("名称网址都要填"); if(!resourceLinks[mid])resourceLinks[mid]={}; if(!resourceLinks[mid][p])resourceLinks[mid][p]=[]; resourceLinks[mid][p].push({name,url}); saveData(); document.getElementById('linkName').value=''; document.getElementById('linkUrl').value=''; renderList(); if(document.querySelector('.page.active').id===mid)loadData(mid); alert("链接添加成功！"); }
-        function delLink(mid,p,i){ if(!isLogin)return; resourceLinks[mid][p].splice(i,1); saveData(); renderList(); if(document.querySelector('.page.active').id===mid)loadData(mid); }
-        function renderList(){ let dom=document.getElementById('allLinks'); dom.innerHTML=''; getAllMenu().forEach(m=>{ let data=resourceLinks[m.id]; if(!data)return; for(let p in data){ let arr=data[p]; if(arr.length==0)continue; dom.innerHTML+=`<h4 style="color:#fff;margin:15px 0 5px;">${escapeHtml(m.name)} - 第${p}页</h4>`; arr.forEach((item,i)=>{ dom.innerHTML+=`<div class="link-item"><a href="${escapeHtml(item.url)}" target="_blank">${escapeHtml(item.name)}</a><button class="del-btn" onclick="delLink('${m.id}',${p},${i})">删除</button></div>`; }); } }); }
-
-        document.getElementById('cate')?.addEventListener('change',renderPageSelect);
-        document.getElementById('delPageCate')?.addEventListener('change',renderDelPageSelect);
-
-        function baiduSearch(){ let k=document.getElementById('baiduSearchInput').value.trim(); if(k) window.open('https://www.baidu.com/s?wd='+encodeURIComponent(k),'_self'); }
-        function initTop(){ let btn=document.getElementById('goTopBtn'); window.addEventListener('scroll',()=>{ if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); }); btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); }
-        function clock(){ let d=new Date(); let h=(d.getHours()+'').padStart(2,'0'); let m=(d.getMinutes()+'').padStart(2,'0'); let s=(d.getSeconds()+'').padStart(2,'0'); document.getElementById('clock').innerText=h+':'+m+':'+s; }
-        setInterval(clock,1000); clock();
-
-        function closeFeedback() {
-            document.getElementById('feedbackBox').style.display = 'none';
-            let openBtn = document.createElement('div');
-            openBtn.className = 'open-feedback-btn';
-            openBtn.id = 'openFeedbackBtn';
-            openBtn.innerHTML = '💬 打开意见反馈';
-            openBtn.onclick = function() {
-                document.getElementById('feedbackBox').style.display = 'block';
-                this.remove();
-            };
-            document.getElementById('feedbackContainer').appendChild(openBtn);
-        }
-        function initFeedbackToggle() {
-            let container = document.getElementById('feedbackContainer');
-            let existingOpen = document.getElementById('openFeedbackBtn');
-            if (existingOpen) existingOpen.remove();
-            let feedbackBox = document.getElementById('feedbackBox');
-            if (feedbackBox) feedbackBox.style.display = 'block';
-        }
-        function submitFeedback(){
-            let name = document.getElementById('feedbackName').value.trim();
-            let content = document.getElementById('feedbackContent').value.trim();
-            if(!name || !content){ alert("昵称和内容都要填写！"); return; }
-            let time = new Date().toLocaleString();
-            feedbackList.unshift({id:Date.now(),name,content,time});
-            saveData();
-            renderFeedback();
-            renderAdminFeedback();
-            document.getElementById('feedbackName').value = '';
-            document.getElementById('feedbackContent').value = '';
-            alert("✅ 意见提交成功！");
-        }
-        function renderFeedback(){
-            let box = document.getElementById('feedbackList');
-            box.innerHTML = '';
-            feedbackList.forEach(item=>{ box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`; });
-        }
-        function renderAdminFeedback(){
-            let box = document.getElementById('adminFeedbackList');
-            box.innerHTML = '';
-            feedbackList.forEach((item,index)=>{ box.innerHTML += `<div class="feedback-item"><div class="feedback-name">${escapeHtml(item.name)}</div><div class="feedback-time">${escapeHtml(item.time)}</div><div class="feedback-content">${escapeHtml(item.content)}</div><button class="del-btn" onclick="deleteFeedback(${index})">删除</button></div>`; });
-        }
-        function deleteFeedback(index){ if(!isLogin)return; if(!confirm("确定删除这条意见？"))return; feedbackList.splice(index,1); saveData(); renderFeedback(); renderAdminFeedback(); alert("✅ 删除成功"); }
-
-        function exportBackup() {
-            if (!isLogin) return;
-            const freshData = {
-                topMenus: JSON.parse(localStorage.getItem('topMenus') || '{}'),
-                subMenus: JSON.parse(localStorage.getItem('subMenus') || '{}'),
-                resourceLinks: JSON.parse(localStorage.getItem('resourceLinks') || '{}'),
-                extraPages: JSON.parse(localStorage.getItem('extraPages') || '{}'),
-                subNavList: JSON.parse(localStorage.getItem('subNavList') || '[]'),
-                feedbackList: JSON.parse(localStorage.getItem('feedbackList') || '[]')
-            };
-            const blob = new Blob([JSON.stringify(freshData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `网站备份_${new Date().toLocaleDateString()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert("✅ 备份成功！已包含所有数据（含独立页面、链接、副导航、意见反馈）");
-        }
-
-        document.getElementById('backupFileInput').addEventListener('change',e=>{
-            if(!isLogin)return;
-            const file=e.target.files[0];
-            if(!file)return;
-            if(!confirm("恢复会覆盖全部数据！继续？"))return;
-            const reader=new FileReader();
-            reader.onload=ev=>{
-                try{
-                    const d=JSON.parse(ev.target.result);
-                    topMenus=d.topMenus||{};
-                    subMenus=d.subMenus||{};
-                    resourceLinks=d.resourceLinks||{};
-                    extraPages=d.extraPages||{};
-                    subNavList=d.subNavList||[];
-                    feedbackList=d.feedbackList||[];
-                    saveData();
-                    rebuildNav();
-                    renderSubNav();
-                    updateSubNavSelects();
-                    renderAllSelect();
-                    renderList();
-                    renderFeedback();
-                    renderAdminFeedback();
-                    showPage('首页','home');
-                    alert("恢复成功");
-                }catch{alert("文件错误")}
-            }
-            reader.readAsText(file);
-        });
-        function clearAllData(){
-            if(!isLogin)return;
-            if(!confirm("清空全部数据？"))return;
-            localStorage.clear();
-            topMenus={};subMenus={};resourceLinks={};extraPages={};subNavList=[];feedbackList=[];
-            rebuildNav();renderSubNav();updateSubNavSelects();renderAllSelect();renderList();renderFeedback();renderAdminFeedback();showPage('首页','home');
-            alert("已清空");
-        }
-
-        (async function() {
-            await initData();
-            rebuildNav();
-            showPage('首页','home');
-            initTop();
-            initFeedbackToggle();
-        })();
-    </script>
-</body>
-</html>
+        function deletePage(){ if(!isLogin)return; let id=document.getElementById('delPageCate').value; let p=document.getElementById('delPageNum').value; let ps=Object.keys(resourceLinks[id]); if(ps.length<=1)return alert("至少留1页"); if(!confirm("删除该页所有链接？"))return; delete resourceLinks[id][p]; saveData(); renderAllSelect(); renderList(); if(document.querySelector('.page.active').id===id){ if(currentPage[id]==p)currentPage[id]=1; load
