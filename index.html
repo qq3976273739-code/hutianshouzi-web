@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站</title>
+    <title>虎天寿资源整理网站 - Win11风格</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "微软雅黑", system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "微软雅黑", system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
         body {
             background: url('https://s41.ax1x.com/2026/04/18/pe6CbuQ.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -17,7 +17,7 @@
         /* 毛玻璃卡片通用样式 */
         .glass-card {
             background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -179,54 +179,71 @@
             background: #e65c00;
             transform: scale(1.02);
         }
-        /* 右下角悬浮按钮（意见反馈） */
+        /* Win11风格的意见反馈悬浮按钮 */
         .float-feedback-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #ff6600;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
             color: white;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 50px;
             font-size: 18px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-weight: 500;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             transition: 0.2s;
             z-index: 1000;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.3);
             cursor: pointer;
             display: inline-block;
+            letter-spacing: 1px;
         }
         .float-feedback-btn:hover {
-            background: #e65c00;
+            background: rgba(0, 0, 0, 0.8);
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.5);
         }
-        /* 反馈模态框 */
+        /* Win11风格反馈模态框 */
         .feedback-modal {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 30px;
+            background: rgba(30, 30, 40, 0.85);
+            backdrop-filter: blur(24px);
+            padding: 28px;
             border-radius: 32px;
-            z-index: 10000;
+            z-index: 10001;
             width: 90%;
-            max-width: 450px;
+            max-width: 460px;
             border: 1px solid rgba(255,255,255,0.3);
             display: none;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .feedback-modal h3 {
+            color: #ff6600;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 5px;
         }
         .feedback-modal input, .feedback-modal textarea {
+            width: 100%;
             padding: 12px 18px;
-            border-radius: 40px;
+            border-radius: 28px;
             border: none;
             background: rgba(255,255,255,0.85);
             font-size: 15px;
             outline: none;
+            transition: 0.2s;
+        }
+        .feedback-modal input:focus, .feedback-modal textarea:focus {
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 0 0 2px #ff6600;
         }
         .feedback-modal textarea {
             border-radius: 24px;
@@ -240,16 +257,76 @@
             padding: 12px;
             border-radius: 40px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
+        }
+        .feedback-modal button:hover {
+            background: #e65c00;
+            transform: scale(1.02);
         }
         .feedback-modal .close-modal {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
+            top: 18px;
+            right: 22px;
+            font-size: 28px;
             cursor: pointer;
-            color: #fff;
+            color: rgba(255,255,255,0.8);
+            transition: 0.2s;
+        }
+        .feedback-modal .close-modal:hover {
+            color: #ff6600;
+        }
+        /* 主页内最新反馈列表 - Win11卡片风格 */
+        .feedback-home-section {
+            margin-top: 40px;
+        }
+        .feedback-home-section h3 {
+            color: #ffaa66;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feedback-list-home {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 16px;
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .feedback-item {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.2s;
+        }
+        .feedback-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(4px);
+        }
+        .feedback-item .feedback-name {
+            font-weight: bold;
+            color: #ffaa66;
+            font-size: 16px;
+        }
+        .feedback-item .feedback-time {
+            font-size: 11px;
+            color: #ccc;
+            margin-left: 12px;
+        }
+        .feedback-item .feedback-content {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #f0f0f0;
+            line-height: 1.4;
         }
         /* 分页样式 */
         .pagination { text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
@@ -291,31 +368,18 @@
         hr { margin: 20px 0; border-color: rgba(255,255,255,0.2); }
         .go-top {
             position: fixed; bottom: 120px; right: 30px; width: 52px; height: 52px;
-            background: #ff6600; color: #fff; border-radius: 30px; text-align: center;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            color: #fff; border-radius: 30px; text-align: center;
             line-height: 52px; font-size: 28px; cursor: pointer; opacity: 0; visibility: hidden;
-            transition: all 0.3s ease; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s ease; z-index: 1000; border: 1px solid rgba(255,255,255,0.3);
         }
         .go-top.show { opacity: 1; visibility: visible; }
-        .go-top:hover { background-color: #e65c00; transform: translateY(-3px); }
+        .go-top:hover { background-color: #e65c00; transform: translateY(-3px); border-color: #ff6600; }
         .backup-btn { background: #0099ff !important; }
         .restore-btn { background: #28a745 !important; }
         .clear-btn { background: #dc3545 !important; }
         #backupFileInput { display: none; }
         .empty-tip { text-align: center; padding: 40px; color: #ccc; font-style: italic; }
-        .feedback-list-home {
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .feedback-item {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-        }
-        .feedback-item .feedback-name { font-weight: bold; color: #ffaa66; }
-        .feedback-item .feedback-time { font-size: 11px; color: #ccc; margin-left: 10px; }
-        .feedback-item .feedback-content { margin-top: 5px; font-size: 14px; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
@@ -362,23 +426,23 @@
                     <div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div>
                 </div>
             </div>
-            <!-- 甲方爸爸的网站卡片（主页内） -->
+            <!-- 甲方爸爸的网站卡片 -->
             <div class="jia-card">
                 <a href="https://syc.siyecaoscw.top" target="_blank" rel="noopener noreferrer">🚀 甲方爸爸的网站</a>
             </div>
-            <!-- 最近反馈展示（可选，显示几条最新反馈） -->
-            <div style="margin-top: 30px;">
-                <h3 style="color:#ffaa66;">📢 最新反馈</h3>
+            <!-- 最新反馈区域（Win11风格） -->
+            <div class="feedback-home-section">
+                <h3>📢 最新用户反馈</h3>
                 <div id="feedbackListHome" class="feedback-list-home"></div>
             </div>
         </div>
     </div>
-    <!-- 右下角悬浮按钮：意见反馈 -->
+    <!-- 右下角悬浮按钮：意见反馈（Win11风格） -->
     <div class="float-feedback-btn" id="floatFeedbackBtn">💬 意见反馈</div>
-    <!-- 反馈模态框 -->
+    <!-- 反馈模态框（Win11风格） -->
     <div id="feedbackModal" class="feedback-modal">
         <span class="close-modal" onclick="closeFeedbackModal()">&times;</span>
-        <h3 style="color:#ff6600; text-align:center;">提交意见反馈</h3>
+        <h3>📝 意见反馈</h3>
         <input type="text" id="modalFeedbackName" placeholder="你的昵称">
         <textarea id="modalFeedbackContent" placeholder="写下你的意见或建议..."></textarea>
         <button onclick="submitModalFeedback()">提交反馈</button>
@@ -386,7 +450,7 @@
 
     <div class="go-top" id="goTopBtn" title="回到顶部">↑</div>
 
-    <!-- 管理后台弹窗 -->
+    <!-- 管理后台弹窗（功能完整保留） -->
     <div class="admin-modal" id="adminModal">
         <span class="close-btn" onclick="closeAdminModal()">×</span>
         <div class="admin-box">
@@ -595,7 +659,7 @@
         function initTop(){ let btn=document.getElementById('goTopBtn'); window.addEventListener('scroll',()=>{ if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); }); btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); }
         function clock(){ let d=new Date(); document.getElementById('clock').innerText=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`; setTimeout(clock,1000); } clock();
 
-        // 反馈相关（右下角模态框）
+        // 反馈相关（右下角模态框 + 主页列表）
         function openFeedbackModal() { document.getElementById('feedbackModal').style.display = 'flex'; }
         function closeFeedbackModal() { document.getElementById('feedbackModal').style.display = 'none'; }
         function submitModalFeedback() {
@@ -616,11 +680,13 @@
             let box = document.getElementById('feedbackListHome');
             if (!box) return;
             box.innerHTML = '';
-            // 显示最新5条
-            feedbackList.slice(0, 5).forEach(item => {
+            if (feedbackList.length === 0) {
+                box.innerHTML = '<div style="color:#aaa; text-align:center; padding:20px;">暂无反馈，快来第一条吧~</div>';
+                return;
+            }
+            feedbackList.slice(0, 8).forEach(item => {
                 box.innerHTML += `<div class="feedback-item"><div><span class="feedback-name">${escapeHtml(item.name)}</span><span class="feedback-time">${escapeHtml(item.time)}</span></div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
             });
-            if (feedbackList.length === 0) box.innerHTML = '<div style="color:#aaa; text-align:center;">暂无反馈，快来第一条吧~</div>';
         }
         function renderAdminFeedback() {
             let box = document.getElementById('adminFeedbackList');
