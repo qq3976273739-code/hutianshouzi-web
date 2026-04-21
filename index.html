@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - Win11风格</title>
+    <title>虎天寿资源整理网站</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "微软雅黑", system-ui, sans-serif; }
         body {
@@ -13,9 +13,8 @@
             color: #ffffff;
             min-height: 100vh;
             padding: 20px;
-            /* 背景无模糊 */
         }
-        /* 毛玻璃卡片通用样式（保留部分玻璃效果，但背景图片不模糊） */
+        /* 毛玻璃卡片通用样式 */
         .glass-card {
             background: rgba(0, 0, 0, 0.65);
             backdrop-filter: blur(8px);
@@ -44,7 +43,6 @@
             font-size: 22px; color: #ff6600; font-weight: 600;
             width: 60%; border: 1px solid rgba(255,255,255,0.2);
         }
-        /* 导航栏 */
         .nav {
             width: 85%; margin: 30px auto;
             background: rgba(0, 0, 0, 0.5);
@@ -89,7 +87,6 @@
             transition: 0.2s;
         }
         .sub-nav a:hover { color: #ff6600; background: rgba(255,255,255,0.25); }
-        /* 搜索框 */
         .search-box {
             width: 60%; margin: 0 auto 40px;
             background: rgba(0, 0, 0, 0.55);
@@ -111,7 +108,6 @@
             cursor: pointer; transition: 0.2s;
         }
         .search-btn:hover { background: #e65c00; transform: scale(1.02); }
-        /* 主内容区 */
         .blank-box {
             width: 80%; margin: 60px auto; padding: 32px;
             background: rgba(0, 0, 0, 0.65);
@@ -153,74 +149,38 @@
         }
         .author-info a { color: #66ccff; text-decoration: none; margin-left: 15px; font-weight: 500; }
         .author-info a:hover { color: #ff6600; }
-        /* 意见反馈独立卡片（主页内） */
-        .feedback-section {
-            margin-top: 40px;
+        /* 甲方爸爸卡片（主页内） */
+        .jia-card {
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(12px);
             border-radius: 28px;
-            padding: 25px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
             border: 1px solid rgba(255,255,255,0.2);
+            transition: 0.2s;
         }
-        .feedback-section h3 {
-            color: #ff6600;
-            font-size: 24px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .jia-card:hover {
+            background: rgba(0,0,0,0.75);
+            transform: translateY(-3px);
         }
-        .feedback-section .feedback-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .feedback-section input, .feedback-section textarea {
-            width: 100%;
-            padding: 12px 18px;
-            border-radius: 40px;
-            border: none;
-            background: rgba(255,255,255,0.85);
-            font-size: 15px;
-            outline: none;
-        }
-        .feedback-section textarea {
-            border-radius: 24px;
-            resize: vertical;
-            min-height: 100px;
-        }
-        .feedback-section button {
+        .jia-card a {
+            display: inline-block;
             background: #ff6600;
             color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 32px;
+            border-radius: 60px;
+            text-decoration: none;
             transition: 0.2s;
-            width: fit-content;
         }
-        .feedback-section button:hover {
+        .jia-card a:hover {
             background: #e65c00;
             transform: scale(1.02);
         }
-        .feedback-list {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .feedback-item {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-        }
-        .feedback-item .feedback-name { font-weight: bold; color: #ffaa66; }
-        .feedback-item .feedback-time { font-size: 12px; color: #ccc; margin-left: 12px; }
-        .feedback-item .feedback-content { margin-top: 8px; }
-        /* 右下角悬浮按钮（甲方爸爸的网站） */
-        .float-btn {
+        /* 右下角悬浮按钮（意见反馈） */
+        .float-feedback-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
@@ -230,7 +190,6 @@
             border-radius: 50px;
             font-size: 18px;
             font-weight: bold;
-            text-decoration: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: 0.2s;
             z-index: 1000;
@@ -238,10 +197,59 @@
             cursor: pointer;
             display: inline-block;
         }
-        .float-btn:hover {
+        .float-feedback-btn:hover {
             background: #e65c00;
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        /* 反馈模态框 */
+        .feedback-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 32px;
+            z-index: 10000;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .feedback-modal input, .feedback-modal textarea {
+            padding: 12px 18px;
+            border-radius: 40px;
+            border: none;
+            background: rgba(255,255,255,0.85);
+            font-size: 15px;
+            outline: none;
+        }
+        .feedback-modal textarea {
+            border-radius: 24px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .feedback-modal button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .feedback-modal .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
         }
         /* 分页样式 */
         .pagination { text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
@@ -294,6 +302,20 @@
         .clear-btn { background: #dc3545 !important; }
         #backupFileInput { display: none; }
         .empty-tip { text-align: center; padding: 40px; color: #ccc; font-style: italic; }
+        .feedback-list-home {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .feedback-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+        .feedback-item .feedback-name { font-weight: bold; color: #ffaa66; }
+        .feedback-item .feedback-time { font-size: 11px; color: #ccc; margin-left: 10px; }
+        .feedback-item .feedback-content { margin-top: 5px; font-size: 14px; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #ff6600; border-radius: 10px; }
@@ -340,23 +362,31 @@
                     <div class="footer-text">整理资源耗费大量精力，维护网站也需要持续付出，感谢您的理解与支持</div>
                 </div>
             </div>
-            <!-- 意见反馈独立区域 -->
-            <div class="feedback-section">
-                <h3>💬 意见反馈</h3>
-                <div class="feedback-input-group">
-                    <input type="text" id="feedbackNameHome" placeholder="你的昵称">
-                    <textarea id="feedbackContentHome" placeholder="写下你的意见或建议..."></textarea>
-                    <button onclick="submitFeedbackHome()">提交反馈</button>
-                </div>
-                <div id="feedbackListHome" class="feedback-list"></div>
+            <!-- 甲方爸爸的网站卡片（主页内） -->
+            <div class="jia-card">
+                <a href="https://syc.siyecaoscw.top" target="_blank" rel="noopener noreferrer">🚀 甲方爸爸的网站</a>
+            </div>
+            <!-- 最近反馈展示（可选，显示几条最新反馈） -->
+            <div style="margin-top: 30px;">
+                <h3 style="color:#ffaa66;">📢 最新反馈</h3>
+                <div id="feedbackListHome" class="feedback-list-home"></div>
             </div>
         </div>
     </div>
-    <!-- 右下角悬浮按钮：甲方爸爸的网站 -->
-    <a href="https://syc.siyecaoscw.top" target="_blank" rel="noopener noreferrer" class="float-btn">甲方爸爸的网站</a>
+    <!-- 右下角悬浮按钮：意见反馈 -->
+    <div class="float-feedback-btn" id="floatFeedbackBtn">💬 意见反馈</div>
+    <!-- 反馈模态框 -->
+    <div id="feedbackModal" class="feedback-modal">
+        <span class="close-modal" onclick="closeFeedbackModal()">&times;</span>
+        <h3 style="color:#ff6600; text-align:center;">提交意见反馈</h3>
+        <input type="text" id="modalFeedbackName" placeholder="你的昵称">
+        <textarea id="modalFeedbackContent" placeholder="写下你的意见或建议..."></textarea>
+        <button onclick="submitModalFeedback()">提交反馈</button>
+    </div>
+
     <div class="go-top" id="goTopBtn" title="回到顶部">↑</div>
 
-    <!-- 管理后台弹窗（功能保留） -->
+    <!-- 管理后台弹窗 -->
     <div class="admin-modal" id="adminModal">
         <span class="close-btn" onclick="closeAdminModal()">×</span>
         <div class="admin-box">
@@ -366,7 +396,6 @@
                 <button onclick="adminLogin()">登录</button>
             </div>
             <div id="adminPanel" style="display:none;">
-                <!-- 所有管理功能完整保留 -->
                 <div class="admin-form">
                     <input type="text" id="newCate" placeholder="顶级菜单名称">
                     <button onclick="addTopCate()">➕ 添加顶级菜单</button>
@@ -445,7 +474,7 @@
     </div>
 
     <script>
-        // ======================== 完整功能脚本 ========================
+        // ======================== 核心功能 ========================
         const ADMIN_PASSWORD = "wangyiming87";
         let isLogin = false;
         let currentPage = {};
@@ -508,7 +537,7 @@
         async function initData() {
             const cloudOk = await fetchCloudDataAndApply();
             if (!cloudOk) loadLocalOrDefault();
-            rebuildNav(); renderSubNav(); renderFeedbackHome(); renderAdminFeedback();
+            rebuildNav(); renderSubNav(); renderHomeFeedbackList(); renderAdminFeedback();
             updateSubNavSelects(); updateInternalTargetSelect();
         }
 
@@ -566,27 +595,32 @@
         function initTop(){ let btn=document.getElementById('goTopBtn'); window.addEventListener('scroll',()=>{ if(window.scrollY>300) btn.classList.add('show'); else btn.classList.remove('show'); }); btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'}); }
         function clock(){ let d=new Date(); document.getElementById('clock').innerText=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`; setTimeout(clock,1000); } clock();
 
-        // 主页独立反馈功能
-        function renderFeedbackHome() {
-            let box = document.getElementById('feedbackListHome');
-            if (!box) return;
-            box.innerHTML = '';
-            feedbackList.slice().reverse().forEach(item => {
-                box.innerHTML += `<div class="feedback-item"><div><span class="feedback-name">${escapeHtml(item.name)}</span><span class="feedback-time">${escapeHtml(item.time)}</span></div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
-            });
-        }
-        function submitFeedbackHome() {
-            let name = document.getElementById('feedbackNameHome').value.trim();
-            let content = document.getElementById('feedbackContentHome').value.trim();
+        // 反馈相关（右下角模态框）
+        function openFeedbackModal() { document.getElementById('feedbackModal').style.display = 'flex'; }
+        function closeFeedbackModal() { document.getElementById('feedbackModal').style.display = 'none'; }
+        function submitModalFeedback() {
+            let name = document.getElementById('modalFeedbackName').value.trim();
+            let content = document.getElementById('modalFeedbackContent').value.trim();
             if (!name || !content) return alert("请填写昵称和内容");
             let time = new Date().toLocaleString();
             feedbackList.unshift({ id: Date.now(), name, content, time });
             saveData();
-            renderFeedbackHome();
+            renderHomeFeedbackList();
             renderAdminFeedback();
-            document.getElementById('feedbackNameHome').value = '';
-            document.getElementById('feedbackContentHome').value = '';
+            document.getElementById('modalFeedbackName').value = '';
+            document.getElementById('modalFeedbackContent').value = '';
+            closeFeedbackModal();
             alert("✅ 意见提交成功！");
+        }
+        function renderHomeFeedbackList() {
+            let box = document.getElementById('feedbackListHome');
+            if (!box) return;
+            box.innerHTML = '';
+            // 显示最新5条
+            feedbackList.slice(0, 5).forEach(item => {
+                box.innerHTML += `<div class="feedback-item"><div><span class="feedback-name">${escapeHtml(item.name)}</span><span class="feedback-time">${escapeHtml(item.time)}</span></div><div class="feedback-content">${escapeHtml(item.content)}</div></div>`;
+            });
+            if (feedbackList.length === 0) box.innerHTML = '<div style="color:#aaa; text-align:center;">暂无反馈，快来第一条吧~</div>';
         }
         function renderAdminFeedback() {
             let box = document.getElementById('adminFeedbackList');
@@ -601,16 +635,17 @@
             if (!confirm("删除这条意见？")) return;
             feedbackList.splice(idx, 1);
             saveData();
-            renderFeedbackHome();
+            renderHomeFeedbackList();
             renderAdminFeedback();
             alert("删除成功");
         }
 
         function exportBackup() { if(!isLogin) return; let data={topMenus,subMenus,resourceLinks,extraPages,subNavList,feedbackList}; let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})); a.download=`backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); alert("备份导出成功"); }
-        document.getElementById('backupFileInput').addEventListener('change',e=>{ if(!isLogin) return; let file=e.target.files[0]; if(!file) return; if(!confirm("恢复会覆盖所有数据，确定？")) return; let reader=new FileReader(); reader.onload=ev=>{ try{ let d=JSON.parse(ev.target.result); topMenus=d.topMenus||{}; subMenus=d.subMenus||{}; resourceLinks=d.resourceLinks||{}; extraPages=d.extraPages||{}; subNavList=d.subNavList||[]; feedbackList=d.feedbackList||[]; saveData(); rebuildNav(); renderSubNav(); updateSubNavSelects(); renderAllSelect(); renderList(); renderFeedbackHome(); renderAdminFeedback(); showPage('首页','home'); alert("恢复成功"); } catch(err){ alert("文件错误"); } }; reader.readAsText(file); });
-        function clearAllData(){ if(!isLogin) return; if(!confirm("清空全部数据？不可恢复！")) return; localStorage.clear(); topMenus={}; subMenus={}; resourceLinks={}; extraPages={}; subNavList=[]; feedbackList=[]; rebuildNav(); renderSubNav(); updateSubNavSelects(); renderAllSelect(); renderList(); renderFeedbackHome(); renderAdminFeedback(); showPage('首页','home'); alert("已清空"); }
+        document.getElementById('backupFileInput').addEventListener('change',e=>{ if(!isLogin) return; let file=e.target.files[0]; if(!file) return; if(!confirm("恢复会覆盖所有数据，确定？")) return; let reader=new FileReader(); reader.onload=ev=>{ try{ let d=JSON.parse(ev.target.result); topMenus=d.topMenus||{}; subMenus=d.subMenus||{}; resourceLinks=d.resourceLinks||{}; extraPages=d.extraPages||{}; subNavList=d.subNavList||[]; feedbackList=d.feedbackList||[]; saveData(); rebuildNav(); renderSubNav(); updateSubNavSelects(); renderAllSelect(); renderList(); renderHomeFeedbackList(); renderAdminFeedback(); showPage('首页','home'); alert("恢复成功"); } catch(err){ alert("文件错误"); } }; reader.readAsText(file); });
+        function clearAllData(){ if(!isLogin) return; if(!confirm("清空全部数据？不可恢复！")) return; localStorage.clear(); topMenus={}; subMenus={}; resourceLinks={}; extraPages={}; subNavList=[]; feedbackList=[]; rebuildNav(); renderSubNav(); updateSubNavSelects(); renderAllSelect(); renderList(); renderHomeFeedbackList(); renderAdminFeedback(); showPage('首页','home'); alert("已清空"); }
 
-        (async function(){ await initData(); rebuildNav(); showPage('首页','home'); initTop(); renderFeedbackHome(); })();
+        document.getElementById('floatFeedbackBtn').addEventListener('click', openFeedbackModal);
+        (async function(){ await initData(); rebuildNav(); showPage('首页','home'); initTop(); renderHomeFeedbackList(); })();
     </script>
 </body>
 </html>
