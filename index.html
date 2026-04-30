@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, user-scalable=yes">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 实时更新版</title>
+    <title>虎天寿资源整理网站</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "微软雅黑", system-ui, sans-serif; cursor: default; }
         body {
@@ -14,7 +14,6 @@
             min-height: 100vh;
             padding: 20px;
         }
-        /* 深色磨砂玻璃亚克力风格 */
         .avatar-box { position: absolute; top: 20px; right: 30px; cursor: pointer; }
         .avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.3); cursor: pointer; }
         .avatar:hover { box-shadow: 0 0 15px #ff6600; transform: scale(1.02); }
@@ -128,7 +127,6 @@
         }
         .home-top-btn button:hover { background: #e65c00; transform: scale(1.02); }
         .home-row { display: flex; align-items: center; justify-content: center; gap: 60px; margin-top: 30px; flex-wrap: wrap; }
-        /* 数字时钟 - 磨砂玻璃 */
         .digital-clock {
             background: rgba(20, 20, 30, 0.7);
             backdrop-filter: blur(12px);
@@ -368,7 +366,7 @@
                 <button class="backup-btn" onclick="exportBackup()">💾 导出备份文件</button>
                 <button class="restore-btn" onclick="document.getElementById('backupFileInput').click()">📂 从备份恢复</button>
                 <button class="example-btn" onclick="downloadExampleBackup()">📄 下载示例备份</button>
-                <button class="repair-btn" onclick="repairData()">🔧 修复当前数据</button>
+                <button class="repair-btn" onclick="repairData()">🔧 修复数据结构</button>
                 <button class="clear-btn" onclick="clearAllData()">🗑️ 清空所有数据</button>
                 <input type="file" id="backupFileInput" accept=".json">
             </div>
@@ -401,7 +399,7 @@
         localStorage.setItem('subNavList', JSON.stringify(subNavList));
     }
 
-    // 修复数据结构：确保每个菜单在 resourceLinks 中都有至少第一页
+    // 修复数据结构（静默修复，不弹框，仅用于后台手动调用）
     function repairData() {
         for (let id in topMenus) {
             if (!resourceLinks[id] || typeof resourceLinks[id] !== 'object') resourceLinks[id] = { 1: [] };
@@ -416,18 +414,16 @@
             if (Object.keys(resourceLinks[id]).length === 0) resourceLinks[id][1] = [];
         }
         saveToLocal();
-        // 刷新所有 UI
         rebuildNav();
         renderSubNav();
         renderAllSelects();
         renderList();
-        // 刷新当前页面内容
         let activeId = document.querySelector('.page.active')?.id;
         if (activeId && activeId !== 'home') loadData(activeId);
         alert("✅ 数据结构已修复，缺失页面已补齐。");
     }
 
-    // 云端拉取并覆盖本地（启动时调用）
+    // 云端拉取并覆盖本地（启动时静默执行，不弹框）
     async function fetchCloudAndOverwrite() {
         try {
             const resp = await fetch(CLOUD_URL, { cache: "no-cache" });
@@ -439,7 +435,11 @@
                 resourceLinks = data.resourceLinks || {};
                 extraPages = data.extraPages || {};
                 subNavList = data.subNavList || [];
-                repairData();  // 内部会 save 并刷新 UI
+                // 修复缺失字段（静默）
+                for (let id in topMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                for (let id in subMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                for (let id in extraPages) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                saveToLocal();
                 console.log("✅ 云端数据加载成功");
                 return true;
             }
@@ -466,7 +466,11 @@
             extraPages = {};
             subNavList = [];
         }
-        repairData();
+        // 静默修复缺失
+        for (let id in topMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+        for (let id in subMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+        for (let id in extraPages) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+        saveToLocal();
         return false;
     }
 
@@ -484,7 +488,17 @@
                 resourceLinks = data.resourceLinks || {};
                 extraPages = data.extraPages || {};
                 subNavList = data.subNavList || [];
-                repairData();  // 修复并刷新所有 UI
+                // 修复缺失字段
+                for (let id in topMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                for (let id in subMenus) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                for (let id in extraPages) if (!resourceLinks[id]) resourceLinks[id] = { 1: [] };
+                saveToLocal();
+                rebuildNav();
+                renderSubNav();
+                renderAllSelects();
+                renderList();
+                let activeId = document.querySelector('.page.active')?.id;
+                if (activeId && activeId !== 'home') loadData(activeId);
                 alert("✅ 备份恢复成功！");
             } catch (err) {
                 alert("文件解析失败：" + err.message);
@@ -1022,7 +1036,7 @@
         document.getElementById('clock').innerText = `${h}:${m}:${s}`;
     }
     setInterval(clock, 1000);
-    clock(); // 立即执行一次
+    clock(); // 立即执行
 
     // 启动
     (async function() {
