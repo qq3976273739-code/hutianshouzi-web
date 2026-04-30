@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, user-scalable=yes">
     <link rel="icon" href="https://s41.ax1x.com/2026/04/18/pe6CRHA.jpg" type="image/png">
-    <title>虎天寿资源整理网站 - 修复导入版</title>
+    <title>虎天寿资源整理网站 - 增强导入版</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "微软雅黑", system-ui, sans-serif; cursor: default; }
         body {
@@ -225,7 +225,8 @@
         .backup-btn { background: #0099ff !important; }
         .restore-btn { background: #28a745 !important; }
         .clear-btn { background: #dc3545 !important; }
-        #backupFileInput { display: none; cursor: pointer; }
+        .example-btn { background: #6c757d !important; }
+        #backupFileInput { display: none; }
         .empty-tip { text-align: center; padding: 40px; color: #ccc; font-style: italic; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
@@ -349,7 +350,8 @@
                 <h3 style="color:#0099ff;">📦 数据备份与恢复</h3>
                 <div class="admin-form">
                     <button class="backup-btn" onclick="exportBackup()">💾 导出备份文件</button>
-                    <button class="restore-btn" onclick="document.getElementById('backupFileInput').click()">📂 从备份恢复（强制覆盖）</button>
+                    <button class="restore-btn" onclick="document.getElementById('backupFileInput').click()">📂 从备份恢复</button>
+                    <button class="example-btn" onclick="downloadExampleBackup()">📄 下载示例备份（JSON格式）</button>
                     <button class="clear-btn" onclick="clearAllData()">🗑️ 清空所有数据</button>
                     <input type="file" id="backupFileInput" accept=".json">
                 </div>
@@ -372,7 +374,6 @@
         const ADMIN_PASSWORD = "wangyiming87";
         const CLOUD_URL = "https://raw.githubusercontent.com/qq3976273739-code/my-site-data/refs/heads/main/data.json";
 
-        // ----- 工具函数 -----
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
         function saveToLocal() {
@@ -385,7 +386,6 @@
 
         // 修复数据结构：确保每个菜单在 resourceLinks 中都有至少第一页
         function repairData() {
-            // 为顶级菜单补齐
             for (let id in topMenus) {
                 if (!resourceLinks[id] || typeof resourceLinks[id] !== 'object') resourceLinks[id] = { 1: [] };
                 if (Object.keys(resourceLinks[id]).length === 0) resourceLinks[id][1] = [];
@@ -433,10 +433,10 @@
                 extraPages = e ? JSON.parse(e) : {};
                 subNavList = sn ? JSON.parse(sn) : [];
             } else {
-                // 默认空数据
-                topMenus = {};
+                // 默认空数据，但为了演示，创建示例顶级菜单
+                topMenus = { "top_example": { name: "示例菜单" } };
                 subMenus = {};
-                resourceLinks = {};
+                resourceLinks = { "top_example": { 1: [{ name: "示例链接", url: "https://www.baidu.com" }] } };
                 extraPages = {};
                 subNavList = [];
             }
@@ -445,20 +445,26 @@
             return false;
         }
 
-        // 强制导入备份文件（覆盖所有数据，并自动修复）
+        // 强制导入备份文件（覆盖所有数据，并自动修复，支持 BOM 头）
         function importBackupFile(file) {
             if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
+                let rawText = e.target.result;
+                // 1. 去除 UTF-8 BOM 头
+                if (rawText.charCodeAt(0) === 0xFEFF) {
+                    rawText = rawText.slice(1);
+                }
+                // 2. 尝试解析 JSON
                 try {
-                    let data = JSON.parse(e.target.result);
-                    // 兼容旧结构，确保关键字段存在
+                    let data = JSON.parse(rawText);
+                    // 3. 兼容旧结构，确保关键字段存在
                     topMenus = data.topMenus || {};
                     subMenus = data.subMenus || {};
                     resourceLinks = data.resourceLinks || {};
                     extraPages = data.extraPages || {};
                     subNavList = data.subNavList || [];
-                    // 修复可能缺失的 resourceLinks 结构
+                    // 4. 修复可能缺失的 resourceLinks 结构
                     repairData();
                     saveToLocal();
                     // 刷新整个界面
@@ -470,14 +476,46 @@
                     alert("✅ 备份恢复成功！");
                 } catch (err) {
                     console.error("导入错误:", err);
-                    alert("文件解析失败：" + err.message + "\n请确保备份文件是有效的 JSON 格式。");
+                    // 提供更详细的错误信息（行号、列号）
+                    let errorMsg = err.message;
+                    let match = errorMsg.match(/position (\d+)/);
+                    if (match) {
+                        let pos = parseInt(match[1]);
+                        let lines = rawText.substring(0, pos).split('\n');
+                        let line = lines.length;
+                        let col = lines[lines.length-1].length + 1;
+                        alert(`文件解析失败：${errorMsg}\n错误位置：第 ${line} 行，第 ${col} 列。\n请确保文件是有效的 JSON 格式，可使用示例备份对比。`);
+                    } else {
+                        alert(`文件解析失败：${errorMsg}\n请确保文件是有效的 JSON 格式。`);
+                    }
                 }
             };
             reader.onerror = () => alert("读取文件失败，请重试。");
             reader.readAsText(file);
         }
 
-        // ----- UI 渲染核心 -----
+        // 下载当前有效的数据结构示例
+        function downloadExampleBackup() {
+            const example = {
+                topMenus: { "example_top": { name: "示例顶级菜单" } },
+                subMenus: { "example_sub": { parentId: "example_top", name: "示例子菜单" } },
+                resourceLinks: {
+                    "example_top": { 1: [{ name: "顶级菜单链接", url: "https://www.example.com" }] },
+                    "example_sub": { 1: [{ name: "子菜单链接", url: "https://www.example.com" }] }
+                },
+                extraPages: {},
+                subNavList: []
+            };
+            const blob = new Blob([JSON.stringify(example, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `example_backup.json`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            alert("示例备份已下载，请对照此格式修正您的文件。");
+        }
+
+        // ----- UI 渲染核心（与之前保持一致）-----
         function ensurePageContainer(id, name) {
             if (document.getElementById(id)) return;
             let area = document.getElementById('area');
@@ -581,13 +619,11 @@
             sub.classList.toggle('show');
         }
 
-        // ----- 后台管理函数（保证添加后立即更新）-----
+        // 后台管理函数（保持完整）
         function renderAllSelects() {
-            // 父级菜单下拉
             let parentSel = document.getElementById('parentCateSelect');
             parentSel.innerHTML = '';
             for (let id in topMenus) parentSel.appendChild(new Option(topMenus[id].name, id));
-            // 分支删除下拉
             let delBranch = document.getElementById('delBranchSelect');
             delBranch.innerHTML = '';
             let branchList = [];
@@ -597,7 +633,6 @@
             }
             if (branchList.length === 0) delBranch.innerHTML = '<option disabled>暂无分支</option>';
             else branchList.forEach(b => delBranch.appendChild(new Option(b.name, b.id)));
-            // 链接添加下拉
             let cate = document.getElementById('cate');
             let pageCate = document.getElementById('pageCate');
             let delPageCate = document.getElementById('delPageCate');
@@ -615,7 +650,6 @@
                 pageCate.appendChild(opt.cloneNode(true));
                 delPageCate.appendChild(opt.cloneNode(true));
             });
-            // 刷新页码下拉
             let curCate = cate.value;
             let pageNum = document.getElementById('pageNum');
             pageNum.innerHTML = '';
@@ -653,7 +687,6 @@
             }
         }
 
-        // 添加顶级菜单
         function addTopCate() {
             if (!isLogin) return;
             let name = document.getElementById('newCate').value.trim();
@@ -761,7 +794,6 @@
             renderList();
             if (document.querySelector('.page.active')?.id === mid) loadData(mid);
         }
-        // 副导航管理
         function addSubNavItem() {
             if (!isLogin) return;
             let name = document.getElementById('subNavName').value.trim();
@@ -867,7 +899,6 @@
             alert("删除成功");
         }
 
-        // 备份导出
         function exportBackup() {
             let data = { topMenus, subMenus, resourceLinks, extraPages, subNavList };
             let blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -895,7 +926,6 @@
             alert("已清空");
         }
 
-        // 管理员登录及后台UI
         function openAdminModal() { document.getElementById('adminModal').style.display = 'block'; renderAllSelects(); renderList(); updateSubNavSelects(); updateInternalTarget(); }
         function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
         function adminLogin() {
@@ -987,7 +1017,6 @@
             setTimeout(clock, 1000);
         }
 
-        // 启动
         (async function() {
             await fetchCloudAndOverwrite();
             rebuildNav();
